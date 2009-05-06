@@ -5778,3 +5778,13 @@ Updating with simcore changes (rev. 2771 - Krishna Rangan)
 
 - possible fix for asimrc file corruption in the nightly workspace;
   decreased the possibility of temporary files ending up with same names.
+
+----------
+jsemer      Date: Wed May  6 15:43:31 EDT 2009  CSN: CSN-asimcore-296
+                  Wed May  6 19:43:31 UTC 2009
+
+
+Directory etc/repositories.d
+ platform-acp.pack         Locally Added               0 
+
+Added repository for ACP platform support.
