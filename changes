@@ -5843,3 +5843,16 @@ Directory tools/scripts
 Updating with simcore changes (rev. 2777 - Carl Beckmann)
 
 - forgot to rename asim-shell to awb-shell in Makefile.am in last commit
+
+----------
+spartha1    Date: Tue Jun  9 14:53:39 EDT 2009  CSN: CSN-asimcore-299
+                  Tue Jun  9 18:53:39 UTC 2009
+
+
+Directory tools/scripts
+ tlist2bm.pl               Locally Modified          298 
+
+Updating with simcore changes (rev. 2780 - Steve Raasch)
+
+Add option to simply dump the list of trace names contained in the PDX
+tlist file
