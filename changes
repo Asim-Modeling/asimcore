@@ -5788,3 +5788,45 @@ Directory etc/repositories.d
  platform-acp.pack         Locally Added               0 
 
 Added repository for ACP platform support.
+
+----------
+spartha1    Date: Tue Jun  9 14:22:13 EDT 2009  CSN: CSN-asimcore-297
+                  Tue Jun  9 18:22:13 UTC 2009
+
+
+Directory libperl/AsimShell/lib/AsimShell
+ Commands.pm               Locally Modified          296 
+
+Directory libperl/AsimShell/lib
+ AsimShell.pm              Locally Modified          296 
+
+Directory libperl/Asim/lib/Asim/Workspace
+ Template.pm               Locally Modified          296 
+
+Directory libperl/Asim/lib/Asim
+ Workspace.pm              Locally Modified          296 
+
+Directory tools/scripts
+ asim-shell                Locally Removed           296 
+ asimstarter.in            Locally Modified          296 
+ awb-shell                 Locally Added               0 
+
+Directory etc
+ asimrc.template           Locally Modified          296 
+ awb.config.template.in    Locally Modified          296 
+
+Updating with simcore changes (rev. 2776 - Carl Beckmann)
+
++ Going live with split of simcore into simcore, awb, and awb-doc:
+
+  - fixed a minor bug in awb-shell that was causing a spurious warning
+    message on startup
+
+  - added a check to awb-shell to make sure we have awb in our workspace
+
+  - fixed various templates in /etc to include he new awb package
+    and some new awb-shell asimrc configuration parameters
+
+  - Added awb-doc to asim.pack file
+
+  - added new awb-* tool name aliases for old asim-* tools to asimstarter
