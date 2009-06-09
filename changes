@@ -5830,3 +5830,16 @@ Updating with simcore changes (rev. 2776 - Carl Beckmann)
   - Added awb-doc to asim.pack file
 
   - added new awb-* tool name aliases for old asim-* tools to asimstarter
+
+----------
+spartha1    Date: Tue Jun  9 14:24:44 EDT 2009  CSN: CSN-asimcore-298
+                  Tue Jun  9 18:24:44 UTC 2009
+
+
+Directory tools/scripts
+ Makefile.am               Locally Modified          296 
+ Makefile.in               Locally Modified          296 
+
+Updating with simcore changes (rev. 2777 - Carl Beckmann)
+
+- forgot to rename asim-shell to awb-shell in Makefile.am in last commit
