@@ -5877,3 +5877,16 @@ Directory tools/scripts
  awb-shell                 Locally Modified          300 
 
 Really set awb-shell executable using 'svn propset svn:executable'.
+
+----------
+pellauer    Date: Wed Jun 10 17:35:01 EDT 2009  CSN: CSN-asimcore-302
+                  Wed Jun 10 21:35:01 UTC 2009
+
+
+Directory libperl/Asim/lib
+ Asim.pm.in                Locally Modified          301 
+
+
+* Added Libdir and Includedir to Asim.pm.
+
+Michael P.
