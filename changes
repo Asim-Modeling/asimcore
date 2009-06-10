@@ -5867,3 +5867,13 @@ Directory tools/scripts
 
 Use MIT version of awb-shell here, since it doesn't lock the repositories.
 Also, chmod it to be executable.
+
+----------
+emer        Date: Wed Jun 10 15:19:44 EDT 2009  CSN: CSN-asimcore-301
+                  Wed Jun 10 19:19:44 UTC 2009
+
+
+Directory tools/scripts
+ awb-shell                 Locally Modified          300 
+
+Really set awb-shell executable using 'svn propset svn:executable'.
