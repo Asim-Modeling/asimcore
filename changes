@@ -5856,3 +5856,14 @@ Updating with simcore changes (rev. 2780 - Steve Raasch)
 
 Add option to simply dump the list of trace names contained in the PDX
 tlist file
+
+----------
+emer        Date: Wed Jun 10 15:14:04 EDT 2009  CSN: CSN-asimcore-300
+                  Wed Jun 10 19:14:04 UTC 2009
+
+
+Directory tools/scripts
+ awb-shell                 Locally Modified          299 
+
+Use MIT version of awb-shell here, since it doesn't lock the repositories.
+Also, chmod it to be executable.

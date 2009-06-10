@@ -1,9 +1,7 @@
-:
-eval 'exec perl -w "$0" ${1+"$@"}'
-       if 0;
+#!/usr/bin/env perl
+# -*- perl -*-
 
-##################################################################################
-# 
+#
 # Copyright (C) 2002-2006 Intel Corporation
 # 
 # This program is free software; you can redistribute it and/or
@@ -21,7 +19,6 @@ eval 'exec perl -w "$0" ${1+"$@"}'
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 #
-##################################################################################
 
 #
 # Author:  Joel Emer
@@ -33,6 +30,11 @@ use Text::ParseWords;
 
 use Asim;
 use AsimShell;
+
+#
+# Turn on warnings
+#
+$^W = 1;
 
 #
 # Argument handling
@@ -56,7 +58,7 @@ my $help = 0;
 my $batch = 0;
 my $interactive = 1;
 my $warnings = 1;
-my $locking = 1;
+my $locking = 0;
 my $configcheck = 1;
 
 my $batchfile = "";
@@ -116,7 +118,7 @@ if ($interactive) {
 # Announce the shell in interactive mode
 #
 if (!$batchfile && ! @ARGV) {
-  print 'AWB shell - V', $AsimShell::VERSION, ' (', Asim::Release(), ")\n";
+  print 'AWB shell - V', $AsimShell::VERSION, '-asimcore (', Asim::Release(), ")\n";
 }
 
 AsimShell::init(mode => $runmode,
@@ -317,13 +319,13 @@ Get this help information.
 Generate, or suppress, certain warning messages.
 
 =item --[no]configcheck
-
+   
 Perform, or skip, a check of package configuration consistency on interactive startup.
 This checks that packages were built with a consistent set of configuration switches
 and host machine architectures.
 The default is to perform this check.
 Note that this check is skipped on batch invocations of awb-shell.
-
+   
 See also the awb-shell commands "show configuration" and "verify configuration".
 When this check is enabled, a "verify configuration all" command is performed on startup.
 
