@@ -6228,3 +6228,13 @@ Workspaces that have not been upgraded since the split of awb
 will be broken by this checkin and you will need to manually
 add <INSTALLDIR>/share/asim/awb/HEAD to the SEARCHPATH in the
 awb.config file.
+
+----------
+emer        Date: Fri Jul 17 16:02:03 EDT 2009  CSN: CSN-asimcore-305
+                  Fri Jul 17 20:02:03 UTC 2009
+
+
+Directory lib
+ Makefile.in               Locally Added               0 
+
+Readded file accidentally deleted in last checkin.
