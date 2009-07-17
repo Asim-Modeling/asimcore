@@ -17,5 +17,5 @@
 # 
 #
 
-DIST_SUBDIRS=libasim libdral libnullptlib @NO_GUI@ libagt libdraldb libawb
-SUBDIRS=libasim libdral libnullptlib  @NO_GUI@ libagt libdraldb libawb
+DIST_SUBDIRS=libasim libdral libnullptlib @NO_GUI@ libagt libdraldb
+SUBDIRS=libasim libdral libnullptlib  @NO_GUI@ libagt libdraldb

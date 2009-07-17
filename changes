@@ -5904,3 +5904,327 @@ Directory libperl/Asim/lib/Asim/Workspace
 
 Michael P.
 
+
+----------
+emer        Date: Fri Jul 17 15:53:25 EDT 2009  CSN: CSN-asimcore-304
+                  Fri Jul 17 19:53:25 UTC 2009
+
+
+Directory .
+ configure                 Locally Modified          303 
+ Makefile.in               Locally Modified          303 
+
+Directory include
+ config.h.in               Locally Modified          303 
+
+Directory .
+ configure.in              Locally Modified          303 
+
+Directory tools
+ Makefile.in               Locally Removed           303 
+
+Directory tools/scripts
+ regression.launcher       Locally Removed           303 
+ asim-pkg-config.in        Locally Removed           303 
+ asim-benchmark            Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ plot-shell                Locally Removed           303 
+ fetch-trace               Locally Removed           303 
+ awbset                    Locally Removed           303 
+ regression.verifier       Locally Removed           303 
+ bm/                       Locally Removed           303 
+
+Directory tools/scripts/bm
+ tracecache/               Locally Removed           303 
+
+Directory tools/scripts/bm/tracecache
+ single.cfx                Locally Removed           303 
+ single-check-stat-range.run Locally Removed           303 
+ multi-tlist.cfx           Locally Removed           303 
+ multi.cfx                 Locally Removed           303 
+ multi.setup               Locally Removed           303 
+ single-check-param.cfx    Locally Removed           303 
+ single-check-param.setup  Locally Removed           303 
+ single-with-params.cfx    Locally Removed           303 
+ run-with-params.cfx       Locally Removed           303 
+ single-check-param.run    Locally Removed           303 
+ multi_same.cfx            Locally Removed           303 
+ single-check-stat-range.cfx Locally Removed           303 
+ single-check-stat-range.setup Locally Removed           303 
+
+Directory tools/scripts
+ param.R                   Locally Removed           303 
+ asimstarter.in            Locally Removed           303 
+ xcheck                    Locally Removed           303 
+ regression.cleanup        Locally Removed           303 
+ create-benchmark-file     Locally Removed           303 
+ summarize-stats           Locally Removed           303 
+ grab.R                    Locally Removed           303 
+ netbatch-pre              Locally Removed           303 
+ gen-spec95-config         Locally Removed           303 
+ grab.pl                   Locally Removed           303 
+ sum-simpoints             Locally Removed           303 
+ model-coverage            Locally Removed           303 
+ asim.R                    Locally Removed           303 
+ cvt-config-to-apm         Locally Removed           303 
+ asim-run                  Locally Removed           303 
+ README                    Locally Removed           303 
+ asim_filter               Locally Removed           303 
+ model-browse              Locally Removed           303 
+ sum-unweighted            Locally Removed           303 
+ apm-fixup                 Locally Removed           303 
+ asim-batch                Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ asim-compare-stats        Locally Removed           303 
+ tlist2bm.pl               Locally Removed           303 
+ stat-to-text              Locally Removed           303 
+
+Directory tools
+ awb/                      Locally Removed           303 
+
+Directory tools/awb
+ amc/                      Locally Removed           303 
+
+Directory tools/awb/amc
+ amc.cpp                   Locally Removed           303 
+ doxygen.config            Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ amc.h                     Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ .gdbinit                  Locally Removed           303 
+
+Directory tools/awb
+ apm-edit/                 Locally Removed           303 
+
+Directory tools/awb/apm-edit
+ apm-edit.pro              Locally Removed           303 
+ apm_edit_main.pl          Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ runlog.ui                 Locally Removed           303 
+ apm-edit.db               Locally Removed           303 
+ apm_edit.ui.h             Locally Removed           303 
+ images/                   Locally Removed           303 
+
+Directory tools/awb/apm-edit/images
+ print.png                 Locally Removed           303 
+ filesave.png              Locally Removed           303 
+ editcut.png               Locally Removed           303 
+ fileopen.png              Locally Removed           303 
+ submodel_red.png          Locally Removed           303 
+ undo.png                  Locally Removed           303 
+ submodel_yellow.png       Locally Removed           303 
+ searchfind.png            Locally Removed           303 
+ submodel.png              Locally Removed           303 
+ check.png                 Locally Removed           303 
+ whatsthis.png             Locally Removed           303 
+ module_missing.png        Locally Removed           303 
+ editcopy.png              Locally Removed           303 
+ submodel_blue.png         Locally Removed           303 
+ editpaste.png             Locally Removed           303 
+ module.png                Locally Removed           303 
+ module_current.png        Locally Removed           303 
+ redo.png                  Locally Removed           303 
+ module_default.png        Locally Removed           303 
+ filenew.png               Locally Removed           303 
+
+Directory tools/awb/apm-edit
+ apm_edit_about.ui         Locally Removed           303 
+ runlog.ui.h               Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ apm_edit_pixmap.pl        Locally Removed           303 
+ apm_edit_head.pl          Locally Removed           303 
+ apm_edit.ui               Locally Removed           303 
+
+Directory tools/awb
+ Makefile.in               Locally Removed           303 
+ apm-find-replace/         Locally Removed           303 
+
+Directory tools/awb/apm-find-replace
+ Makefile.in               Locally Removed           303 
+ apm_find_replace_head.pl  Locally Removed           303 
+ apm_find_replace.ui       Locally Removed           303 
+ apm_find_replace_main.pl  Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ apm_find_replace.ui.h     Locally Removed           303 
+
+Directory tools/awb
+ awb-wizard/               Locally Removed           303 
+
+Directory tools/awb/awb-wizard
+ awb_wizard_about.ui       Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ awb_wizard_head.pl        Locally Removed           303 
+ images/                   Locally Removed           303 
+
+Directory tools/awb/awb-wizard/images
+ filesave.png              Locally Removed           303 
+ whatsthis.png             Locally Removed           303 
+ filebuild.png             Locally Removed           303 
+ fileopen.png              Locally Removed           303 
+ filenew.png               Locally Removed           303 
+
+Directory tools/awb/awb-wizard
+ awb_wizard.ui             Locally Removed           303 
+ awb-wizard.pro            Locally Removed           303 
+ awb_wizard_main.pl        Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ awb-wizard.db             Locally Removed           303 
+ awb_wizard.ui.h           Locally Removed           303 
+ awb_wizard_write.pl       Locally Removed           303 
+
+Directory tools/awb
+ awb-resolver/             Locally Removed           303 
+
+Directory tools/awb/awb-resolver
+ doxygen.config            Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ awb-resolver.cpp          Locally Removed           303 
+ awb-resolver.h            Locally Removed           303 
+
+Directory tools/awb
+ Makefile.am               Locally Removed           303 
+ awb2/                     Locally Removed           303 
+
+Directory tools/awb/awb2
+ awb_about.ui              Locally Removed           303 
+ awb_runlog.ui.h           Locally Removed           303 
+ awb_util.pm               Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ awb_dialog.ui             Locally Removed           303 
+ awb_head.pl               Locally Removed           303 
+ awb_main.pl               Locally Removed           303 
+ awb.pro                   Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ awb_dialog.ui.h           Locally Removed           303 
+ awb_runlog.ui             Locally Removed           303 
+ awb.db                    Locally Removed           303 
+
+Directory tools
+ libploticus/              Locally Removed           303 
+
+Directory tools/libploticus
+ adjust_page               Locally Removed           303 
+ adjust_yaxis              Locally Removed           303 
+ bar.script                Locally Removed           303 
+ line.script               Locally Removed           303 
+ box.script                Locally Removed           303 
+ spacing_var               Locally Removed           303 
+
+Directory tools
+ Makefile.am               Locally Removed           303 
+
+Directory tools/dreams
+ Makefile.in               Locally Modified          303 
+
+Directory tools/dreams/dbtest
+ Makefile.in               Locally Modified          303 
+
+Directory tools/dreams/dbtest/src
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          303 
+
+Directory lib
+ libawb/                   Locally Removed           303 
+
+Directory lib/libawb
+ workspace.cpp             Locally Removed           303 
+ benchmark.h               Locally Removed           303 
+ doxygen.config            Locally Removed           303 
+ model.cpp                 Locally Removed           303 
+ modparam.cpp              Locally Removed           303 
+ Makefile.in               Locally Removed           303 
+ workspace.h               Locally Removed           303 
+ model.h                   Locally Removed           303 
+ modparam.h                Locally Removed           303 
+ model_builder.cpp         Locally Removed           303 
+ model_builder.h           Locally Removed           303 
+ util.cpp                  Locally Removed           303 
+ inifile.cpp               Locally Removed           303 
+ util.h                    Locally Removed           303 
+ benchmark_runner.cpp      Locally Removed           303 
+ inifile.h                 Locally Removed           303 
+ module.cpp                Locally Removed           303 
+ uniondir.cpp              Locally Removed           303 
+ benchmark_runner.h        Locally Removed           303 
+ Makefile.am               Locally Removed           303 
+ benchmark.cpp             Locally Removed           303 
+ module.h                  Locally Removed           303 
+ uniondir.h                Locally Removed           303 
+
+Directory lib/libagt
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          303 
+
+Directory lib
+ Makefile.in               Locally Removed           303 
+
+Directory lib/libdral
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          303 
+
+Directory lib
+ Makefile.am               Locally Modified          303 
+
+Directory lib/libnullptlib
+ Makefile.in               Locally Modified          303 
+
+Directory lib/libnullptlib/include
+ Makefile.in               Locally Modified          303 
+
+Directory .
+ Makefile.am               Locally Modified          303 
+
+Directory base
+ param.cpp                 Locally Removed           303 
+ asim_doxy_model.dox       Locally Removed           303 
+ config.cpp                Locally Removed           303 
+ param.h                   Locally Removed           303 
+ config.h                  Locally Removed           303 
+ README                    Locally Removed           303 
+
+Directory .
+ base/                     Locally Removed           303 
+
+Directory etc
+ asim.pack                 Locally Removed           303 
+ asimrc.template           Locally Removed           303 
+ repositories.d/           Locally Removed           303 
+
+Directory etc/repositories.d
+ h264.pack                 Locally Removed           303 
+ ofdm.pack                 Locally Removed           303 
+ platform-acp.pack         Locally Removed           303 
+ fast.pack                 Locally Removed           303 
+ README                    Locally Removed           303 
+ hasim.pack                Locally Removed           303 
+
+Directory etc
+ awb.config.template.in    Locally Removed           303 
+
+Directory .
+ etc/                      Locally Removed           303 
+ aclocal.m4                Locally Modified          303 
+
+Removed all tools made redundant by the 'awb' package and updated
+the autoconf and make files.
+
+Workspaces that have not been upgraded since the split of awb
+will be broken by this checkin and you will need to manually
+add <INSTALLDIR>/share/asim/awb/HEAD to the SEARCHPATH in the
+awb.config file.

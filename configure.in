@@ -49,14 +49,6 @@ HOSTMACHINE=`uname -m`
 HOSTOSRELEASE=`uname -r`
 HOSTOSRELEASE_SUBST=`echo $HOSTOSRELEASE | tr ".)(-" "____"`
 
-#
-# get the perl version.
-# Needed in FIND_PERLGUI.
-# Export it so asimstarter knows which is the good version of perl.
-#
-PERLVERSION=`perl --version | grep 'This is perl' | sed -e 's/.*, v//' -e 's/ built.*//'`
-config_perl_version=$PERLVERSION
-AC_SUBST(config_perl_version)
 
 #
 # FIND_QT(<dirs>)
@@ -251,7 +243,7 @@ AC_DEFUN([FIND_GUI], [
 
         dnl Configuring AGT defines
 
-        case $host in
+        case $HOSTMACHINE in
         alpha*) 
        	    X_EXTRA_LIBS="-lXext -lX11" ;;
         i?86*)
@@ -270,50 +262,6 @@ AC_DEFUN([FIND_GUI], [
 
 ])
 
-#
-# FIND_PERLGUI(<dirs>)
-#
-# Get the perl system library location, where Qt.so is to be found.
-# We should really try to extract this from INSTALLSITELIB in libperl/Asim/Makefile,
-# but for now it's hardwired here, as a function of the Linux and Perl versions.
-#
-AC_DEFUN([FIND_PERLGUI], [
-
-    AC_PATH_XTRA
-    AC_MSG_CHECKING(for PerlQt)
-
-  perlprefixes="$prefix /usr"
-    perllibs="lib/perl5 lib/perl5/site_perl/$PERLVERSION lib/site_perl lib32/site_perl/$PERLVERSION lib32/site_perl"
-    perlarch="/ i386-linux-thread-multi i686-linux"
-
-    for p in $perlprefixes
-    do
-        for d in $perllibs
-        do
-            for a in $perlarch
-            do
-                if test -f $p/$d/$a/Qt.pm
-                then
-                    AC_MSG_RESULT(found in $p/$d)
-                    perlqt_search_path=$p/$d
-                    break 2
-                fi
-            done
-        done
-    done
-
-    if test "X$perlqt_search_path" = "X"
-    then
-        echo ""
-        echo "****************************************************************"
-        echo "PerlQt not found!"
-        echo "****************************************************************"
-        echo ""
-    fi    
-
-    AC_SUBST(perlqt_search_path)
-
-])
 
 ##
 ## with arguments
@@ -588,25 +536,8 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 # tools for building libraries
-AC_DISABLE_SHARED
-AC_PROG_LIBTOOL
-
-# Check for perl version
-
-AC_MSG_CHECKING(for a perl version >= 5.6)
-perlok=`perl -e 'if ("$]" >= 5.006) { print "yes\n";} else {print "no\n"}'`
-if test "$perlok" = "yes" ; then
-    AC_MSG_RESULT(yes)
-else
-    AC_MSG_ERROR(Wrong perl version - need at least version 5.6)
-fi
-
-# Check for perl packages
-# TBD
-
-# Check for tcl version
-# TBD
-
+#AC_DISABLE_SHARED
+#AC_PROG_LIBTOOL
 # Handle gui-based stuff
 
 AC_ARG_ENABLE([gui],
@@ -624,29 +555,6 @@ else
     qt_available=0
 fi
 AC_SUBST(NO_GUI)
-    
-
-# Handle perlgui-based stuff
-
-AC_ARG_ENABLE([perlgui],
-      AC_HELP_STRING([--enable-perlgui=ARG],
-         [build perlgui-based programs [[ARG=no|yes]] (default=same as --enable-gui)]),
-      asim_cv_enable_perlgui=$enableval,
-      asim_cv_enable_perlgui=$asim_cv_enable_gui)
-
-case $HOSTMACHINE in
-  i?64*)
-      asim_cv_enable_perlgui="no" 
-esac
-
-if test "$asim_cv_enable_perlgui" = "yes" 
-then
-    NO_PERLGUI=''
-    FIND_PERLGUI()
-else
-    NO_PERLGUI='#'
-fi
-AC_SUBST(NO_PERLGUI)
     
 
 # Define LINK... 
@@ -727,7 +635,7 @@ else
   else
     AC_DEFINE(HOST_LINUX, 1, [system is Linux])
     AC_DEFINE(HASH_NAMESPACE, __gnu_cxx, [Hash namespace in GNU CXX is __gnu_cxx])
-    case $host in
+    case $HOSTMACHINE in
       i?86*) 
         ASIMCOREFLAGS="-DHOST_LINUX_X86 -DLINUX_$HOSTOSRELEASE_SUBST -D__STDC_LIMIT_MACROS -DHASH_NAMESPACE=__gnu_cxx -DQT_CLEAN_NAMESPACE -DQT_NO_STL -DQ_STRICT_INLINING_RULES" ;
         ASIMCORELIBS="-L/usr/X11R6/lib -lX11 -ldl -lm"
@@ -777,9 +685,6 @@ AC_CHECK_FUNCS(getcwd mkdir regcomp rmdir strdup strerror strtol strtoul)
 # top level
 AC_CONFIG_FILES(Makefile)
 
-# etc
-AC_CONFIG_FILES(etc/awb.config.template)
-
 # lib top level
 AC_CONFIG_FILES(lib/Makefile)
 
@@ -812,33 +717,6 @@ AC_CONFIG_FILES(lib/libnullptlib/Makefile lib/libnullptlib/include/Makefile)
 AC_CONFIG_FILES(lib/libnullptlib/pkgconfig/libnullptlib.pc)
 AC_CONFIG_FILES(lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc)
 
-# lib/libawb
-AC_CONFIG_FILES(lib/libawb/Makefile)
-
-# libperl
-AC_CONFIG_FILES(libperl/Makefile)
-AC_CONFIG_FILES(libperl/Asim/lib/Asim.pm)
-# run perl MakeMaker at configure time, not make time,
-# to create the makefiles in the libperl tree:
-AC_CONFIG_COMMANDS( libperl/Asim/Makefile                                        ,
-		[cd libperl/Asim;      perl Makefile.PL PREFIX=$prefix; cd ../..], 
-		                        		       [prefix=$prefix  ])
-AC_CONFIG_COMMANDS( libperl/AsimShell/Makefile                                   ,
-		[cd libperl/AsimShell; perl Makefile.PL PREFIX=$prefix; cd ../..],
-		                        		       [prefix=$prefix  ])
-AC_CONFIG_COMMANDS( libperl/Benchmarks/Makefile                                  ,
-		[cd libperl/Benchmarks; perl Makefile.PL PREFIX=$prefix; cd ../..],
-		                        		       [prefix=$prefix  ])
-AC_CONFIG_COMMANDS( libperl/PinPoints/Makefile                                   ,
-		[cd libperl/PinPoints; perl Makefile.PL PREFIX=$prefix; cd ../..],
-		                        		       [prefix=$prefix  ])
-AC_CONFIG_COMMANDS( libperl/PlotShell/Makefile                                   ,
-		[cd libperl/PlotShell; perl Makefile.PL PREFIX=$prefix; cd ../..],
-		                        		       [prefix=$prefix  ])
-
-# tools top level
-AC_CONFIG_FILES(tools/Makefile)
-
 # tools/dreams
 
 if test $qt_available = 1; then
@@ -846,15 +724,6 @@ if test $qt_available = 1; then
     AC_CONFIG_FILES(lib/libdraldb/Makefile lib/libdraldb/include/Makefile)
     AC_CONFIG_FILES(tools/dreams/Makefile)
     AC_CONFIG_FILES(tools/dreams/dbtest/Makefile tools/dreams/dbtest/src/Makefile)
-    # tools/lib/libdreams
-    # AC_CONFIG_FILES(tools/lib/libdreams/Makefile)
-    # tools/dreams/dralTranslator
-    # dralServerFilesLink=""
-    # for i in $(ls base/dral* | cut -d '/' -f 2)
-    # do
-    #    dralServerFilesLink=$dralServerFilesLink$srcdir/tools/lib/libdreams/$i":"base/$i" "
-    # done
-    # AC_CONFIG_LINKS($dralServerFilesLink)
 else
     echo ""
     echo "*******************************************************************"
@@ -866,19 +735,6 @@ else
     echo "*******************************************************************"
     echo ""
 fi
-# tools/scripts
-AC_CONFIG_FILES(tools/scripts/Makefile)
-AC_CONFIG_FILES(tools/scripts/asimstarter, [chmod +x tools/scripts/asimstarter])
-AC_CONFIG_FILES(tools/scripts/asim-pkg-config, [chmod +x tools/scripts/asim-pkg-config])
-
-# tools/awb
-AC_CONFIG_FILES(tools/awb/Makefile)
-AC_CONFIG_FILES(tools/awb/amc/Makefile)
-AC_CONFIG_FILES(tools/awb/awb-resolver/Makefile)
-AC_CONFIG_FILES(tools/awb/awb2/Makefile)
-AC_CONFIG_FILES(tools/awb/apm-edit/Makefile)
-AC_CONFIG_FILES(tools/awb/apm-find-replace/Makefile)
-AC_CONFIG_FILES(tools/awb/awb-wizard/Makefile)
 
 # now generate all files
 AC_OUTPUT
