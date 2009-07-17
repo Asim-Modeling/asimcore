@@ -6238,3 +6238,223 @@ Directory lib
  Makefile.in               Locally Added               0 
 
 Readded file accidentally deleted in last checkin.
+
+----------
+emer        Date: Fri Jul 17 18:21:35 EDT 2009  CSN: CSN-asimcore-306
+                  Fri Jul 17 22:21:35 UTC 2009
+
+
+Directory libperl
+ AsimShell/                Locally Removed           305 
+
+Directory libperl/AsimShell
+ lib/                      Locally Removed           305 
+
+Directory libperl/AsimShell/lib
+ AsimShell/                Locally Removed           305 
+
+Directory libperl/AsimShell/lib/AsimShell
+ Help.pm                   Locally Removed           305 
+ Completion.pm             Locally Removed           305 
+ Commands.pm               Locally Removed           305 
+
+Directory libperl/AsimShell/lib
+ AsimShell.pm              Locally Removed           305 
+
+Directory libperl/AsimShell
+ MANIFEST                  Locally Removed           305 
+ Makefile.PL               Locally Removed           305 
+ README                    Locally Removed           305 
+
+Directory libperl
+ Makefile.in               Locally Removed           305 
+ PinPoints/                Locally Removed           305 
+
+Directory libperl/PinPoints
+ lib/                      Locally Removed           305 
+
+Directory libperl/PinPoints/lib
+ PinPoints.pm              Locally Removed           305 
+
+Directory libperl/PinPoints
+ MANIFEST                  Locally Removed           305 
+ Makefile.PL               Locally Removed           305 
+ README                    Locally Removed           305 
+
+Directory libperl
+ PlotShell/                Locally Removed           305 
+
+Directory libperl/PlotShell
+ lib/                      Locally Removed           305 
+
+Directory libperl/PlotShell/lib
+ PlotShell.pm              Locally Removed           305 
+ PlotShell/                Locally Removed           305 
+
+Directory libperl/PlotShell/lib/PlotShell
+ Help.pm                   Locally Removed           305 
+ Commands.pm               Locally Removed           305 
+
+Directory libperl/PlotShell
+ MANIFEST                  Locally Removed           305 
+ Makefile.PL               Locally Removed           305 
+ README                    Locally Removed           305 
+
+Directory libperl
+ Asim/                     Locally Removed           305 
+
+Directory libperl/Asim
+ lib/                      Locally Removed           305 
+
+Directory libperl/Asim/lib
+ Asim/                     Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ BuildTree/                Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/BuildTree
+ Configuration.pm          Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Rcfile.pm                 Locally Removed           305 
+ Module/                   Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Module
+ DB.pm                     Locally Removed           305 
+ Template.pm               Locally Removed           305 
+ SourceList.pm             Locally Removed           305 
+ Param.pm                  Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Edit/                     Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Edit
+ Noninteractive.pm         Locally Removed           305 
+ Interactive.pm            Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Base.pm                   Locally Removed           305 
+ SshAgent.pm               Locally Removed           305 
+ Signal.pm                 Locally Removed           305 
+ GenCFG/                   Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/GenCFG
+ Auto.pm                   Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Inifile.pm                Locally Removed           305 
+ BuildTree.pm              Locally Removed           305 
+ Regression.pm             Locally Removed           305 
+ Package/                  Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Package
+ DB.pm                     Locally Removed           305 
+ Svn.pm                    Locally Removed           305 
+ Commit.pm                 Locally Removed           305 
+ BitKeeper.pm              Locally Removed           305 
+ Copy.pm                   Locally Removed           305 
+ Cvs.pm                    Locally Removed           305 
+ Template.pm               Locally Removed           305 
+ Branch.pm                 Locally Removed           305 
+ Util.pm                   Locally Removed           305 
+ Stats.pm                  Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Stats/                    Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Stats
+ ToText.pm                 Locally Removed           305 
+ ToText/                   Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Stats/ToText
+ LongNames.pm              Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Workspace/                Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Workspace
+ Template.pm               Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Edit.pm                   Locally Removed           305 
+ Module.pm                 Locally Removed           305 
+ UnionDir.pm               Locally Removed           305 
+ Lock.pm                   Locally Removed           305 
+ GenCFG.pm                 Locally Removed           305 
+ Benchmark.pm              Locally Removed           305 
+ Package.pm                Locally Removed           305 
+ Model.pm                  Locally Removed           305 
+ Fork.pm                   Locally Removed           305 
+ Repository/               Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Repository
+ DB.pm                     Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Xaction.pm                Locally Removed           305 
+ Batch/                    Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Batch
+ NetbatchRemote.pm         Locally Removed           305 
+ Netbatch.pm               Locally Removed           305 
+ Base.pm                   Locally Removed           305 
+ Local.pm                  Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Util.pm                   Locally Removed           305 
+ Nightly.pm                Locally Removed           305 
+ Packfile.pm               Locally Removed           305 
+ Benchmark/                Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Benchmark
+ DB.pm                     Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ Repository.pm             Locally Removed           305 
+ Batch.pm                  Locally Removed           305 
+ Model/                    Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim/Model
+ DB.pm                     Locally Removed           305 
+ Template.pm               Locally Removed           305 
+
+Directory libperl/Asim/lib/Asim
+ PlotStats.pm              Locally Removed           305 
+ Stats.pm                  Locally Removed           305 
+ Workspace.pm              Locally Removed           305 
+
+Directory libperl/Asim/lib
+ Asim.pm.in                Locally Removed           305 
+
+Directory libperl/Asim
+ MANIFEST                  Locally Removed           305 
+ Makefile.PL               Locally Removed           305 
+ README                    Locally Removed           305 
+
+Directory libperl
+ Makefile.am               Locally Removed           305 
+ Benchmarks/               Locally Removed           305 
+
+Directory libperl/Benchmarks
+ lib/                      Locally Removed           305 
+
+Directory libperl/Benchmarks/lib
+ Benchmarks.pm             Locally Removed           305 
+ Benchmarks/               Locally Removed           305 
+
+Directory libperl/Benchmarks/lib/Benchmarks
+ CPU2006_data.pm           Locally Removed           305 
+ CPU2000_data.pm           Locally Removed           305 
+
+Directory libperl/Benchmarks
+ MANIFEST                  Locally Removed           305 
+ Makefile.PL               Locally Removed           305 
+ README                    Locally Removed           305 
+
+Directory libperl
+ README                    Locally Removed           305 
+
+Directory .
+ libperl/                  Locally Removed           305 
+
+Really delete libperl...
