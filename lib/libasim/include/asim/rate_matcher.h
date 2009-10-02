@@ -276,14 +276,18 @@ class WriteRateMatcher: public WritePort<T,F>, public RateMatcher
     INT32 currentPosition;  // Current buffer index
     
     const T Dummy;
-
+    
+    bool zeroLatencyBypass; // allow zero latency writes to be seen right away
+    UINT64 nextReaderCycle; // keep track of reader clock cycle
   public:
   
     WriteRateMatcher(ASIM_CLOCKABLE _clockable):
         WritePort<T,F>(),
         RateMatcher(_clockable),
         currentPosition(0),
-        Dummy(T())
+        Dummy(T()),
+        zeroLatencyBypass(false),
+        nextReaderCycle(0)
     {   
         for(UINT32 i = 0; i < W; i++)
         {
@@ -332,6 +336,16 @@ class WriteRateMatcher: public WritePort<T,F>, public RateMatcher
     // Returns true if there is free space in the buffer.
     bool CanWrite();
 
+    // configure the port so that writes are immediately available at the reader,
+    // for zero latency ports.  Otherwise, there is always at least one reader clock
+    // before any writes are propagated into the port, and the rate matcher clock
+    // callback always happens *after* module clock callbacks, so normally the effective
+    // latency of the port is always at least 1, unless this routine is called.
+    void SetFastWrite()
+    {
+        VERIFY(this->GetLatency() == 0, "The fast write option is only useful for zero latency ports");
+        zeroLatencyBypass = true;
+    }
 };
 
 
@@ -427,6 +441,12 @@ WriteRateMatcher<T,F,W,L>::Write(T data, UINT64 cycle)
         internalBuffer[currentPosition] = data;
         currentPosition++;
         
+        // special case for zero-latency ports:
+        if (zeroLatencyBypass)
+        {
+            WritePort<T,F>::Write(data, nextReaderCycle);
+        }
+        
         TTMSG(Trace_Ports, "Rate matcher " << id << " write. Current position: "
               << currentPosition << ".");
     }
@@ -449,8 +469,11 @@ WriteRateMatcher<T,F,W,L>::Clock(UINT64 cycle)
     cs_lock(port_mutex);
     for(INT32 i = 0; i < currentPosition; i++)
     {                
-        // Move the data to the internal WritePort buffer.
-        WritePort<T,F>::Write(internalBuffer[i], cycle);
+        if (!zeroLatencyBypass)
+        {
+            // Move the data to the internal WritePort buffer.
+            WritePort<T,F>::Write(internalBuffer[i], cycle);
+        }
         
         // Release smart pointer.
         internalBuffer[i] = Dummy;
@@ -460,7 +483,7 @@ WriteRateMatcher<T,F,W,L>::Clock(UINT64 cycle)
     cs_unlock(port_mutex);
     
     currentPosition = 0;
-    
+    nextReaderCycle = cycle+1;    
 }
 
 

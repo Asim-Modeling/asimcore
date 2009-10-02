@@ -6458,3 +6458,17 @@ Directory .
  libperl/                  Locally Removed           305 
 
 Really delete libperl...
+
+----------
+spartha1    Date: Fri Oct  2 17:13:12 EDT 2009  CSN: CSN-asimcore-307
+                  Fri Oct  2 21:13:12 UTC 2009
+
+
+Directory lib/libasim/include/asim
+ rate_matcher.h            Locally Modified          306 
+
+Updating with simcore changes (rev. 2907 - Carl Beckmann).
+
+- provided a fast write option for zero-latency rate matchers, so we
+  can get truly zero-latency behavior if the user calls SetFastWrite()
+  on the writer end of the port.
