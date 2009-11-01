@@ -32,5 +32,7 @@
  * %public dep_obj.h
  * %private dep_obj.cpp
  *
+ * %param MAX_DEP_FACTOR 4 "multiplier on MAX_CPU_INST for MAX_INPUT_DEP and MAX_OUTPUT_DEP"
+ *
  * %AWB_END
  */

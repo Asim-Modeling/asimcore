@@ -47,8 +47,8 @@ typedef class mmptr<class INPUT_DEP_CLASS> INPUT_DEP;
 // each instruction can have multiple dependencies, and sometimes dependencies
 // can live beyond when their instructions die, so let's say we need 4 times as
 // many dependency objects as instructions.
-#define MAX_INPUT_DEP MAX_CPU_INST * 4
-#define MAX_OUTPUT_DEP MAX_CPU_INST * 4
+#define MAX_INPUT_DEP  MAX_CPU_INST * MAX_DEP_FACTOR
+#define MAX_OUTPUT_DEP MAX_CPU_INST * MAX_DEP_FACTOR
 
 const UINT64 NO_PRODUCER = UINT64_MAX;
 

@@ -6493,3 +6493,18 @@ Directory modules/controller/workbench/no-tcl
 Updating with simcore changes (rev. 2938 - Sailashri Parthasarathy).
 
 Resurrecting the non-tcl controller. The controller builds now, but is not yet tested.
+
+----------
+spartha1    Date: Sun Nov  1 18:02:47 EST 2009  CSN: CSN-asimcore-311
+                  Sun Nov  1 23:02:47 UTC 2009
+
+
+Directory modules/isa/utilities/dependency
+ dep_obj.h                 Locally Modified          310 
+ dep_obj.awb               Locally Modified          310 
+
+Updating with simcore changes (rev. 2946 - Carl Beckmann).
+
+- added a static parameter MAX_DEP_FACTOR to dependency object, to allow
+the maximum input and output dependency objects to be changed from their
+default value of 4 * MAX_CPU_INST.
