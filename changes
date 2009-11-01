@@ -6472,3 +6472,24 @@ Updating with simcore changes (rev. 2907 - Carl Beckmann).
 - provided a fast write option for zero-latency rate matchers, so we
   can get truly zero-latency behavior if the user calls SetFastWrite()
   on the writer end of the port.
+
+----------
+spartha1    Date: Sun Nov  1 17:58:45 EST 2009  CSN: CSN-asimcore-310
+                  Sun Nov  1 22:58:45 UTC 2009
+
+
+Directory config/pm
+ controllerNoTCL.apm       Locally Modified          309 
+
+Directory modules/controller/classic
+ control-notcl.h           Locally Modified          309 
+ awb-notcl.cpp             Locally Modified          309 
+ controller-notcl.awb      Locally Modified          309 
+ control-notcl.cpp         Locally Modified          309 
+
+Directory modules/controller/workbench/no-tcl
+ wb-notcl.cpp              Locally Modified          309 
+
+Updating with simcore changes (rev. 2938 - Sailashri Parthasarathy).
+
+Resurrecting the non-tcl controller. The controller builds now, but is not yet tested.

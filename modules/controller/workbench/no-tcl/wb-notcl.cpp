@@ -119,6 +119,7 @@ FILE_PARSER_CLASS:: read_file(char* fn)
         s= "AwbExit";
         vs.push_back(s);
         input_tokens.push_back(vs);
+        //        cout << "Could not find awbcmds file." << endl;
 
     }
     else
@@ -211,7 +212,7 @@ COMMAND_PARSER_CLASS::COMMAND_PARSER_CLASS(char* awbCmdsFile) // CONS
 void
 COMMAND_PARSER_CLASS::process_file()
 {
-    DMSG("Processing (remaining tokens in) awbcmds file");
+    //    DMSG("Processing (remaining tokens in) awbcmds file");
     while(!parser.input_tokens.empty())
     {
         vector<string>& vs = parser.input_tokens.front();
@@ -381,7 +382,7 @@ COMMAND_PARSER_CLASS::do_run(vector<string>& vs) // cycle/inst/marker amount
         else if (vs[1] == "inst")
         {
             stopTime = PmGlobalCommitted() + amount;
-            DMSG("AwbRun inst until " << stopTime);
+            // DMSG("AwbRun inst until " << stopTime);
             PmScheduleStopInst( stopTime);
         }
         else if (vs[1] == "marker")
@@ -403,14 +404,14 @@ COMMAND_PARSER_CLASS::do_run(vector<string>& vs) // cycle/inst/marker amount
 void
 COMMAND_PARSER_CLASS::do_exit() // no args
 {
-    DMSG("AwbExit...");
+    // DMSG("AwbExit...");
     PmScheduleExitNow();
     PmScheduleStart();
 }
 void
 COMMAND_PARSER_CLASS::do_progress(vector<string>& vs) // type period
 {
-    DMSG("do-progress type: " << vs[1] << " period: " << vs[2]);
+    // DMSG("do-progress type: " << vs[1] << " period: " << vs[2]);
     const int sz = vs.size();
     if (sz != 3)
     {
@@ -459,6 +460,7 @@ COMMAND_PARSER_CLASS::do_skipuntil(vector<string>& vs) // uid when -- deprecated
     cerr << "AwbSkipUntil is deprecated" << endl;
     exit(1);
 }
+
 void
 COMMAND_PARSER_CLASS::do_sample(vector<string>& vs) // warmup run skip iter/forever
 {
@@ -604,7 +606,7 @@ COMMAND_PARSER_CLASS::do_protect(vector<string>& vs) // script
 void
 COMMAND_PARSER_CLASS::ProcessBmCmds()
 {
-    DMSG("\t\tProcessBmCmds");
+    // DMSG("\t\tProcessBmCmds");
     while(!parser.input_tokens.empty())
     {
         vector<string>& vs = parser.input_tokens.front();
@@ -624,7 +626,7 @@ COMMAND_PARSER_CLASS::ProcessBmCmds()
 
     if (bm_stop_type == "")
     {
-        DMSG("\t\t\tStart - Stop");
+        // DMSG("\t\t\tStart - Stop");
         PmScheduleStart();
         PmScheduleStopNow();
     }
@@ -633,7 +635,7 @@ COMMAND_PARSER_CLASS::ProcessBmCmds()
 void
 COMMAND_PARSER_CLASS::CheckBmCmds()
 {
-    DMSG("\tCheckBmCmds");
+    // DMSG("\tCheckBmCmds");
     check_awb_cmds_file(); 
 
     if (bm_stop_type == "cycle")
@@ -682,7 +684,7 @@ COMMAND_PARSER_CLASS::BatchProgress(list<string> args)
         string s = args.front();
         args.pop_front();
 
-        DMSG("BatchProgress [" << s << "]");
+        // DMSG("BatchProgress [" << s << "]");
 
 
         if (s == "cycle" || s == "inst")
@@ -712,9 +714,9 @@ COMMAND_PARSER_CLASS::BatchProgress(list<string> args)
             }
 
 
-            DMSG("BatchProgress threadbegin "
-                 << "[" << arg1 << "] "
-                 << "[" << arg2 << "]");
+            // DMSG("BatchProgress threadbegin "
+            //                 << "[" << arg1 << "] "
+            //                 << "[" << arg2 << "]");
 
             ThreadBegin(atoi_general(arg1), arg2);
         }
@@ -829,7 +831,7 @@ void
 COMMAND_PARSER_CLASS::ThreadBegin(int uid,
                                   string tdesc)
 {
-    DMSG("ThreadBegin uid: " << uid << "   desc: " << tdesc);
+    // DMSG("ThreadBegin uid: " << uid << "   desc: " << tdesc);
     //FIXME: check for duplicate threads
     THREAD_CLASS* tnew = new THREAD_CLASS(uid, tdesc, THREAD_IDLE);
     threads.push_back( tnew );

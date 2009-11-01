@@ -115,6 +115,13 @@ extern void CMD_EmitStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 extern void CMD_ResetStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
 /*
+ * Start and stop the Vtune Thread Profiler at a given macro-inst/cycle
+ * 
+ */
+extern void CMD_StartThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+extern void CMD_StopThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+/*
  * Exit performance model.
  */
 extern void CMD_Exit (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
@@ -123,6 +130,11 @@ extern void CMD_Exit (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
  * Turn debugging on or off.
  */
 extern void CMD_Debug (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+/*
+ * Turn tracing on or off.
+ */
+extern void CMD_Trace (TRACEABLE_DELAYED_ACTION act, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
 /*
  * Turn stats on or off.
@@ -174,6 +186,15 @@ extern void CMD_SkipThread (ASIM_THREAD thread, UINT64 insts, INT32 markerID,
 extern void CMD_ScheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 extern void CMD_UnscheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
+/*
+ * Save functional state
+ */
+extern void CMD_SaveFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+/*
+ * Restore functional state
+ */
+extern void CMD_RestoreFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0, char *fileName ="dummy_restore");
 
 
 /********************************************************************
@@ -205,9 +226,72 @@ typedef class CMD_WORKLIST_CLASS *CMD_WORKLIST;
 typedef class CMD_WORKITEM_CLASS *CMD_WORKITEM;
 typedef class CMD_ACK_CLASS *CMD_ACK;
 
-// ASIM local module
-#include "schedule.h"
+/*******************************************************************/
 
+//
+// the CMD_SCHEDULE_CLASS used to be in the private header file schedule.h,
+// but was moved here so that controllers that use this base class
+// can see it an override it as necessary
+//
+typedef class CMD_SCHEDULE_CLASS *CMD_SCHEDULE;
+
+/*
+ * CMD_SCHEDULE
+ *
+ * Schedule of events and the cycle or committed instruction that they
+ * should occur at.
+ */
+class CMD_SCHEDULE_CLASS
+{
+    private:
+        /*
+         * Four lists of work items containing actions waiting for a
+         * certain cycle, a certain number of committed instructions,
+         * certain number of nanoseconds and packets. All of them are sorted.
+         */        
+        CMD_WORKLIST cycleList;
+        CMD_WORKLIST instList;
+        CMD_WORKLIST nanosecondList;        
+        CMD_WORKLIST packetList;
+        CMD_WORKLIST macroInstList;
+
+        
+    public:
+        // constructors / destructors
+        CMD_SCHEDULE_CLASS ();
+        ~CMD_SCHEDULE_CLASS ();
+
+        /*
+         * Return the next event item that should be handled. Return NULL
+         * if there is no action ready.
+         */
+        CMD_WORKITEM ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);
+
+        /*
+         * Schedule 'item' as specified by 'trig' and 'cnt'.
+         */
+        void Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);
+
+        /*
+         * Return the cycles or number of committed instructions at which
+         * the next event should occur.
+         */
+        UINT64 NanosecondForNextEvent (UINT64 currentNanosecond);
+        UINT64 CycleForNextEvent (UINT64 currentCycle);
+        UINT64 InstForNextEvent (UINT64 currentInst);
+        UINT64 PacketForNextEvent (UINT64 currentInst);
+        UINT64 MacroInstForNextEvent (UINT64 currentMacroInst);
+
+        /*
+         * Clear progress work items from the schedule.
+         */
+        void ClearNanosecondProgress (void);
+        void ClearCycleProgress (void);
+        void ClearInstProgress (void);
+        void ClearPacketProgress (void);
+        void ClearMacroInstProgress (void);
+
+};
 
 /********************************************************************/
 
@@ -349,8 +433,8 @@ class CMD_WORKITEM_CLASS
          * Schedule this work item in 'schedule' based on 'actionTime',
          * 'trigger', and 'period'.
          */
-        virtual void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentPacket) {
-            schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentPacket);
+        virtual void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket) {
+            schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
         }
 
 };
@@ -479,6 +563,36 @@ class CMD_RESETSTATS_CLASS : public CMD_WORKITEM_CLASS
         void CmdAction (void);
 };
 
+/*
+ * CMD_STARTTHREADPROFILER
+ *
+ * Start Vtune Thread Profiler
+ */
+typedef class CMD_STARTTHREADPROFILER_CLASS *CMD_STARTTHREADPROFILER;
+class CMD_STARTTHREADPROFILER_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_STARTTHREADPROFILER_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("STARTTHREADPROFILER", t, c) { }
+
+        void CmdAction (void);
+};
+
+
+/*
+ * CMD_STOPTHREADPROFILER
+ *
+ * Stop Vtune Thread Profiler
+ */
+typedef class CMD_STOPTHREADPROFILER_CLASS *CMD_STOPTHREADPROFILER;
+class CMD_STOPTHREADPROFILER_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_STOPTHREADPROFILER_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("STOPTHREADPROFILER", t, c) { }
+
+        void CmdAction (void);
+};
 
 /*
  * CMD_DEBUG
@@ -499,6 +613,29 @@ class CMD_DEBUG_CLASS : public CMD_WORKITEM_CLASS
 
 };
 
+/*
+ * CMD_TRACE
+ *
+ * Turn Tracing on or off.
+ */
+typedef class CMD_TRACE_CLASS *CMD_TRACE;
+class CMD_TRACE_CLASS : public CMD_WORKITEM_CLASS
+{
+    protected:
+        TRACEABLE_DELAYED_ACTION regex;
+        
+    public:
+        CMD_TRACE_CLASS (TRACEABLE_DELAYED_ACTION _regex, CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("DEBUG", t, c), regex(_regex) { }
+        ~CMD_TRACE_CLASS() 
+        {
+            if(regex) {
+                delete(regex);
+            }
+        }
+
+        CMD_ACK PmAction (void);
+};
 
 /*
  * CMD_STATS
@@ -608,7 +745,7 @@ class CMD_EXECUTE_CLASS : public CMD_WORKITEM_CLASS
         UINT64 cycles;
         UINT64 insts;
         UINT64 packets;
-        UINT64 macroinsts
+        UINT64 macroinsts;
         
     public:
         CMD_EXECUTE_CLASS (UINT64 n, UINT64 c, UINT64 i,UINT64 m, UINT64 p) :
@@ -806,6 +943,61 @@ class CMD_THDUNHOOK_CLASS : public CMD_WORKITEM_CLASS
 
 };
 
+/*
+ * CMD_SAVEFUNCSTATE
+ *
+ * Save functional state
+ */
+typedef class CMD_SAVEFUNCSTATE_CLASS *CMD_SAVEFUNCSTATE;
+class CMD_SAVEFUNCSTATE_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_SAVEFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("SAVEFUNCSTATE", t, c) { }
+
+        void CmdAction (void);
+};
+
+/*
+ * CMD_RESTOREFUNCSTATE
+ *
+ * Restore functional state
+ */
+typedef class CMD_RESTOREFUNCSTATE_CLASS *CMD_RESTOREFUNCSTATE;
+class CMD_RESTOREFUNCSTATE_CLASS : public CMD_WORKITEM_CLASS
+{
+    private:
+        ifstream restoreStateFile;
+        
+    public:
+        CMD_RESTOREFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("RESTOREFUNCSTATE_CLASS", t, c) 
+        { 
+            ASIMWARNING("No file specified from which to restore state..."
+                            << "no state will be restored" << endl);
+        }
+          
+        CMD_RESTOREFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c, char *fileName) :
+            CMD_WORKITEM_CLASS("RESTOREFUNCSTATE", t, c)
+        {
+            //open fileName for reading dumped state
+            if(!strcmp(fileName,"dummy_restore"))
+            {
+                ASIMWARNING("No file specified from which to restore state..."
+                            << "no state will be restored" << endl);
+            }
+            else
+            {
+                restoreStateFile.open (fileName, ios::in);
+                if(restoreStateFile.fail())
+                {
+                    ASIMERROR("Invalid file specified for restoring state" << endl);
+                }
+            }
+        } 
+
+        void CmdAction (void);
+};
 
 /*******************************************************************/
 
@@ -948,5 +1140,142 @@ class CMD_WORKLIST_CLASS
         }
 };
 
+/********************************************************************
+ *
+ * The following is a singleton object class that represents the controller.
+ * Its methods are the worker routines for the software interface defined
+ * by the routines above.  Those routines call these methods as virtual
+ * functions via the singleton object pointer, allowing derived classes
+ * to override any methods they need to change.
+ *
+ ********************************************************************/
+
+class CONTROLLER_CLASS {
+  public:
+    CONTROLLER_CLASS();
+    ~CONTROLLER_CLASS();
+
+    // primary entry point for the code
+    int main(INT32 argc, char *argv[], char *envp[]);
+    void PrintInfo();
+
+    // Command API, accessible by other modules
+    void CheckExitConditions(EXIT_CONDITION ec);
+    void CMD_SchedulerLoop (void);
+    bool CMD_Init (UINT32 fdArgc, char **fdArgv, UINT32 pmArgc, char **pmArgv, char **allEnvp);
+    void CMD_Usage (FILE *file);
+    ASIM_STATELINK CMD_StateList (void);
+    void CMD_Start (void);
+    void CMD_Stop (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Progress (AWB_PROGRESSTYPE type, char *args, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_EmitStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_ResetStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Exit (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Debug (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Trace (TRACEABLE_DELAYED_ACTION act, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Stats (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Events (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Stripchart (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_Profile (bool on, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_ThreadBegin (ASIM_THREAD thread);
+    void CMD_ThreadEnd (ASIM_THREAD thread);
+    void CMD_ThreadBlock (ASIM_THREAD thread, ASIM_INST inst);
+    void CMD_ThreadUnblock (ASIM_THREAD thread);
+    void CMD_SkipThread (ASIM_THREAD thread, UINT64 insts, INT32 markerID,
+                        	CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_ScheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_UnscheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    
+    void CMD_SaveFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_RestoreFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0, char *fileName ="dummy_restore");
+    
+    void CMD_StartThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_StopThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+    void PartitionArgs   ( INT32 argc,   char *argv[]           );
+    void PartitionOneArg ( INT32 argc,   char *argv[], INT32 &i );
+    void ParseConfigFile ( char *cfg_file_name                  );
+    void Usage           ( char *exec,   FILE *file             );
+    bool ParseEvents     ( INT32 argc,   char *argv[]           );
+    bool ParseOneEvent   ( INT32 argc,   char *argv[], INT32 &i );
+    int  ParseVariables  ( char *argv[], UINT32 argc            );
+    int  parseTraceCmd   ( const char *progName, const char *command, string &regex, int &level );
+    int  parseMtCmd      ( const char *progName, const char *command, string &regex, int &limit );
+
+  private:
+    deque<std::string> cfg_filename_stack;
+    void ResolveConfigFile( ifstream &cfg_file, const char *relative_name );
+    bool file_exists (const char * filename);
+
+  protected:
+    // TraceFileName (in debugger mode)
+    char *StatsFileName; 
+
+    // command line argument handling
+    UINT32   origArgc,   awbArgc,    sysArgc,    fdArgc;
+    UINT32               awbArgcMax, sysArgcMax, fdArgcMax;
+    char   **origArgv, **awbArgv,  **sysArgv,  **fdArgv;
+    bool                             systemArgs, feederArgs;
+
+    // 'ctrlWorkList' contains new work items that the controller needs to
+    // schedule.  The performance model and awb puts things on the list.
+    CMD_WORKLIST ctrlWorkList;
+    // Schedule of events that need to be performed.
+    CMD_SCHEDULE schedule;
+
+  friend class CMD_START_CLASS;
+  friend class CMD_STOP_CLASS;
+  friend class CMD_EXIT_CLASS;
+    // True if the performance model is stopped. When stopped time doesn't
+    // advance, so no actions are performance.
+    volatile bool pmStopped;
+    // True if the performance model is exiting. The exit command has been
+    // received and we are going through final cleanup operations.
+    volatile bool pmExiting;
+    // True if the performance model has been initialized.
+    bool pmInitialized;
+};
+
+
+/*******************************************************************
+ *
+ * This is the processing for the performance model itself.
+ *
+ ******************************************************************/
+
+CMD_ACK PmProcessEvent (CMD_WORKITEM workItem);
+
+
+/********************************************************************
+ * trace macros for the controller
+ *
+ * this used to be in control.cpp.  I'm not sure if it's quite safe to put here...
+ *
+ *********************************************************************/
+
+using namespace std;
+
+class CONTROL_TRACEABLE_CLASS : public TRACEABLE_CLASS
+{
+public:
+    CONTROL_TRACEABLE_CLASS()
+    {
+        SetTraceableName("Control");
+    }
+};
+
+extern CONTROL_TRACEABLE_CLASS controlTraceable;
+
+#define ASIM_XMSG(x) \
+({ \
+       T1_AS(&controlTraceable, __FILE__ << ":" << __LINE__ << ": " <<  x); \
+})
+//#undef ASIM_XMSG
+//#define ASIM_XMSG(x) do{ TTRACE(x); exit(1); }while(0)
+
+#define DMSG(x) \
+({ \
+       T1_UNCOND(__FILE__ << ":" << __LINE__ << ": " <<  x); \
+})
 
 #endif /* _CMD_ */

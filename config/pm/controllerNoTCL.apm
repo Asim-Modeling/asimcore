@@ -23,20 +23,30 @@ File=controllerNoTCL
 Name=Controller without TCL
 Description=Controller without TCL
 SaveParameters=0
+Type=Asim
 
 [Model]
 DefaultAttributes=notcl
 model=Asim controller without TCL
 
+
+[Asim classic controller]
+File=pm/controller/classic/controller_classic_alg.awb
+Packagehint=simcore
+
 [workbench without TCL]
 File=pm/controller/workbench/no-tcl/wb-notcl.awb
+Packagehint=simcore
 
 [AWB without TCL]
 File=pm/controller/classic/awb-notcl.awb
+Packagehint=simcore
 
 [Asim controller without TCL/Requires]
 workbench=workbench without TCL
 awb_stub=AWB without TCL
+controller_alg=Asim classic controller
 
 [Asim controller without TCL]
 File=pm/controller/classic/controller-notcl.awb
+Packagehint=simcore

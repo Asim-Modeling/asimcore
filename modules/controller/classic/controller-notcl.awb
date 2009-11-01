@@ -26,11 +26,12 @@
 %desc Asim controller without TCL
 %provides controller
 %requires workbench
-%requires awb_stub
+%requires awb_stub 
+%requires controller_alg
 
 %public control-notcl.h 
-%private main.cpp args.h args.cpp
-%private control-notcl.cpp schedule.h schedule.cpp
+%private main.cpp args.cpp
+%private control-notcl.cpp schedule.cpp
 
 %attributes model notcl
 %param %dynamic STOP_THREAD 0 "Stop simulation when first thread finishes"

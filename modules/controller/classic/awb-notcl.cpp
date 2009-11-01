@@ -256,7 +256,6 @@ AWB_InformProgress (void)
     XMSG("AWB_InformProgress");
     if ( ! pendingProgress.empty() )
     {
-    
         awbCmdIntrp->BatchProgress( pendingProgress );
 
         pendingProgress.clear();
@@ -437,7 +436,7 @@ void PmStateSuspend(string& thread_desc)
         return;
     }
 
-    EMSG("invalid state descriptor [" << thread_desc << "] for 'suspend'");
+    //    EMSG("invalid state descriptor [" << thread_desc << "] for 'suspend'");
     myexit(1);
 }
 
@@ -470,7 +469,7 @@ void PmStateUnsuspend(string& thread_desc)
         return;
     }
 
-    EMSG("invalid state descriptor [" << thread_desc << "] for 'unsuspend'");
+    // EMSG("invalid state descriptor [" << thread_desc << "] for 'unsuspend'");
     myexit(1);
 }
 
@@ -489,7 +488,7 @@ PmStatePath(string& arg_state)
         return state->Path() ;
     }
     
-    EMSG("invalid state descriptor \[" << arg_state << "] for 'path'");
+    // EMSG("invalid state descriptor \[" << arg_state << "] for 'path'");
     myexit(1);
     return 0;
 }
@@ -505,7 +504,7 @@ PmStateName(string& arg_state)
         return state->Name();
     }
     
-    EMSG( "invalid state descriptor \[" << arg_state  << "] for 'name'");
+    // EMSG( "invalid state descriptor \[" << arg_state  << "] for 'name'");
     myexit(1);
     return 0;
 }
@@ -520,7 +519,7 @@ PmStateDesc(string& arg_state)
         return state->Description();
     }
 
-    EMSG("invalid state descriptor \[" << arg_state << "] for 'desc'");
+    // EMSG("invalid state descriptor \[" << arg_state << "] for 'desc'");
     myexit(1);
     return 0;
 }
@@ -679,7 +678,7 @@ PmStateValue (char *desc)
         return ret;
     }
 
-    EMSG("null  state descriptor for 'value' \[" << desc << "]");
+    // EMSG("null  state descriptor for 'value' \[" << desc << "]");
     myexit(1);
     // notreached
     return ret;
@@ -690,8 +689,8 @@ CheckEvents()
 {
     if (!runWithEventsOn)
     {
-        EMSG("You are trying to generate events in a model not compiled "
-             << "with events. Build the model with EVENTS=1");
+        // EMSG("You are trying to generate events in a model not compiled "
+        //             << "with events. Build the model with EVENTS=1");
         myexit(1);
     }
 }
@@ -760,7 +759,7 @@ PmMarkerSet( string& desc,
 {
     ASIM_THREAD thread = PmThreadDescToPtr(desc);
     if (thread == NULL) {
-        EMSG("invalid thread descriptor [" << desc << "]");
+        // EMSG("invalid thread descriptor [" << desc << "]");
         myexit(1);
     }
 
@@ -809,8 +808,8 @@ PmMarkerSet( string& desc,
         }
         //
         // unknown subcommand
-        EMSG("PmMarkerSet: unknown subcommand [" << subcmd << "]"
-             << ": must be pc, or inst");
+        // EMSG("PmMarkerSet: unknown subcommand [" << subcmd << "]"
+        //             << ": must be pc, or inst");
         myexit(1);
 }
     
@@ -827,7 +826,7 @@ PmMarkerClear( string& desc,
 {
     ASIM_THREAD thread = PmThreadDescToPtr(desc);
     if (thread == NULL) {
-        EMSG("invalid thread descriptor [" << desc << "]");
+        // EMSG("invalid thread descriptor [" << desc << "]");
         myexit(1);
     }
 
@@ -871,8 +870,8 @@ PmMarkerClear( string& desc,
             return;
         }
         //
-        EMSG("PmMarkerClear: unknown subcommand [" << subcmd << "]"
-             << ": must be pc, or all");
+        // EMSG("PmMarkerClear: unknown subcommand [" << subcmd << "]"
+        //             << ": must be pc, or all");
         myexit(1);
 }        
     
@@ -966,8 +965,8 @@ PmScheduleProgress(string& type,
     }
     else
     {
-        EMSG("invalid action option [" << type << "]"
-             << ": must be inst or cycle or nanosecond");
+        // EMSG("invalid action option [" << type << "]"
+        //             << ": must be inst or cycle or nanosecond");
         myexit(1);
     }            
         
@@ -1027,7 +1026,7 @@ void PmScheduleThread(string& desc,
 
     ASIM_THREAD thread = PmThreadDescToPtr(desc);
     if (thread == NULL) {
-        EMSG("invalid thread descriptor [" << desc << "]");
+        // EMSG("invalid thread descriptor [" << desc << "]");
         myexit(1);
     }
         
@@ -1037,7 +1036,7 @@ void PmScheduleThread(string& desc,
         CMD_ScheduleThread(thread, action, time);
         return;
     }
-    EMSG("Action [" << trigger << "] did not decode properly");
+    // EMSG("Action [" << trigger << "] did not decode properly");
     myexit(1);
     
 }
@@ -1048,7 +1047,7 @@ void PmUnscheduleThread(string& desc,
 {
     ASIM_THREAD thread = PmThreadDescToPtr(desc);
     if (thread == NULL) {
-        EMSG("invalid thread descriptor [" << desc << "]");
+        // EMSG("invalid thread descriptor [" << desc << "]");
         myexit(1);
     }
         
@@ -1058,7 +1057,7 @@ void PmUnscheduleThread(string& desc,
         CMD_UnscheduleThread(thread, action, time);
         return;
     }
-    EMSG("Action [" << action << "] did not decode properly");
+    // EMSG("Action [" << action << "] did not decode properly");
     myexit(1);
 }
 
@@ -1077,7 +1076,7 @@ PmScheduleSkipThread(string& arg_thread,
     ASIM_THREAD thread = NULL;
     if (arg_thread == "all")
     {
-        EMSG("There was a bug in the original TCL for skipping all threads. Not fixed yet.");
+        // EMSG("There was a bug in the original TCL for skipping all threads. Not fixed yet.");
         myexit(1);
     }
     if (arg_thread != "all")
@@ -1085,7 +1084,7 @@ PmScheduleSkipThread(string& arg_thread,
        thread = PmThreadDescToPtr(arg_thread);
         if (thread == NULL)
         {
-            EMSG("invalid thread descriptor [" << arg_thread << "]");
+            // EMSG("invalid thread descriptor [" << arg_thread << "]");
             myexit(1);
         }
     }
@@ -1096,7 +1095,7 @@ PmScheduleSkipThread(string& arg_thread,
         CMD_SkipThread(thread, insts, markerID, action, time);
         return;
     }
-    EMSG("Action [" << action << "] did not decode properly");
+    // EMSG("Action [" << action << "] did not decode properly");
     myexit(1);
 }
     
