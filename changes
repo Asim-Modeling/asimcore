@@ -6508,3 +6508,39 @@ Updating with simcore changes (rev. 2946 - Carl Beckmann).
 - added a static parameter MAX_DEP_FACTOR to dependency object, to allow
 the maximum input and output dependency objects to be changed from their
 default value of 4 * MAX_CPU_INST.
+
+----------
+spartha1    Date: Sun Nov 15 19:01:52 EST 2009  CSN: CSN-asimcore-312
+                  Mon Nov 16 00:01:52 UTC 2009
+
+
+Directory config/pm
+ null_uncore_model.apm     Locally Added               0 
+
+Directory modules/system
+ null_system.awb           Locally Added               0 
+ null_system.cpp           Locally Added               0 
+ null_system.h             Locally Added               0 
+
+Directory feeders
+ inst/                     Locally Added               0 
+
+Directory feeders/inst
+ interface/                Locally Added               0 
+
+Directory feeders/inst/interface
+ null/                     Locally Added               0 
+
+Directory feeders/inst/interface/null
+ instfeedernull.h          Locally Added               0 
+ instfeedernull.awb        Locally Added               0 
+
+Directory .
+ feeders/                  Locally Added               0 
+
+Updating with simcore changes (rev. 2966 - Carl Beckmann).
+
+- Created a NULL uncore model, with a null system that provides the C++ API
+expected by the Asim classic controller.
+- fixed the null instruction feeder implementation so it provides the
+calls expected by the Asim classic controller

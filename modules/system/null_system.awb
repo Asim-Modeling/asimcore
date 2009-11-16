@@ -1,0 +1,35 @@
+******************************************************************
+Awb module specification
+******************************************************************
+
+
+%AWB_START
+
+%name Null System
+%desc Empty system without a core
+%provides system
+%requires libasim dral_api basesystem instfeeder_interface isa
+%public  null_system.h
+%private null_system.cpp
+
+%export MAX_TOTAL_NUM_CPUS          128 "Maximum number of CPUS allowed"
+%export MAX_TOTAL_NUM_HWCS          128 "Maximum number of hardware contexts allowed"
+
+%export MAX_PTHREADS                  1 "Maximum number of simulator threads"
+%export %dynamic LIMIT_PTHREADS       0 "Dynamic maximum simulator threads (0 == use MAX_PTHREADS)"
+
+%export %dynamic PTHREAD_PER_BOARD    0 "Are board models run in parallel?"
+%export          PTHREAD_PER_SOCKET   0 "Are socket models run in parallel?"
+%export %dynamic PTHREAD_PER_SLICE    0 "Are core+uncore slice models run in parallel?"
+%export %dynamic PTHREAD_PER_CORE     0 "Are core models run in parallel?"
+%export %dynamic PTHREAD_PER_UNIT     0 "Are unit models run in parallel?"
+%export %dynamic PTHREAD_PER_MODULE   0 "Are all modules run in parallel?"
+%export %dynamic CORES_PER_PTHREAD    1 "How many core models are run on one pthread? (Range is 1 to max num of cores)" 
+
+%export %dynamic THREADED_CLOCKING            1 "Enables the threaded clocking"
+%export %dynamic RANDOM_CLOCKING_SEED         0 "Seed to clock modules in random order (0 == Fixed order)"
+%export %dynamic DUMP_CLOCKING_PROFILE        0 "Enables the Clock routine profiling"
+%param  %dynamic CLOCKSERVER_THREAD_LOOKAHEAD "0" "fuzzy barrier lookahead, format: [<domain>:]<cycles>"
+%const           CLOCKSERVER_THREAD_DELAY     "0" "threading startup delay, format: [<domain>:]<cycles>"
+
+%AWB_END
