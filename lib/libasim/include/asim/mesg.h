@@ -145,6 +145,8 @@ extern pthread_mutex_t asim_mesg_mutex;
 
 #else // ASIM_ENABLE_ASSERTIONS
 
+#define WARNX(condition)
+#define WARN(condition,mesg)
 #define ASSERTX(condition)
 #define ASSERT(condition,mesg)
 

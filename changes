@@ -6544,3 +6544,13 @@ Updating with simcore changes (rev. 2966 - Carl Beckmann).
 expected by the Asim classic controller.
 - fixed the null instruction feeder implementation so it provides the
 calls expected by the Asim classic controller
+
+----------
+mcadler     Date: Tue Nov 24 08:12:03 EST 2009  CSN: CSN-asimcore-313
+                  Tue Nov 24 13:12:03 UTC 2009
+
+
+Directory lib/libasim/include/asim
+ mesg.h                    Locally Modified          312 
+
+WARN wasn't defined when assertions are disabled.
