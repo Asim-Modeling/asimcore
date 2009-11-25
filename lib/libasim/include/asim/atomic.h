@@ -72,6 +72,20 @@ MemBarrier(void)
 
 
 //
+// CpuPause() is a pause instruction for x86 only.  It reduces power in
+// spin loops and gives priority to active threads among a group of
+// hyperthreaded streams.
+//
+static inline void
+__attribute__ ((__unused__))
+CpuPause(void)
+{
+	__asm__ __volatile__("rep;nop": : :"memory");
+}
+
+
+
+//
 // Compare and exchange.  All compare and exchange functions return a boolean
 // result, true if the exchange happens.
 //

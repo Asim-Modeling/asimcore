@@ -6554,3 +6554,13 @@ Directory lib/libasim/include/asim
  mesg.h                    Locally Modified          312 
 
 WARN wasn't defined when assertions are disabled.
+
+----------
+mcadler     Date: Tue Nov 24 23:27:33 EST 2009  CSN: CSN-asimcore-314
+                  Wed Nov 25 04:27:33 UTC 2009
+
+
+Directory lib/libasim/include/asim
+ atomic.h                  Locally Modified          313 
+
+Add Pause instruction.
