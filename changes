@@ -6564,3 +6564,14 @@ Directory lib/libasim/include/asim
  atomic.h                  Locally Modified          313 
 
 Add Pause instruction.
+
+----------
+mcadler     Date: Wed Dec  2 12:14:36 EST 2009  CSN: CSN-asimcore-315
+                  Wed Dec  2 17:14:36 UTC 2009
+
+
+Directory lib/libasim/include/asim
+ atomic.h                  Locally Modified          314 
+
+Update atomic.h from our copy.  How come this wasn't updated from a
+previous merge?

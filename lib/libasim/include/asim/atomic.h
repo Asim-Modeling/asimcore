@@ -98,11 +98,11 @@ CompareAndExchangeU32(
     UINT32 newValue)
 {
     UINT8 didXchg;
-    __asm__ __volatile__("lock; cmpxchgl %1,%2\n\t"
+    __asm__ __volatile__("lock; cmpxchgl %2,%1\n\t"
                          "sete %0"
-                             : "=a"(didXchg)
-                             : "q"(newValue), "m"(*mem), "0"(oldValue)
-                             : "memory");
+                             : "=a"(didXchg), "+m"(*mem)
+                             : "q"(newValue), "0"(oldValue)
+                             : "memory", "cc");
     return didXchg;
 }
 
@@ -115,28 +115,25 @@ CompareAndExchangeU64(
 {
     UINT8 didXchg;
 #if __WORDSIZE >= 64
-    __asm__ __volatile__("lock; cmpxchgq %1,%2\n\t"
+    __asm__ __volatile__("lock; cmpxchgq %2,%1\n\t"
                          "sete %0"
-                             : "=a"(didXchg)
-                             : "q"(newValue), "m"(*mem), "0"(oldValue)
-                             : "memory");
+                             : "=a"(didXchg), "+m"(*mem)
+                             : "r"(newValue), "0"(oldValue)
+                             : "memory", "cc");
 #else
-    UINT32 dummy;
-    __asm__ __volatile__("lock; cmpxchg8b %4\n\t"
+    __asm__ __volatile__("lock; cmpxchg8b %1\n\t"
                          "sete %0"
-                             : "=a"(didXchg), "=d"(dummy)
+                             : "=q"(didXchg), "+m"(*mem)
                              : "b"((UINT32)newValue),
                                "c"((UINT32)(newValue >> 32)),
-                               "m"(*mem),
-                               "0"((UINT32)oldValue),
-                               "1"((UINT32)(oldValue >> 32))
+                               "a"((UINT32)oldValue),
+                               "d"((UINT32)(oldValue >> 32))
                              : "memory", "cc");
 #endif
     return didXchg;
 }
 
-#ifdef INT128_AVAIL
-
+#if defined INT128_AVAIL && !defined __ICC
 inline bool
 __attribute__ ((__unused__))
 CompareAndExchangeU128(
@@ -145,20 +142,18 @@ CompareAndExchangeU128(
     UINT128 newValue)
 {
     UINT8 didXchg;
-    UINT64 dummy;
 
 #if __WORDSIZE >= 64
-    // GNU assembler doesn't know about cmpxchg16b but assembles the 8b
+   // GNU assembler doesn't know about cmpxchg16b but assembles the 8b
     // version as a cmpxchg16b when the rex64 prefix is set.  This can be
     // changed when gas is fixed.
-    __asm__ __volatile__("lock; rex64 cmpxchg8b (%4)\n\t"
+    __asm__ __volatile__("lock; rex64 cmpxchg8b (%1)\n\t"
                          "sete %0"
-                             : "=a"(didXchg), "=d"(dummy)
+                             : "=a"(didXchg), "+S"(mem)
                              : "b"(UINT64(newValue)),
                                "c"(UINT64(newValue >> 64)),
-                               "S"(mem),
-                               "0"(UINT64(oldValue)),
-                               "1"(UINT64(oldValue >> 64))
+                               "a"(UINT64(oldValue)),
+                               "d"(UINT64(oldValue >> 64))
                              : "memory", "cc");
 #else
     ASIMERROR("CompareAndExchangeU128 doesn't work in 32 bit mode");
@@ -167,6 +162,48 @@ CompareAndExchangeU128(
 }
 
 #endif // INT128_AVAIL
+
+static inline bool
+CompareAndExchange(
+    UINT32 *mem,
+    UINT32 oldValue,
+    UINT32 newValue)
+{
+    return CompareAndExchangeU32(mem, oldValue, newValue);
+}
+
+static inline bool
+CompareAndExchange(
+    UINT64 *mem,
+    UINT64 oldValue,
+    UINT64 newValue)
+{
+    return CompareAndExchangeU64(mem, oldValue, newValue);
+}
+
+#ifdef INT128_AVAIL 
+static inline bool
+CompareAndExchange(
+    UINT128 *mem,
+    UINT128 oldValue,
+    UINT128 newValue)
+{
+#ifdef __ICC
+    UINT8 didXchg;
+    __asm__ __volatile__("lock; rex64 cmpxchg8b (%1)\n\t"
+                         "sete %0"
+                             : "=a"(didXchg), "+S"(mem)
+                             : "b"(newValue.low),
+                               "c"(newValue.high),
+                               "a"(oldValue.low),
+                               "d"(oldValue.high)
+                             : "memory", "cc");
+    return didXchg;
+#else
+    return CompareAndExchangeU128(mem, oldValue, newValue);
+#endif
+}
+#endif
 
 template <class T>
 static inline bool
@@ -180,7 +217,6 @@ CompareAndExchange(
         return CompareAndExchangeU64((UINT64 *)mem,
                                      (UINT64)oldValue,
                                      (UINT64)newValue);
-        return true;
     }
     else if (sizeof(T) == 4)
     {
@@ -188,21 +224,7 @@ CompareAndExchange(
                                      (UINT32)oldValue,
                                      (UINT32)newValue);
     }
-#ifdef INT128_AVAIL
-    else if (sizeof(T) == 16)
-    {
-        return CompareAndExchangeU128((UINT128 *)mem,
-                                      (UINT128)oldValue,
-                                      (UINT128)newValue);
-    }
-#endif
-    else
-    {
-        ASIMERROR("Unexpected size");
-        return false;
-    }
 }
-
 
 
 #if defined(__GLIBCPP__) && __GLIBCPP__ >= 20020814
@@ -543,5 +565,41 @@ typedef INT64 ATOMIC_INT64;
 // Definition of UID_GEN types (unique identifier generator)
 typedef ATOMIC_INT32 UID_GEN32;
 typedef ATOMIC_INT64 UID_GEN64;
+
+
+#if __WORDSIZE < 64
+typedef _Atomic_word _Atomic_ptr_sized_int;
+#else
+typedef _Atomic64    _Atomic_ptr_sized_int;
+#endif
+
+
+//
+// this class acquires a mutex in its constructor, and releases it
+// in its destructor, so you can use it to create sequential sections
+// of code by simply allocating an object of this class at the beginning
+// of a block.  If it is allocated on the stack, the lock will automatically
+// be released upon leaving the block, so no explicit "leave block" command
+// is needed, e.g.:
+//
+// {
+//   SEQUENTIAL foo( &my_mutex );
+//   /* sequential code block */
+// }
+//
+class SEQUENTIAL {
+  private:
+    // a mutex to use for this instance:
+    pthread_mutex_t *m;
+    // a global lock in case the user doesn't supply one:
+    static pthread_mutex_t global_mutex;
+  public:
+    SEQUENTIAL( pthread_mutex_t &mtx = global_mutex )
+      : m( &mtx )
+    {   pthread_mutex_lock  ( m );   };
+    ~SEQUENTIAL()
+    {   pthread_mutex_unlock( m );   };
+};
+
 
 #endif
