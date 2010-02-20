@@ -41,12 +41,8 @@ File=pm/dral_api/classic_dral_api_nullptv.awb
 Packagehint=simcore
 
 [Network Null ISA/Requires]
-cpu_inst=Null Instruction
+cpu_inst=Network Null Instruction
 iaddr=Network Null iaddr
-
-[Null Instruction]
-File=model/bmp/chip/proc/slice/core/ctf_core/null-inst.awb
-Packagehint=bmp
 
 [Network Null ISA]
 File=pm/network/cruft/network-null-ISA.awb
@@ -91,3 +87,7 @@ Packagehint=simcore
 [Simple Workbench]
 File=pm/controller/workbench/simple/simpleWb.awb
 Packagehint=simcore
+
+[Network Null Instruction]
+File=pm/network/cruft/network-null-inst.awb
+Packagehint=network

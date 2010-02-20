@@ -6575,3 +6575,28 @@ Directory lib/libasim/include/asim
 
 Update atomic.h from our copy.  How come this wasn't updated from a
 previous merge?
+
+----------
+spartha1    Date: Fri Feb 19 20:09:22 EST 2010  CSN: CSN-asimcore-316
+                  Sat Feb 20 01:09:22 UTC 2010
+
+
+Directory config/pm
+ null_uncore_model.apm     Locally Modified          315 
+
+Directory modules/controller/classic
+ control.cpp               Locally Modified          315 
+
+Directory feeders/inst/interface/null
+ instfeedernull.h          Locally Modified          315 
+
+Updating with simcore changes (rev. 2970 - Eric Borch)
+
+- made null uncore a functioning model by adding required modules
+
+- added debug statements in control.cpp
+
+- the null feeder returns true on init() so it can be used in a model
+
+
+Eric

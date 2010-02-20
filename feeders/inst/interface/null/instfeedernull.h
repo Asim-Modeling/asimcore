@@ -44,7 +44,7 @@ class IFEEDER_BASE_CLASS {
         MARKER_SET_INST
     };
 
-    bool Init(UINT32 argc, char **argv, char **envp)        { return false; }
+    bool Init(UINT32 argc, char **argv, char **envp)        { return true; }
     UINT32 NActiveThreads(void) const                       { return 0;     }
     void Marker(ASIM_MARKER_CMD cmd,
                 IFEEDER_STREAM_HANDLE stream,

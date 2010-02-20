@@ -988,10 +988,13 @@ CMD_INIT_CLASS::PmAction (void)
     ASIM_XMSG("CMD PmAction INIT: Initializing performance model...");
     IFEEDER_BASE feeder = IFEEDER_New();
     bool success = feeder->Init(fdArgc, fdArgv, Envp);
+    ASIM_XMSG("CMD PmAction Feeder Init complete: " << (success ? "SUCCESS" : "FAILURE") );
+
     if (success)
     {
         asimSystem = SYS_Init(pmArgc, pmArgv, Envp, feeder->NActiveThreads());
         success = (asimSystem != NULL);
+        ASIM_XMSG("CMD PmAction INIT complete: " << (success ? "SUCCESS" : "FAILURE") );
     }
     ASIM_XMSG("CMD PmAction INIT complete: "
          << (success ? "SUCCESS" : "FAILURE") );
