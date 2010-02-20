@@ -6600,3 +6600,17 @@ Updating with simcore changes (rev. 2970 - Eric Borch)
 
 
 Eric
+
+----------
+spartha1    Date: Fri Feb 19 20:20:19 EST 2010  CSN: CSN-asimcore-317
+                  Sat Feb 20 01:20:19 UTC 2010
+
+
+Directory modules/dral_api
+ classic_dral_api_ptv_lite.awb Locally Added               0 
+
+Updating with asim-simcore changes (rev. 2981 - Carl Beckmann)
+
+- Added a DRAL API module that has no dependence on archlib or x86libs.
+  To use it, you just need to build simcore with the following config switch:
+    --enable-cohosupport-libs

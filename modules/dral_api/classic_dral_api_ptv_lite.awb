@@ -1,0 +1,31 @@
+********************************************************************
+* Copyright (c) 2009 Intel Corporation, all rights reserved
+********************************************************************
+
+%AWB_START
+
+%name Classic DRAL API with PTV support lite
+%desc Classic DRAL API using PTV library in simcore package
+
+%provides dral_api
+
+/* this much come before its dependencies */
+%library lib/libdral/libdral.a
+
+%library lib/libsupport/libsupport-lite.a
+%library lib/libsupport/ptlib/libptlib.a
+%library lib/libsupport/xfopen/libxfopen.a
+
+%param %dynamic pt          ""  "Pipetrace filename"
+%param %dynamic pt_dump     ""  "Pipetrace filename dump on fail"
+%param %dynamic pipetrace_dump_max     20000  "Pipetrace dump max size"
+%param %dynamic stats       ""  "PT Stats filename"
+%param %dynamic pt_ascii    0   "Output pipetrace in ascii"
+%param %dynamic nthread     4   "number of threads per core"
+%param %dynamic ncore       16  "number of cores"
+%param %dynamic nproc       1   "number of processors"
+%param %dynamic perfchecker 0   "Run perfchecker"
+%param %dynamic WILLY_STYLE_STATS 0 "Create Willy Style Stats File"
+%param %dynamic instrs_retired  0   "current number of instrs retired (hack)"
+
+%AWB_END
