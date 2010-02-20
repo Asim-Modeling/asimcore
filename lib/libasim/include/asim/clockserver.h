@@ -145,7 +145,24 @@ typedef class ClockCallBackInterface
          hi = nCycleAfterHigh - nCycleBeforeHigh - borrow;
          result = static_cast<UINT64>(hi * (1 << 30) * 4 + lo);
          return false;
+         
+         /*
+         // This is a simpler alternative to the double precision subtraction code
+         result = ComputeResult (nCycleAfterHigh, nCycleAfterLow, nCycleBeforeHigh, nCycleBeforeLow);
+         return false;
+         */
     }
+
+    /*
+    // The ComputeResult function
+    static UINT64 ComputeResult (UINT32 ahi, UINT32 alo, UINT32 bhi, UINT32 blo)
+    {
+        const UINT64 lowmask = 0xffffffff;
+        UINT64 ahi64 = ahi, alo64 = alo, a64 = (ahi64 << 32) | (alo64 & lowmask);
+        UINT64 bhi64 = bhi, blo64 = blo, b64 = (bhi64 << 32) | (blo64 & lowmask);
+        return a64 - b64;
+    }
+    */
 
     #elif HOST_DUNIX
 
