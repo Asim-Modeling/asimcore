@@ -6626,3 +6626,92 @@ Directory lib/libasim/include/asim
 Updating with simcore changes (rev. 3045 - Sailashri Parthasarathy)
 
 Adding an alternative method of computing the result when time stamp counters are used. Thanks to Krishna Rangan for the code snippet.
+
+----------
+joel        Date: Sun May 23 15:45:48 EDT 2010  CSN: CSN-asimcore-319
+                  Sun May 23 19:45:48 UTC 2010
+
+
+Directory .
+ configure                 Locally Modified          318 
+ Makefile.in               Locally Modified          318 
+
+Directory debian
+ asim-core.dirs            Locally Added               0 
+ control                   Locally Added               0 
+ asim-core-dev.install     Locally Added               0 
+ dirs                      Locally Added               0 
+ compat                    Locally Added               0 
+ asim-core.install         Locally Added               0 
+ asim-core.docs            Locally Added               0 
+ changelog                 Locally Added               0 
+ copyright                 Locally Added               0 
+ rules                     Locally Added               0 
+ asim-core-dev.dirs        Locally Added               0 
+ README                    Locally Added               0 
+ README.Debian             Locally Added               0 
+
+Directory .
+ debian/                   Locally Added               0 
+
+Directory include
+ config.h.in               Locally Modified          318 
+
+Directory .
+ README                    Locally Modified          318 
+
+Directory tools/dreams
+ Makefile.in               Locally Modified          318 
+
+Directory tools/dreams/dbtest
+ Makefile.in               Locally Modified          318 
+
+Directory tools/dreams/dbtest/src
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libagt
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          318 
+
+Directory lib
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libdral
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libnullptlib
+ Makefile.in               Locally Modified          318 
+
+Directory lib/libnullptlib/include
+ Makefile.in               Locally Modified          318 
+
+Directory .
+ Makefile.am               Locally Modified          318 
+ aclocal.m4                Locally Modified          318 
+ ./                        Locally Modified          318 
+
+Added infrastructure files for debian packaging. Two
+.debs are created: asim-core and asim-core-dev. One
+really needs asim-core-dev to do anything useful, and
+it depends on asim-core.
+
+Like for awb, debinaization involved adding an
+'install-package' target to the Makefile and and an
+update of the autoconf files.

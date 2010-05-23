@@ -12,3 +12,8 @@ For developers: To reconfigure the autoconfigure script use the following:
    # automake -a -c --foreign
    # autoconf
    # ./configure
+
+
+For debian package builders the dependencies can be found with:
+ 
+   % dpkg-depcheck -d ./configure

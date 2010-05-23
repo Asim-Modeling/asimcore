@@ -22,10 +22,23 @@ SUBDIRS = lib
 #
 # we have non-standard install sub-targets
 #
-.phony: install-exec-hook install-src
+.phony: install-exec-hook install-package install-src
 
 install-exec-hook: all
 	@echo "Done."
+
+
+#
+# This horrible sequence copies just the modules and other files needed to build 
+# models to $(codedir)
+# It also removes the .svn subdirectories in the installed tree.
+#
+install-package:
+	@rm -rf  $(DESTDIR)$(codedir)
+	$(mkinstalldirs)  $(DESTDIR)$(codedir)
+	rsync -av --exclude .svn admin   $(DESTDIR)$(codedir)
+	rsync -av --exclude .svn feeders $(DESTDIR)$(codedir)
+	rsync -av --exclude .svn modules $(DESTDIR)$(codedir)
 
 #
 # This horrible sequence copies the source to $(codedir) and
