@@ -6715,3 +6715,29 @@ it depends on asim-core.
 Like for awb, debinaization involved adding an
 'install-package' target to the Makefile and and an
 update of the autoconf files.
+
+----------
+joel        Date: Sat May 29 21:16:34 EDT 2010  CSN: CSN-asimcore-320
+                  Sun May 30 01:16:34 UTC 2010
+
+
+Directory debian
+ changelog                 Locally Modified          319 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          319 
+ Makefile.am               Locally Modified          319 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          319 
+ Makefile.am               Locally Modified          319 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          319 
+ Makefile.am               Locally Modified          319 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          319 
+ Makefile.am               Locally Modified          319 
+
+Fixed list of .h files installed for libraries.

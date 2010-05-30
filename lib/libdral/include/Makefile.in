@@ -217,29 +217,30 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 nobase_include_HEADERS = asim/dralClientAscii_v0_1.h \
-				asim/dralServerBinaryDefines.h \
 				asim/dralClientBinary_v0_1.h \
-				asim/dralServerBinary.h \
 				asim/dralClientBinary_v2.h \
 				asim/dralClientBinary_v3.h \
 				asim/dralClientBinary_v4.h \
-				asim/dralServerDefines.h \
 				asim/dralClientDefines.h \
-				asim/dralServer.h \
 				asim/dralClient.h \
-				asim/dralServerImplementation.h \
 				asim/dralClientImplementation.h \
 				asim/dralCommonDefines.h \
-				asim/dralStorage.h \
-				asim/dralListener.h \
-				asim/dralWrite.h \
-				asim/dralRead.h \
-				asim/dralServerAscii.h \
-				asim/dral_syntax.h \
+				asim/dralDesc.h \
 				asim/dralInterface.h \
 				asim/dralListenerConverter.h \
+				asim/dralListener.h \
 				asim/dralListenerOld.h \
+				asim/dralRead.h \
+				asim/dralServerAscii.h \
+				asim/dralServerBinaryDefines.h \
+				asim/dralServerBinary.h \
+				asim/dralServerDefines.h \
+				asim/dralServer.h \
+				asim/dralServerImplementation.h \
+				asim/dralStorage.h \
 				asim/dralStringMapping.h \
+				asim/dral_syntax.h \
+				asim/dralWrite.h \
 				asim/line_manager.h
 
 all: all-am

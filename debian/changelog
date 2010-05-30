@@ -1,5 +1,5 @@
-asim-core (0.5.1~svn20100523r319+lucid) lucid; urgency=low
+asim-core (0.6.0~svn20100529r320+lucid) lucid; urgency=low
 
-  * Initial Release.
+  * Fix installation of includes
 
  -- Asim/Awb Software Releases <releases@asim.csail.mit.edu>  Fri, 21 May 2010 20:20:41 -0400

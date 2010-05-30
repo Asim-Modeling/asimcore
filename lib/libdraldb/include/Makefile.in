@@ -216,43 +216,43 @@ tooldir = @tooldir@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-nobase_include_HEADERS = asim/Dict2064.h \
-			    asim/Hash6431.h \
-                            asim/StatObj.h \
-                            asim/DRALTag.h \
-                            asim/ItemTagHeap.h \
-                            asim/ItemTagDef.h \
-                            asim/draldb_syntax.h \
-                            asim/TagDescVector.h \
-                            asim/AEVector.h \
-                            asim/fvaluevector.h \
-                            asim/PrimeList.h \
-                            asim/DralDBDefinitions.h\
-                            asim/StrTable.h \
-                            asim/TrackHeap.h \
-                            asim/TrackHeapDef.h \
-                            asim/TagVec.h \
-                            asim/TrackVec.h \
-                            asim/TagIdVec.h \
-                            asim/TagVecItemIdx.h \
-                            asim/TagVecDenseItemIdx.h \
-                            asim/TagVecDenseShortItemIdx.h \
-                            asim/TagVecDictionary.h \
-                            asim/TagVecDenseDictionary.h \
-                            asim/TagVecDictionaryNF.h \
-                            asim/TagVecDenseDictionaryNF.h \
-                            asim/LogMgr.h \
-                            asim/DBConfig.h \
-                            asim/DBListener.h \
-                            asim/DBGraphEdge.h \
-                            asim/DBGraphNode.h \
-                            asim/DBGraph.h \
-                            asim/DBItoa.h \
-                            asim/ItemHandler.h \
-                            asim/DralDB.h \
-                            asim/DBListenerDef.h \
-			    asim/AMemObj.h \
-                            asim/ZipObject.h
+nobase_include_HEADERS = asim/AEVector.h \
+				asim/AMemObj.h \
+				asim/DBConfig.h \
+				asim/DBGraphEdge.h \
+				asim/DBGraph.h \
+				asim/DBGraphNode.h \
+				asim/DBItoa.h \
+				asim/DBListenerDef.h \
+				asim/DBListener.h \
+				asim/Dict2064.h \
+				asim/DralDBDefinitions.h \
+				asim/DralDB.h \
+				asim/draldb_syntax.h \
+				asim/DRALTag.h \
+				asim/fvaluevector.h \
+				asim/Hash6431.h \
+				asim/ItemHandler.h \
+				asim/ItemTagDef.h \
+				asim/ItemTagHeap.h \
+				asim/LogMgr.h \
+				asim/PrimeList.h \
+				asim/StatObj.h \
+				asim/StrTable.h \
+				asim/TagDescVector.h \
+				asim/TagIdVec.h \
+				asim/TagVecDenseDictionary.h \
+				asim/TagVecDenseDictionaryNF.h \
+				asim/TagVecDenseItemIdx.h \
+				asim/TagVecDenseShortItemIdx.h \
+				asim/TagVecDictionary.h \
+				asim/TagVecDictionaryNF.h \
+				asim/TagVec.h \
+				asim/TagVecItemIdx.h \
+				asim/TrackHeapDef.h \
+				asim/TrackHeap.h \
+				asim/TrackVec.h \
+				asim/ZipObject.h
 
 all: all-am
 
