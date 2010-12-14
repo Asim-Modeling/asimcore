@@ -48,7 +48,7 @@ class FILE_PARSER_CLASS
 
 
     void
-    read_file(char* fn);
+    read_file(const char* fn);
 };
 
 
@@ -113,7 +113,7 @@ class COMMAND_PARSER_CLASS
 
   public:
 
-    COMMAND_PARSER_CLASS(char* awbCmdsFile); // CONS
+    COMMAND_PARSER_CLASS(const char* awbCmdsFile); // CONS
 
     void
     AwbInit(); // win mode cmds cmdsData/Null
@@ -122,7 +122,7 @@ class COMMAND_PARSER_CLASS
     process_file();
 
     void
-    read_file(char* fn);
+    read_file(const char* fn);
 
     AWB_TOKEN_ENUM
     match_string(const string& s) const;
@@ -131,7 +131,7 @@ class COMMAND_PARSER_CLASS
     invalid_line(vector<string>& vs);
 
     void
-    print_line(char* s,
+    print_line(const char* s,
                vector<string>& vs);
 
     void

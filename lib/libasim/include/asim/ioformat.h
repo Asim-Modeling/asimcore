@@ -363,9 +363,9 @@ namespace IoFormat {
      * @{
      */
     /// Get prefix string
-    const char* const prefix (void) const { return f_prefix; }
+    const char* prefix (void) const { return f_prefix; }
     /// Get postfix string
-    const char* const postfix (void) const { return f_postfix; }
+    const char* postfix (void) const { return f_postfix; }
     ///@}
 
     /// Copy local formating state to an ostream object

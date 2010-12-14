@@ -102,7 +102,7 @@ extern void CMD_Stop (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 /*
  * Show performance model progress
  */
-extern void CMD_Progress (AWB_PROGRESSTYPE type, char *args, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+extern void CMD_Progress (AWB_PROGRESSTYPE type, const char *args, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
 /*
  * Emit statistics file every <n> cycles
@@ -520,10 +520,10 @@ class CMD_PROGRESS_CLASS : public CMD_WORKITEM_CLASS
 {
     private:
         AWB_PROGRESSTYPE type;
-        char *args;
+        const char *args;
         
     public:
-        CMD_PROGRESS_CLASS (AWB_PROGRESSTYPE p, char *a, CMD_ACTIONTRIGGER t, UINT64 c) :
+        CMD_PROGRESS_CLASS (AWB_PROGRESSTYPE p, const char *a, CMD_ACTIONTRIGGER t, UINT64 c) :
             CMD_WORKITEM_CLASS("PROGRESS", t, c), type(p), args(a) { }
 
         void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);

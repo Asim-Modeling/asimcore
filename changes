@@ -6741,3 +6741,59 @@ Directory lib/libdral/include
  Makefile.am               Locally Modified          319 
 
 Fixed list of .h files installed for libraries.
+
+----------
+mpellaue    Date: Tue Dec 14 17:24:12 EST 2010  CSN: CSN-asimcore-321
+                  Tue Dec 14 22:24:12 UTC 2010
+
+
+Directory .
+ Makefile.in               Locally Modified          320 
+
+Directory lib/libasim/include/asim
+ clockserver.h             Locally Modified          320 
+ ioformat.h                Locally Modified          320 
+
+Directory modules/controller/classic
+ control-notcl.h           Locally Modified          320 
+ control.cpp               Locally Modified          320 
+ control.h                 Locally Modified          320 
+ awb-notcl.cpp             Locally Modified          320 
+ awb-notcl.h               Locally Modified          320 
+ control-notcl.cpp         Locally Modified          320 
+
+Directory modules/controller/workbench/no-tcl
+ wb-notcl.cpp              Locally Modified          320 
+ wb-notcl.h                Locally Modified          320 
+
+Directory modules/controller/null
+ control.h                 Locally Modified          320 
+
+Directory .
+ Makefile.am               Locally Modified          320 
+
+
+Apply patches from Intel version, revisions 2966-3333.
+
+CSN: CSN-simcore-3107
+          
+
+- fixed a basic error in clockserver; nsteps, which counts off base cycles,
+  must match the base cycle type (UINT64).
+
+CSN: CSN-simcore-3230
+          
+Eliminate an icc warning.
+
+CSN: CSN-simcore-3291
+          
+
+- fixed a permission error in public install of simcore package.
+
+CSN: CSN-simcore-3307
+          
+
+- a bunch of "char *" to "const char *" conversions, provided by Shadi Khasawneh,
+  to get rid of warnings/errors in GCC 4.5 build
+
+

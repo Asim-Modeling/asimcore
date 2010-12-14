@@ -160,7 +160,7 @@ static COMMAND_PARSER_CLASS* awbCmdIntrp;
 /*
  * Dump file for events
  */
-char* event_dumpfilename = "";
+const char* event_dumpfilename = "";
 FILE* event_dumpfile = NULL;
 
 //////////////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ void
 AWB_Progress (AWB_PROGRESSTYPE type,
               string args)
 {
-    static char *pStrs[] = AWB_PROGRESSSTRS;
+    static const char *pStrs[] = AWB_PROGRESSSTRS;
     
     //
     // Add progress to the list of pending progress events.

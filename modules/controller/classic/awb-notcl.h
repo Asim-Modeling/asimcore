@@ -28,7 +28,7 @@
 #include "asim/syntax.h"
 #include "asim/stateout.h"
 
-extern char *awbCmdFile;
+extern const char *awbCmdFile;
 extern char *overrideWorkbench; /* NOT USED */
 
 /*

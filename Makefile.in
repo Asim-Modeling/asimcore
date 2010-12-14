@@ -802,6 +802,7 @@ install-src:
 # Install the source tree, and make it world-readable
 #
 install-src-public: install-src
+	find $(DESTDIR)$(codedir) -type d -exec chmod g+r+x {} \;
 	chmod -R o+r $(DESTDIR)$(codedir)
 	find         $(DESTDIR)$(codedir) -type d -exec chmod o+x {} \;
 

@@ -561,7 +561,7 @@ class ClockRegistry
      * Number that says the number of base cycles that must
      * pass before all the modules are clocked.
      **/
-    UINT32 nStep;
+    UINT64 nStep;
 
     /**
      * Says which is the NEXT base cycle that the modules are going

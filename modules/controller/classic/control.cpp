@@ -193,7 +193,7 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
 
 CONTROLLER_BASE_EXTERNAL_FUNCTION( 
   void, CMD_Progress,
-  (AWB_PROGRESSTYPE type, char *args, CMD_ACTIONTRIGGER trigger, UINT64 n),
+  (AWB_PROGRESSTYPE type, const char *args, CMD_ACTIONTRIGGER trigger, UINT64 n),
   (                 type,       args,                   trigger,        n)
 )
 /*

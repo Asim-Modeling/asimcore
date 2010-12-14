@@ -90,7 +90,7 @@ FILE_PARSER_CLASS::print_tokens()
 }
 
 void
-FILE_PARSER_CLASS:: read_file(char* fn)
+FILE_PARSER_CLASS:: read_file(const char* fn)
 {
     ifstream in(fn);
     if (!in)
@@ -169,12 +169,12 @@ FILE_PARSER_CLASS:: read_file(char* fn)
 class DISPATCH_TABLE_CLASS
 {
   public:
-    char* str;
+    const char* str;
     AWB_TOKEN_ENUM  token;
 
 #if 0
     DISPATCH_TABLE_CLASS(
-        char* arg_str,
+        const char* arg_str,
         AWB_TOKEN_ENUM  arg_token)
         : str(arg_str),
           token(arg_token)
@@ -200,7 +200,7 @@ dispatch_table[] =
 };
 
 
-COMMAND_PARSER_CLASS::COMMAND_PARSER_CLASS(char* awbCmdsFile) // CONS
+COMMAND_PARSER_CLASS::COMMAND_PARSER_CLASS(const char* awbCmdsFile) // CONS
     : processed_awb_cmds_file(false)
 {
     read_file(awbCmdsFile);
@@ -232,7 +232,7 @@ COMMAND_PARSER_CLASS::process_file()
 }
 
 void
-COMMAND_PARSER_CLASS::read_file(char* fn)
+COMMAND_PARSER_CLASS::read_file(const char* fn)
 {
     parser.read_file(fn);
 }
@@ -254,7 +254,7 @@ COMMAND_PARSER_CLASS::match_string(const string& s) const
 }
 
 void
-COMMAND_PARSER_CLASS::print_line(char* s, vector<string>& vs)
+COMMAND_PARSER_CLASS::print_line(const char* s, vector<string>& vs)
 {
     cerr << s << ": [";
     for(unsigned int i=0; i<vs.size() ; i++)
