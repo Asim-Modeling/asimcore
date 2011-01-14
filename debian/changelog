@@ -1,5 +1,16 @@
-asim-core (0.6.0~svn20100529r320+lucid) lucid; urgency=low
+asim-core (0.6.0~svn20110114r322+lucid) lucid; urgency=low
 
-  * Fix installation of includes
+  [ Joel Emer ]
+  * r322
+      Cleanup to avoid rehash warnings
 
- -- Asim/Awb Software Releases <releases@asim.csail.mit.edu>  Fri, 21 May 2010 20:20:41 -0400
+  [ Various ]
+  * r321
+      Random fixes
+
+  [ Joel Emer ]
+  * r320
+      Fix installation of includes
+
+
+ -- Joel Emer <joel@emer.org>  Fri, 14 Jan 2011 07:40:36 -0500

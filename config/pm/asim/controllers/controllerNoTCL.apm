@@ -18,35 +18,35 @@
 #
 
 [Global]
-Version=2.0
-File=controllerTclBeamer
-Name=TclBeamer Controller
-Description=Controller with AWB TclBeamer (requires Tarati)
+Version=2.2
+File=controllerNoTCL
+Name=Controller without TCL
+Description=Controller without TCL
 SaveParameters=0
 Type=Asim
+DefaultBenchmark=
+RootName=Asim controller without TCL
+RootProvides=controller
+Class=Asim::Model
+DefaultRunOpts=
 
 [Model]
-DefaultAttributes=tclbeamer
-model=Asim classic controller base
-
-[AWB TclBeamer]
-File=modules/controller/classic/awb_taratiTclBeamer.awb
-Packagehint=simcore
+DefaultAttributes=notcl
+model=Asim controller without TCL
 
 
-[Asim classic controller]
-File=modules/controller/classic/controller_classic_alg.awb
-Packagehint=simcore
+[workbench without TCL]
+File=modules/controller/workbench/no-tcl/wb-notcl.awb
+Packagehint=awb
 
-[Simple Workbench]
-File=modules/controller/workbench/simple/simpleWb.awb
-Packagehint=simcore
+[AWB without TCL]
+File=modules/controller/classic/awb-notcl.awb
+Packagehint=awb
 
-[Asim classic controller base]
-File=modules/controller/classic/controller_classic.awb
-Packagehint=simcore
+[Asim controller without TCL/Requires]
+workbench=workbench without TCL
+awb_stub=AWB without TCL
 
-[Asim classic controller base/Requires]
-workbench=Simple Workbench
-awb_stub=AWB TclBeamer
-controller_alg=Asim classic controller
+[Asim controller without TCL]
+File=modules/controller/classic/controller-notcl.awb
+Packagehint=awb

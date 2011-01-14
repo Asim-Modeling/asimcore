@@ -6797,3 +6797,59 @@ CSN: CSN-simcore-3307
   to get rid of warnings/errors in GCC 4.5 build
 
 
+
+----------
+joel        Date: Fri Jan 14 07:45:17 EST 2011  CSN: CSN-asimcore-322
+                  Fri Jan 14 12:45:17 UTC 2011
+
+
+Directory debian
+ changelog                 Locally Modified          321 
+
+Directory config/pm
+ controllerNoTCL.apm       Locally Removed           321 
+ null_uncore_model.apm     Locally Removed           321 
+ tarati/                   Locally Removed           321 
+
+Directory config/pm/tarati
+ tarati_system.apm         Locally Removed           321 
+
+Directory config/pm
+ controllerNativeTcl.apm   Locally Removed           321 
+ asim/                     Locally Added               0 
+
+Directory config/pm/asim
+ controllers/              Locally Added               0 
+
+Directory config/pm/asim/controllers
+ controllerNoTCL.apm       Locally Added               - 
+ controllerNativeTcl.apm   Locally Added               - 
+ controllerTclBeamer.apm   Locally Added               - 
+
+Directory config/pm
+ controllerTclBeamer.apm   Locally Removed           321 
+
+Directory modules/feeders/inst/interface/null
+ instfeedernull.h          Locally Modified          321 
+
+Directory feeders
+ inst/                     Locally Removed           321 
+
+Directory feeders/inst
+ interface/                Locally Removed           321 
+
+Directory feeders/inst/interface
+ null/                     Locally Removed           321 
+
+Directory feeders/inst/interface/null
+ instfeedernull.h          Locally Removed           321 
+ instfeedernull.awb        Locally Removed           321 
+
+Directory .
+ feeders/                  Locally Removed           321 
+
+Cleanup of models to elminate rehash warnings. Removed 
+spurious copy of feeders and updated proper version of
+files in modules/feeders. Move asim-related submodels into
+an asim/ tree and fixed moved module references (upgraded
+.apm files to v2.2 in the process).

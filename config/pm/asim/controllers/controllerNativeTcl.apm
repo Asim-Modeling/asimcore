@@ -18,35 +18,39 @@
 #
 
 [Global]
-Version=2.0
-File=controllerNoTCL
-Name=Controller without TCL
-Description=Controller without TCL
+Version=2.2
+File=controllerNativeTcl
+Name=Native TCL Controller
+Description=Classic AWB Controller (native built-in TCL)
 SaveParameters=0
 Type=Asim
+DefaultBenchmark=
+RootName=Asim classic controller base
+RootProvides=controller
+Class=Asim::Model
+DefaultRunOpts=
 
 [Model]
-DefaultAttributes=notcl
-model=Asim controller without TCL
-
+DefaultAttributes=
+model=Asim classic controller base
 
 [Asim classic controller]
-File=pm/controller/classic/controller_classic_alg.awb
-Packagehint=simcore
+File=modules/controller/classic/controller_classic_alg.awb
+Packagehint=awb
 
-[workbench without TCL]
-File=pm/controller/workbench/no-tcl/wb-notcl.awb
-Packagehint=simcore
+[AWB Native TCL]
+File=modules/controller/classic/awb.awb
+Packagehint=awb
 
-[AWB without TCL]
-File=pm/controller/classic/awb-notcl.awb
-Packagehint=simcore
+[Simple Workbench]
+File=modules/controller/workbench/simple/simpleWb.awb
+Packagehint=awb
 
-[Asim controller without TCL/Requires]
-workbench=workbench without TCL
-awb_stub=AWB without TCL
+[Asim classic controller base/Requires]
+workbench=Simple Workbench
+awb_stub=AWB Native TCL
 controller_alg=Asim classic controller
 
-[Asim controller without TCL]
-File=pm/controller/classic/controller-notcl.awb
-Packagehint=simcore
+[Asim classic controller base]
+File=modules/controller/classic/controller_classic.awb
+Packagehint=awb

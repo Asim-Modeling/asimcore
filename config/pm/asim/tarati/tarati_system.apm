@@ -18,18 +18,25 @@
 #
 
 [Global]
-Version=2.0
+Version=2.2
 File=tarati_system
 Name=Tarati System Submodel
 Description=Tarati System Submodel for ASIM
 SaveParameters=0
+DefaultBenchmark=
+Type=Asim
+RootName=ASIM Tarati System
+RootProvides=tarati_system
+Class=Asim::Model
+DefaultRunOpts=
 
 [Model]
 DefaultAttributes=tarati xmlrpc
 model=ASIM Tarati System
 
 [ASIM Tarati Stats]
-File=util/asimTarati/taratiStats.awb
+File=modules/tarati/asimTarati/taratiStats.awb
+Packagehint=awb
 
 [ASIM Tarati System/Requires]
 tarati=Tarati
@@ -39,22 +46,28 @@ tarati_stats=ASIM Tarati Stats
 tarati_tcl_beamer=ASIM Tarati TCL Beamer
 
 [ASIM Tarati System]
-File=util/asimTarati/taratiSystem.awb
+File=modules/tarati/asimTarati/taratiSystem.awb
+Packagehint=awb
 
 [ASIM Tarati Time Scheduler]
-File=util/asimTarati/taratiTimeScheduler.awb
+File=modules/tarati/asimTarati/taratiTimeScheduler.awb
+Packagehint=awb
 
 [ASIM Tarati Global State]
-File=util/asimTarati/taratiGlobalState.awb
+File=modules/tarati/asimTarati/taratiGlobalState.awb
+Packagehint=awb
 
 [Tarati/Requires]
 xmlrpc=XML-RPC
 
 [Tarati]
-File=util/tarati/tarati.awb
+File=modules/tarati/tarati/tarati.awb
+Packagehint=awb
 
 [XML-RPC]
-File=util/xmlrpc/xmlrpc.awb
+File=modules/tarati/xmlrpc/xmlrpc.awb
+Packagehint=awb
 
 [ASIM Tarati TCL Beamer]
-File=util/asimTarati/taratiTclBeamer.awb
+File=modules/tarati/asimTarati/taratiTclBeamer.awb
+Packagehint=awb
