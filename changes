@@ -6853,3 +6853,64 @@ spurious copy of feeders and updated proper version of
 files in modules/feeders. Move asim-related submodels into
 an asim/ tree and fixed moved module references (upgraded
 .apm files to v2.2 in the process).
+
+----------
+joel        Date: Fri Jan 14 08:03:00 EST 2011  CSN: CSN-asimcore-323
+                  Fri Jan 14 13:03:00 UTC 2011
+
+
+Directory .
+ configure                 Locally Modified          322 
+ Makefile.in               Locally Modified          322 
+
+Directory debian
+ changelog                 Locally Modified          322 
+
+Directory tools/dreams
+ Makefile.in               Locally Modified          322 
+
+Directory tools/dreams/dbtest
+ Makefile.in               Locally Modified          322 
+
+Directory tools/dreams/dbtest/src
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libagt
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          322 
+
+Directory lib
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libdral
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libnullptlib
+ Makefile.in               Locally Modified          322 
+
+Directory lib/libnullptlib/include
+ Makefile.in               Locally Modified          322 
+
+Directory .
+ Makefile.am               Locally Modified          322 
+ aclocal.m4                Locally Modified          322 
+
+Remove feeder/ directory from 'make install' as well. Lots
+of gratuitous changes due to autoreconf.

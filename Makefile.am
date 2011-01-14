@@ -37,7 +37,6 @@ install-package:
 	@rm -rf  $(DESTDIR)$(codedir)
 	$(mkinstalldirs)  $(DESTDIR)$(codedir)
 	rsync -av --exclude .svn admin   $(DESTDIR)$(codedir)
-	rsync -av --exclude .svn feeders $(DESTDIR)$(codedir)
 	rsync -av --exclude .svn modules $(DESTDIR)$(codedir)
 
 #
@@ -67,7 +66,7 @@ install-src-public: install-src
 # we also need to fix up the distribution to contain the whole source tree
 # minus the .svn directories
 #
-EXTRA_DIST = admin config include lib pm feeders util Makefile changes
+EXTRA_DIST = admin config include lib pm util Makefile changes
 
 dist-hook:
 	make -C $(distdir) distclean
