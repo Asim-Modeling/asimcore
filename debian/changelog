@@ -1,15 +1,7 @@
-asim-core (0.6.0~svn20110114r323+lucid) lucid; urgency=low
+asim-core (11.03~svn20110317r324+lucid) lucid; urgency=low
 
   [ Joel Emer ]
-  * r322, r323
-      Cleanup to avoid rehash warnings
+  * r324
+      Split package for debian installs
 
-  [ Various ]
-  * r321
-      Random fixes
-
-  [ Joel Emer ]
-  * r320
-      Fix installation of includes
-
- -- Joel Emer <joel@emer.org>  Fri, 14 Jan 2011 08:01:05 -0500
+ -- Joel Emer <jsemer@intel.com>  Thu, 17 Mar 2011 22:15:50 -0400

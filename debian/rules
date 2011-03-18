@@ -73,7 +73,7 @@ install: build
 	# Add here commands to install the package into debian/tmp
 	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core-dev install
 
-	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core install-package
+	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core-11.03 install-package
 
 
 # Build architecture-independent files here.

@@ -15,7 +15,25 @@ Description: Asim core libraries
 
 Package: asim-core
 Section: libs
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, asim-core-11.03
+Description: Dependency package for asim core libraries
+ Dependency package for asim core libraries
+
+
+Package: asim-core-11.03
+Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, awb
-Description: Asim core libraries
- Asim core libraries
+Depends: ${shlibs:Depends}, ${misc:Depends}, awb, asim-core-bin
+Description: Sharable public package for Asim core libraries
+ Sharable public package for Asim core libraries
+
+
+Package: asim-core-bin
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: asim-core (<= 0.6.0)
+Breaks: asim-core (<= 0.6.0)
+Description: Asim core library binaries
+ Asim core library binaries

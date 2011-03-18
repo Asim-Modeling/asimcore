@@ -6914,3 +6914,25 @@ Directory .
 
 Remove feeder/ directory from 'make install' as well. Lots
 of gratuitous changes due to autoreconf.
+
+----------
+jsemer      Date: Thu Mar 17 22:16:39 EDT 2011  CSN: CSN-asimcore-324
+                  Fri Mar 18 02:16:39 UTC 2011
+
+
+Directory debian
+ asim-core-11.03.dirs      Locally Added               0 
+ asim-core.dirs            Locally Removed           323 
+ control                   Locally Modified          323 
+ asim-core.install         Locally Removed           323 
+ asim-core-bin.dirs        Locally Added               - 
+ changelog                 Locally Modified          323 
+ asim-core-bin.install     Locally Added               - 
+ rules                     Locally Modified          323 
+ asim-core.docs            Locally Removed           323 
+ asim-core-bin.docs        Locally Added               - 
+
+Directory .
+ debian/                   Locally Modified          323 
+
+Changes for building debian packages for release 11.03.
