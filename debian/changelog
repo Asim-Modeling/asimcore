@@ -1,7 +1,10 @@
-asim-core (11.03~svn20110317r324+lucid) lucid; urgency=low
+asim-core (11.03+fixes~svn20110325r326+lucid) lucid; urgency=low
 
   [ Joel Emer ]
+  * r326
+      Package as 11.03+fixes
+
   * r324
       Split package for debian installs
 
- -- Joel Emer <jsemer@intel.com>  Thu, 17 Mar 2011 22:15:50 -0400
+ -- Joel Emer <jsemer@intel.com>  Fri, 25 Mar 2011 16:23:47 -0400
