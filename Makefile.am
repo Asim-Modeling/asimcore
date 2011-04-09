@@ -22,7 +22,7 @@ SUBDIRS = lib
 #
 # we have non-standard install sub-targets
 #
-.phony: install-exec-hook install-package install-src
+.phony: install-exec-hook install-package install-src print-release-name
 
 install-exec-hook: all
 	@echo "Done."
@@ -72,3 +72,8 @@ dist-hook:
 	make -C $(distdir) distclean
 	find $(distdir) -name .svn -depth -exec rm -rf {} \;
 
+#
+# Utility target to print the release being built
+#
+print-release-name:
+	@echo ${release}

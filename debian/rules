@@ -9,6 +9,9 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Set the release name for the <package>-<release> .deb file
+#RELEASE = $(shell $(MAKE) print-release-name | sed 's/v//' )
+RELEASE = 11.04
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -19,7 +22,6 @@ CROSS= --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
 else
 CROSS= --build $(DEB_BUILD_GNU_TYPE)
 endif
-
 
 
 
@@ -73,7 +75,7 @@ install: build
 	# Add here commands to install the package into debian/tmp
 	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core-dev install
 
-	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core-11.03 install-package
+	$(MAKE) DESTDIR=$(CURDIR)/debian/asim-core-$(RELEASE) install-package
 
 
 # Build architecture-independent files here.
