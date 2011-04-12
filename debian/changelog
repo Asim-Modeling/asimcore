@@ -1,7 +1,7 @@
-asim-core (11.04~svn20110409r329+lucid) lucid; urgency=low
+asim-core (11.04~svn20110411r330+lucid) lucid; urgency=low
 
   [ Joel Emer ]
   * r328
       Start of release v11.04 development.
 
- -- Joel Emer <joel@emer.org>  Sat, 09 Apr 2011 12:22:22 -0400
+ -- Joel Emer <jsemer@intel.com>  Mon, 11 Apr 2011 17:54:29 -0400

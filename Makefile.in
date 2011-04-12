@@ -60,17 +60,18 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/lib/libdral/pkgconfig/libdral.pc.in \
 	$(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc.in \
 	$(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib.pc.in \
-	COPYING INSTALL config.guess config.sub scripts/compile \
-	scripts/config.guess scripts/config.sub scripts/depcomp \
-	scripts/install-sh scripts/ltmain.sh scripts/missing \
-	scripts/mkinstalldirs
+	COPYING INSTALL aux-scripts/compile aux-scripts/config.guess \
+	aux-scripts/config.sub aux-scripts/depcomp \
+	aux-scripts/install-sh aux-scripts/ltmain.sh \
+	aux-scripts/missing aux-scripts/mkinstalldirs config.guess \
+	config.sub
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
-mkinstalldirs = $(SHELL) $(top_srcdir)/scripts/mkinstalldirs
+mkinstalldirs = $(SHELL) $(top_srcdir)/aux-scripts/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES = lib/libasim/pkgconfig/libasim.pc \
 	lib/libasim/pkgconfig/libasim-uninstalled.pc \

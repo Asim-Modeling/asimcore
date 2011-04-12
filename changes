@@ -6968,3 +6968,81 @@ Directory .
 
 Support for release v11.04. Primarly moving location of
 shared package to $PREFIX/usr/share/asim/asimcore/<version>.
+
+----------
+jsemer      Date: Tue Apr 12 17:53:13 EDT 2011  CSN: CSN-asimcore-330
+                  Tue Apr 12 21:53:13 UTC 2011
+
+
+Directory .
+ configure                 Locally Modified          329 
+
+Directory aux-scripts
+ install-rcfile            Locally Removed           329 
+
+Directory .
+ Makefile.in               Locally Modified          329 
+
+Directory debian
+ changelog                 Locally Modified          329 
+
+Directory .
+ configure.in              Locally Modified          329 
+
+Directory scripts
+ mkinstalldirs             Locally Removed           329 
+ depcomp                   Locally Removed           329 
+ compile                   Locally Removed           329 
+ install-rcfile            Locally Removed           329 
+ missing                   Locally Removed           329 
+ config.guess              Locally Removed           329 
+ config.sub                Locally Removed           329 
+ ltmain.sh                 Locally Removed           329 
+ install-sh                Locally Removed           329 
+
+Directory .
+ scripts/                  Locally Removed           329 
+
+Directory tools/dreams
+ Makefile.in               Locally Modified          329 
+
+Directory tools/dreams/dbtest
+ Makefile.in               Locally Modified          329 
+
+Directory tools/dreams/dbtest/src
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libagt
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          329 
+
+Directory lib
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libdral
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libnullptlib
+ Makefile.in               Locally Modified          329 
+
+Directory lib/libnullptlib/include
+ Makefile.in               Locally Modified          329 
+
+Move autoconf scripts from scripts/ to aux-scripts/.
