@@ -18,8 +18,8 @@
 #
 [Global]
 Description=Asim Base Library
-CSN=CSN-asimcore-330
+CSN=CSN-asimcore-333
 Name=asimcore
-Tag=HEAD
+Tag=v11.04
 Lock=asim-asimcore
 Buildorder=1
