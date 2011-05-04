@@ -11,7 +11,7 @@
 
 # Set the release name for the <package>-<release> .deb file
 #RELEASE = $(shell $(MAKE) print-release-name | sed 's/v//' )
-RELEASE = 11.04
+RELEASE = 11.08
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
