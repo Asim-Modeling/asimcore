@@ -963,6 +963,9 @@ PmScheduleProgress(string& type,
     {
         action = ACTION_CYCLE_PERIOD;
     }
+    else if (type == "sscmark") {
+        action = ACTION_SSCMARK_PERIOD;
+    }
     else
     {
         // EMSG("invalid action option [" << type << "]"
@@ -983,6 +986,10 @@ PmScheduleProgress(string& type,
         else if (action == ACTION_MACROINST_PERIOD)
         {
             CMD_Progress(AWBPROG_CLEARMACROINST, "", ACTION_NOW);
+        }
+        else if (action == ACTION_SSCMARK_PERIOD) 
+        {
+            CMD_Progress(AWBPROG_CLEARSSCMARK, "", ACTION_NOW);
         }
         else
         {
@@ -1006,6 +1013,12 @@ PmScheduleProgress(string& type,
         INT32 p = atoi(period);
         XMSG("PmScheduleProgress macro inst period " << p);
         CMD_Progress(AWBPROG_MACROINST, "", action, p);
+    }
+    else if (action == ACTION_SSCMARK_PERIOD)
+    {
+        INT32 p = atoi(period);
+        XMSG("PmScheduleProgress ssc mark  period " << p);
+        CMD_Progress(AWBPROG_SSCMARK, "", action, p);
     }
     else
     {
@@ -1164,6 +1177,14 @@ DecodeActionTime (char *aStr,
             }
             else if (strcmp(aStr, "macroinst_period") == 0) {
                 *action = ACTION_MACROINST_PERIOD;
+                return(true);
+            }
+             else if (strcmp(aStr, "sscmark_once") == 0) {
+                *action = ACTION_SSCMARK_ONCE;
+                return(true);
+            }
+            else if (strcmp(aStr, "sscmark_period") == 0) {
+                *action = ACTION_SSCMARK_PERIOD;
                 return(true);
             }
             else if (strcmp(aStr, "packet_once") == 0) {

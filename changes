@@ -7100,3 +7100,20 @@ Sync of Intel revision 3370.
 
     mgambhir    Date: Fri Jun  3 13:16:02 EDT 2011  CSN: CSN-simcore-3371
     - Patch from Oren Ben-Kiki to control simulation based on SSC marker instructions.
+
+----------
+mpellaue    Date: Mon Sep 19 16:40:06 EDT 2011  CSN: CSN-asimcore-336
+                  Mon Sep 19 20:40:06 UTC 2011
+
+
+Directory modules/controller/classic
+ awb-notcl.cpp             Locally Modified          335 
+ awb-notcl.h               Locally Modified          335 
+
+
+Sync of Intel commit revision 3372.
+
+    mgambhir    Date: Mon Jun  6 14:55:24 EDT 2011  CSN: CSN-simcore-3372
+
+    - Extended the previous commit (SSC Marker patch by Oren Ben-Kiki) to
+      Awb no-tcl stub

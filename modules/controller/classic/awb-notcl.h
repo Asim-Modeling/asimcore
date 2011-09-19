@@ -36,15 +36,15 @@ extern char *overrideWorkbench; /* NOT USED */
  */
 
 enum AWB_PROGRESSTYPE { AWBPROG_CLEARCYCLE, AWBPROG_CLEARINST, AWBPROG_CLEARMACROINST,
-                        AWBPROG_CLEARPACKET, AWBPROG_CLEARNANOSECOND,
-                        AWBPROG_EXIT, AWBPROG_START, AWBPROG_STOP,  AWBPROG_MACROINST,
+                        AWBPROG_CLEARSSCMARK, AWBPROG_CLEARPACKET, AWBPROG_CLEARNANOSECOND,
+                        AWBPROG_EXIT, AWBPROG_START, AWBPROG_STOP,  AWBPROG_MACROINST, AWBPROG_SSCMARK,
                         AWBPROG_CYCLE, AWBPROG_INST, AWBPROG_PACKET, AWBPROG_NANOSECOND,
                         AWBPROG_THREADBEGIN, AWBPROG_THREADEND,
                         AWBPROG_THREADUNBLOCK, AWBPROG_THREADBLOCK,
                         AWBPROG_EVENTOVERFLOW };
 
-#define AWB_PROGRESSSTRS { "clearcycle", "clearinst","clearmacroinst", "clearpacket", "clearnanosecond", \
-                           "exit", "start", "stop", "macroinst",\
+#define AWB_PROGRESSSTRS { "clearcycle", "clearinst","clearmacroinst", "clearsscmark", "clearpacket", "clearnanosecond", \
+                           "exit", "start", "stop", "macroinst", "sscmark",\
                            "cycle", "inst", "packet", "nanosecond", \
                            "threadbegin", "threadend", \
                            "threadunblock", "threadblock", "eventoverflow" }
