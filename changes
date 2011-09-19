@@ -7266,3 +7266,21 @@ Sync of Intel commit 3381
     mgambhir    Date: Wed Jul  6 17:49:38 EDT 2011  CSN: CSN-simcore-3381
 
     * Added regex based tracing support to Asim minimal controller 
+
+----------
+mpellaue    Date: Mon Sep 19 17:22:37 EDT 2011  CSN: CSN-asimcore-342
+                  Mon Sep 19 21:22:37 UTC 2011
+
+
+Directory modules/controller/minimal
+ main_mini.cpp             Locally Modified          341 
+ args_mini.cpp             Locally Modified          341 
+
+
+Sync of Intel commit 3389
+
+    mgambhir    Date: Wed Aug 17 16:45:18 EDT 2011  CSN: CSN-simcore-3389
+
+    - Added minimal dral event support to the minimal controller. 
+      - events can only be turned on at cycle 0
+      - events cannon be turned off during the simulation run. 

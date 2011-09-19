@@ -152,7 +152,11 @@ ParseVariables(INT32 argc, char **argv)
     }
     else if (strcmp(argv[0], "-e") == 0) 
     {
-        ASIMERROR ("There is no events support in the mini args");
+        ASSERT(runWithEventsOn,"You are trying to generate events in a "
+              "model not compiled with events. Build the model with EVENTS=1");
+        DRALEVENT(TurnOn());
+        DRALEVENT(StartActivity(ASIM_CLOCKABLE_CLASS::GetClockServer()->getFirstDomainCycle()));
+        ASIM_CLOCKABLE_CLASS::GetClockServer()->DralTurnOn();
     }
     else if (strcmp(argv[0], "-strip") == 0) 
     {

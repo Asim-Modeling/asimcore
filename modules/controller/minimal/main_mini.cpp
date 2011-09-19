@@ -48,7 +48,7 @@
 
 // Global declaration of control variables - BAD
 UINT64 MaxCycles = 100;
-char *StatsFileName = "stats.xml";
+char *StatsFileName = const_cast<char *>("stats.xml");
 
 static void PrintInfo();
 
