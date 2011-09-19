@@ -77,14 +77,14 @@ DRAL_CLIENT_ASCII_IMPLEMENTATION_CLASS::Get_line (
  */
 unsigned char
 DRAL_CLIENT_ASCII_IMPLEMENTATION_CLASS::TimeSpanStrToByte(
-    char * s)
+    const char * s)
 {
     char * buffer[3];
     int i;
     unsigned char u=0;
-    char * c="|";  // used as delimiter when calling strtok
+    char * c= const_cast<char*>("|");  // used as delimiter when calling strtok
     i=0;
-    if ((buffer[0]=strtok(s,c)))
+    if ((buffer[0]=strtok(const_cast<char*>(s),c)))
     {
         i++;
         if ((buffer[1]=strtok((char *)NULL,c)))

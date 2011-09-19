@@ -74,7 +74,7 @@ TagVecDictionaryNF::dumpCycleVector()
     printf ("TVEType_DICTIONARY_NF efficiency = %g \n",((double)nextEntry/(double)CYCLE_CHUNK_SIZE*100.0));
     for (int i=0;i<nextEntry;i++)
     {
-        printf ("<%d,%llu> ",
+        printf ("<%d,"FMT64U,
                 baseCycle+valvec[i].cycleOffset,
                 dict->getValueByCycle(valvec[i].key,(valvec[i].cycleOffset+baseCycle))
                );

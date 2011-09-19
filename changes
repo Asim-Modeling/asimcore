@@ -7117,3 +7117,61 @@ Sync of Intel commit revision 3372.
 
     - Extended the previous commit (SSC Marker patch by Oren Ben-Kiki) to
       Awb no-tcl stub
+
+----------
+mpellaue    Date: Mon Sep 19 16:43:49 EDT 2011  CSN: CSN-asimcore-337
+                  Mon Sep 19 20:43:49 UTC 2011
+
+
+Directory lib/libdraldb/include/asim
+ DBListener.h              Locally Modified          336 
+ ItemHandler.h             Locally Modified          336 
+ TrackHeap.h               Locally Modified          336 
+ DBGraph.h                 Locally Modified          336 
+ ItemTagDef.h              Locally Modified          336 
+ DBGraphNode.h             Locally Modified          336 
+ TagDescVector.h           Locally Modified          336 
+ Hash6431.h                Locally Modified          336 
+ DBItoa.h                  Locally Modified          336 
+ DBListenerDef.h           Locally Modified          336 
+
+Directory lib/libdraldb/src
+ TagVecDictionary.cpp      Locally Modified          336 
+ TagVecDenseDictionaryNF.cpp Locally Modified          336 
+ DBGraph.cpp               Locally Modified          336 
+ DBGraphNode.cpp           Locally Modified          336 
+ TagVecDenseDictionary.cpp Locally Modified          336 
+ TagVecDictionaryNF.cpp    Locally Modified          336 
+ ItemTagHeap.cpp           Locally Modified          336 
+ DBListener.cpp            Locally Modified          336 
+ ItemHandler.cpp           Locally Modified          336 
+
+Directory lib/libasim/src
+ xmlout-nolib.cpp          Locally Modified          336 
+
+Directory lib/libdral/include/asim
+ dralServer.h              Locally Modified          336 
+ dralClientAscii_v0_1.h    Locally Modified          336 
+ dralListenerConverter.h   Locally Modified          336 
+ dralListenerOld.h         Locally Modified          336 
+ dralListener.h            Locally Modified          336 
+
+Directory lib/libdral/src
+ dralServer.cpp            Locally Modified          336 
+ dralClientAscii_v0_1.cpp  Locally Modified          336 
+ dralListenerConverter.cpp Locally Modified          336 
+
+
+Sync of Intel commit 3374
+
+mgambhir    Date: Mon Jun  6 14:55:24 EDT 2011  CSN: CSN-simcore-3372
+
+- fixed warnings when built with gcc 4.3.2
+  - char * variable when passed a const string threw a warning with gcc
+    4.3.2. To fix this a lot of function prototypes were changed to take
+    a const char* parameter instead of a char*
+  - some conversion warnings in libdraldb like uint32 to uint16 conversion
+    were turned off by removing -Wconversion flag
+  - some data type conversion warnings were removed by using
+    static_cast<T> and const_cast<T>
+

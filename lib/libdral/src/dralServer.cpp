@@ -74,7 +74,7 @@ typedef VA_LIST_TYPE VA_LIST_T;
  * to write the events and the size of the write buffer
  */
 DRAL_SERVER_CLASS::DRAL_SERVER_CLASS(
-    char * fileName, UINT16 buffer_size, bool avoid_rep,
+    const char * fileName, UINT16 buffer_size, bool avoid_rep,
     bool compression, bool embededTarFile)
 {
     Init(buffer_size,avoid_rep,compression);

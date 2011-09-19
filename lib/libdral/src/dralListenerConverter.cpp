@@ -84,13 +84,13 @@ DRAL_LISTENER_CONVERTER_CLASS::EndSimulation(void)
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::Error(char * error)
+DRAL_LISTENER_CONVERTER_CLASS::Error(const char * error)
 {
     dralListener->Error(error);
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::NonCriticalError(char * error)
+DRAL_LISTENER_CONVERTER_CLASS::NonCriticalError(const char * error)
 {
     dralListener->NonCriticalError(error);
 }
@@ -102,13 +102,13 @@ DRAL_LISTENER_CONVERTER_CLASS::Version(UINT16 version)
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::NewNode(UINT16 node_id, char * node_name, UINT16 parent_id, UINT16 instance)
+DRAL_LISTENER_CONVERTER_CLASS::NewNode(UINT16 node_id, const char * node_name, UINT16 parent_id, UINT16 instance)
 {
     dralListener->NewNode(node_id, node_name, parent_id, instance);
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::NewEdge(UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 bandwidth, UINT32 latency, char * name)
+DRAL_LISTENER_CONVERTER_CLASS::NewEdge(UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 bandwidth, UINT32 latency, const char * name)
 {
     dralListener->NewEdge(sourceNode, destNode, edge_id, bandwidth, latency, name);
 }
@@ -186,13 +186,13 @@ DRAL_LISTENER_CONVERTER_CLASS::SetNodeTagSet(UINT16 node_id, UINT32 tag_idx, UIN
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::Comment(UINT32 magic_num, char * cont)
+DRAL_LISTENER_CONVERTER_CLASS::Comment(UINT32 magic_num, const char * cont)
 {
     dralListener->Comment(magic_num, cont);
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::CommentBin(UINT16 magic_num, char * cont, UINT32 length)
+DRAL_LISTENER_CONVERTER_CLASS::CommentBin(UINT16 magic_num, const char * cont, UINT32 length)
 {
     dralListener->CommentBin(magic_num, cont, length);
 }
@@ -216,7 +216,7 @@ DRAL_LISTENER_CONVERTER_CLASS::StartActivity(UINT64 start_activity_cycle)
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::SetTagDescription(UINT32 tag_idx, char description [])
+DRAL_LISTENER_CONVERTER_CLASS::SetTagDescription(UINT32 tag_idx, const char description [])
 {
     dralListener->SetTagDescription(tags[tag_idx], description);
 }
@@ -282,19 +282,19 @@ DRAL_LISTENER_CONVERTER_CLASS::SetHighWaterMark(UINT16 node_id, UINT32 mark)
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::Comment(char * comment)
+DRAL_LISTENER_CONVERTER_CLASS::Comment(const char * comment)
 {
     dralListener->Comment(comment);
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::AddNode(UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance)
+DRAL_LISTENER_CONVERTER_CLASS::AddNode(UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance)
 {
     dralListener->AddNode(node_id, node_name, parent_id, instance);
 }
 
 void
-DRAL_LISTENER_CONVERTER_CLASS::AddEdge(UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 bandwidth, UINT32 latency, char * name)
+DRAL_LISTENER_CONVERTER_CLASS::AddEdge(UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 bandwidth, UINT32 latency, const char * name)
 {
     dralListener->AddEdge(sourceNode, destNode, edge_id, bandwidth, latency, name);
 }

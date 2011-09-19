@@ -59,7 +59,7 @@ class DRAL_CLIENT_ASCII_IMPLEMENTATION_CLASS
      * Private method used to convert the time_span string
      * format from the string format to the unsigned byte format
      */
-    unsigned char TimeSpanStrToByte(char * s);
+    unsigned char TimeSpanStrToByte(const char * s);
 
 
     /**

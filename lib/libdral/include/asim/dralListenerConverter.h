@@ -111,7 +111,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * Client will not process more events
       * @param error The description of the error found
       */
-    virtual void Error (char * error);
+    virtual void Error (const char * error);
 
     /**
       * @brief Notifies a non critical error
@@ -121,7 +121,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * will still be able to process the rest of events.
       * @param error The description of the non critical error found
       */
-    virtual void NonCriticalError (char * error);
+    virtual void NonCriticalError (const char * error);
 
     /**
       * @brief Notifies the DRAL version used in the dral trace
@@ -149,7 +149,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * @param instance The instance number
       */
     virtual void NewNode (
-        UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance);
+        UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance);
 
     /**
       * @brief Notifies the declaration of a new edge
@@ -162,7 +162,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       */
     virtual void NewEdge (
         UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-        UINT32 bandwidth, UINT32 latency, char * name);
+        UINT32 bandwidth, UINT32 latency, const char * name);
 
     /**
       * @brief Notifies the definition of the layout structure of a given node
@@ -301,7 +301,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * @param magic_num The comment identifier
       * @param comment The comment
       */
-    virtual void Comment (UINT32 magic_num, char * cont);
+    virtual void Comment (UINT32 magic_num, const char * cont);
 
     /**
       * @brief Notifies a certain binary comment in the dral trace
@@ -309,7 +309,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * @param comment The comment
       * @param length The comment length
       */
-    virtual void CommentBin (UINT16 magic_num, char * cont, UINT32 length);
+    virtual void CommentBin (UINT16 magic_num, const char * cont, UINT32 length);
 
     /**
       * @brief Notifies the input bandwidth of a node. The input bandwidth is
@@ -339,7 +339,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * @param tag_name The tag
       * @param description The description
       */
-    virtual void SetTagDescription (UINT32 tag_idx, char description []);
+    virtual void SetTagDescription (UINT32 tag_idx, const char description []);
 
     /**
     * @brief Notifies the frequency domain of a node
@@ -470,7 +470,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * number of the comment
       * @param comment The comment
       */
-    virtual void Comment (char * comment);
+    virtual void Comment (const char * comment);
 
     /**
       * @brief Notifies the declaration of a new node
@@ -480,7 +480,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       * @param instance The instance number
       */
     virtual void AddNode (
-        UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance);
+        UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance);
 
     /**
       * @brief Notifies the declaration of a new edge
@@ -493,7 +493,7 @@ class DRAL_LISTENER_CONVERTER_CLASS : public DRAL_LISTENER_CLASS
       */
     virtual void AddEdge (
         UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-        UINT32 bandwidth, UINT32 latency, char * name);
+        UINT32 bandwidth, UINT32 latency, const char * name);
 
     /**
       * @brief Notifies the declaration of a new tag

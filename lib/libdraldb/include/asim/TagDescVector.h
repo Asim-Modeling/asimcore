@@ -243,7 +243,7 @@ TagDescVector::getFormatedTagValue(UINT16 tagId, UINT64 value)
 
     if (tgvtype==TagStringValue)
     {
-        return strtbl->getString(value);
+        return strtbl->getString(static_cast<int32_t>(value));
     }
 
     if (tgbase==16)

@@ -265,7 +265,7 @@ DBGraph::normalizeNodeName(QString name)
 }
 
 QString
-DBGraph::slotedNodeName(QString name, UINT16 level, UINT32 list [])
+DBGraph::slotedNodeName(QString name, UINT16 level, const UINT32 list [])
 {
     QString nname = DBGraph::normalizeNodeName(name);
     if(level == 0)
@@ -360,7 +360,7 @@ DBGraph::decodeNodeSlot(QString strnodeslot,QString* rnodename,NodeSlot* rnslot)
  * @return true if the node exists. False otherwise.
  */
 bool
-DBGraph::setNodeLayout(UINT16 node_id, UINT16 dimensions, UINT32 capacities [])
+DBGraph::setNodeLayout(UINT16 node_id, UINT16 dimensions, const UINT32 capacities [])
 {
     // look for the node
     DBGraphNode* node = dbgnList->find((long)node_id);

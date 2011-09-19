@@ -397,7 +397,7 @@ ItemHandler::getFormatedTagValue()
     UINT64 value;
     INT32 tagId = itemtagheap->getTagId(this);
     value = itemtagheap->getValue(this);
-    return tagdescvec->getFormatedTagValue(tagId, value);
+    return tagdescvec->getFormatedTagValue(static_cast<UINT16>(tagId), value);
 }
 
 /**

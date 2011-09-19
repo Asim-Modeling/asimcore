@@ -77,7 +77,7 @@ TagVecDenseDictionaryNF::dumpCycleVector()
     printf ("Dumping cycle vector base cycle = %d. Encoding type is TVEType_DENSE_DICTIONARY_NF\n",baseCycle);
     for (int i=0;i<nextEntry;i++)
     {
-        printf ("<%d,%llu> ",
+        printf ("<%d,"FMT64U"> ",
                 baseCycle+valvec[i].cycleOffset,
                 dict->getValueByCycle(valvec[i].key,(valvec[i].cycleOffset+baseCycle))
                );

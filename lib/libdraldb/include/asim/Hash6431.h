@@ -58,7 +58,7 @@ class Hash6431Node
         Hash6431Node* next; // Pointer to the next collision node.
         UINT64 key; // Key of the entry.
         INT32  value : 31; // Value of the entry.
-        INT32  used  : 1; // If the node is occupied or not.
+        UINT32  used  : 1; // If the node is occupied or not.
 
     friend class Hash6431;
 };

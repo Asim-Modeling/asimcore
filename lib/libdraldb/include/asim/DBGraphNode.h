@@ -59,7 +59,7 @@ class DBGraphNode
         inline QString getName();
         inline UINT16 getNodeId();
 
-        void   setLayout(UINT16 dimensions, UINT32 capacities []);
+        void   setLayout(UINT16 dimensions, const UINT32 capacities []);
 
         inline UINT16 getInputBW();
         inline UINT16 getOutputBW();

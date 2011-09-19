@@ -101,7 +101,7 @@ class LSetTagListNode
          * @return the new object.
          */
         LSetTagListNode (UINT32 cyc,INT32 p_tagid, UINT32 p_nval,
-                        UINT64* p_value_array)
+                        const UINT64* p_value_array)
         {
             commonInit(cyc,p_tagid);
 

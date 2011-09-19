@@ -49,7 +49,7 @@ XMLOut::XMLOut (
     this->debug = debug;
 
     // write out (extended) XML header
-    char* creatorComment = "Created by ASIM XMLOut";
+    const char* creatorComment = "Created by ASIM XMLOut";
     writer.CreateHeader(root, dtdPublicId, dtdSystemId, creatorComment);
 }
 

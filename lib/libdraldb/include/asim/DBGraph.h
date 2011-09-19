@@ -74,7 +74,7 @@ class DBGraph
         inline INT32 getNodeCapacity (UINT16 node_id);
         inline INT32 getNodeInputBW  (UINT16 node_id);
         inline INT32 getNodeOutputBW (UINT16 node_id);
-        bool setNodeLayout    (UINT16 node_id, UINT16 dimensions, UINT32 capacities []);
+        bool setNodeLayout    (UINT16 node_id, UINT16 dimensions, const UINT32 capacities []);
 
         inline DBGraphEdge* getEdge (UINT16 edge_id);
         DBGraphEdge* findEdgeByNameFromTo(QString name,QString fromstr,QString tostr);
@@ -85,7 +85,7 @@ class DBGraph
         QString getGraphDescription();
 
         static QString normalizeNodeName(QString name);
-        static QString slotedNodeName(QString name,UINT16 level,  UINT32 list []);
+        static QString slotedNodeName(QString name,UINT16 level,  const UINT32 list []);
         static QString slotedNodeName(QString name,NodeSlot nslot);
         static bool decodeNodeSlot(QString strnodeslot,QString* nodename,NodeSlot* nslot);
         //static QString slotedEdgeName(DBGraphEdge* edge, INT32 pos);

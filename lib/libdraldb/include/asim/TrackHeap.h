@@ -97,9 +97,9 @@ class TrackHeap : public AMemObj, public StatObj, public ZipObject
         inline bool addMoveItem(UINT16 edgeid,INT32 itemIdx, INT32 cycle,UINT16 pos=0);
 
         // aux
-        inline INT32 resolveTrackIdForNode(UINT16 node_id,UINT16 level, UINT32 list []);
-        inline INT32 resolveTrackIdForEnterNode(UINT16 node_id,UINT16 level, UINT32 list []);
-        inline INT32 resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, UINT32 list []);
+        inline INT32 resolveTrackIdForNode(UINT16 node_id,UINT16 level, const UINT32 list []);
+        inline INT32 resolveTrackIdForEnterNode(UINT16 node_id,UINT16 level, const UINT32 list []);
+        inline INT32 resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, const UINT32 list []);
         inline INT32 resolveTrackIdEdge(UINT16 edge_id);
         inline INT32 resolveTrackIdForCycleTag();
 
@@ -121,7 +121,7 @@ class TrackHeap : public AMemObj, public StatObj, public ZipObject
         TrackHeap();
         virtual ~TrackHeap();
 
-        inline INT32 resolveTrackIdFor(UINT16 node_id,UINT16 level, UINT32 list [], QDict<INT32>* hash);
+        inline INT32 resolveTrackIdFor(UINT16 node_id,UINT16 level, const UINT32 list [], QDict<INT32>* hash);
         
     private:
         TrackIDVector trackIDVector; // Vector with all the tracking.
@@ -252,7 +252,7 @@ TrackHeap::resolveTrackIdForCycleTag()
  * @return the trackid.
  */
 INT32
-TrackHeap::resolveTrackIdForNode(UINT16 node_id, UINT16 level, UINT32 list [])
+TrackHeap::resolveTrackIdForNode(UINT16 node_id, UINT16 level, const UINT32 list [])
 {
     return resolveTrackIdFor(node_id,level,list,trackedNodes);
 }
@@ -263,7 +263,7 @@ TrackHeap::resolveTrackIdForNode(UINT16 node_id, UINT16 level, UINT32 list [])
  * @return the trackid.
  */
 INT32
-TrackHeap::resolveTrackIdForEnterNode(UINT16 node_id,UINT16 level, UINT32 list [])
+TrackHeap::resolveTrackIdForEnterNode(UINT16 node_id,UINT16 level, const UINT32 list [])
 {
     return resolveTrackIdFor(node_id,level,list,trackedEnterNodes);
 }
@@ -274,7 +274,7 @@ TrackHeap::resolveTrackIdForEnterNode(UINT16 node_id,UINT16 level, UINT32 list [
  * @return the trackid.
  */
 INT32
-TrackHeap::resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, UINT32 list [])
+TrackHeap::resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, const UINT32 list [])
 {
     return resolveTrackIdFor(node_id,level,list,trackedExitNodes);
 }
@@ -285,7 +285,7 @@ TrackHeap::resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, UINT32 list []
  * @return the trackid.
  */
 INT32
-TrackHeap::resolveTrackIdFor(UINT16 node_id, UINT16 level, UINT32 list [], QDict<INT32>* hash)
+TrackHeap::resolveTrackIdFor(UINT16 node_id, UINT16 level, const UINT32 list [], QDict<INT32>* hash)
 {
     // Checks if the node exists.
     DBGraphNode* node = dbgraph->getNode(node_id);

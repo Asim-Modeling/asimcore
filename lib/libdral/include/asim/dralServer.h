@@ -98,7 +98,7 @@ class DRAL_SERVER_CLASS
      * @param avoidRep if true then dral server accepts nodes with the same name and instance number.
      */
      DRAL_SERVER_CLASS (
-        char * fileName,           // the file name
+        const char * fileName,           // the file name
         UINT16 bufferSize = 4096,  // buffer size
         bool avoidRep = false,     // shall the dral server specify different
                                    // instance numbers for nodes with the same name

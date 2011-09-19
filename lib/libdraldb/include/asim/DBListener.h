@@ -96,7 +96,7 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
           */
         void SetTagSingleValue (
                      UINT32 item_id,
-                     char* tag_name,
+                     const char* tag_name,
                      UINT64 value,
                      UBYTE time_span
                     ) ;
@@ -106,8 +106,8 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
           */
         void SetTagString (
                      UINT32 item_id,
-                     char* tag_name,
-                     char* str,
+                     const char* tag_name,
+                     const char* str,
                      UBYTE time_span
                     ) ;
 
@@ -116,9 +116,9 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
           */
         void SetTagSet (
                      UINT32 item_id,
-                     char* tag_name,
+                     const char* tag_name,
                      UINT32 nval,
-                     UINT64* value,
+                     const UINT64* value,
                      UBYTE time_span
                     ) ;
 
@@ -176,7 +176,7 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
           */
         void AddNode (
                      UINT16 node_id,
-                     char * node_name,
+                     const char * node_name,
                      UINT16 parent_id,
                      UINT16 instance
                      );
@@ -190,7 +190,7 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
                      UINT16 edge_id,
                      UINT32 bandwidth,
                      UINT32 latency,
-                     char * name
+                     const char * name
                      );
 
         /**
@@ -199,7 +199,7 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
         void SetCapacity (
                          UINT16 node_id,
                          UINT32 capacity,
-                         UINT32 capacities [],
+                         const UINT32 capacities [],
                          UINT16 dimensions
                          );
 
@@ -214,17 +214,17 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
         /**
           * Function description
           */
-        void Comment (char * comment);
+        void Comment (const char * comment);
 
         /**
           * Function description
           */
-        void Error (char * error);
+        void Error (const char * error);
 
         /**
           * Function description
           */
-        void NonCriticalError (char * error);
+        void NonCriticalError (const char * error);
 
     // -----------------------------------------------
     // Dral (2) Listener Interface methods
@@ -235,38 +235,38 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
           */
         void Version (UINT16 version);
 
-        void NewNode (UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance);
+        void NewNode (UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance);
 
         void NewEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-             UINT32 bandwidth, UINT32 latency, char * name);
+             UINT32 bandwidth, UINT32 latency, const char * name);
 
-        void SetNodeLayout (UINT16 node_id, UINT32 capacity, UINT16 dim, UINT32 capacities []);
+        void SetNodeLayout (UINT16 node_id, UINT32 capacity, UINT16 dim, const UINT32 capacities []);
 
-        void EnterNode (UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position []);
-        void ExitNode (UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position []);
+        void EnterNode (UINT16 node_id, UINT32 item_id, UINT16 dim, const UINT32 position []);
+        void ExitNode (UINT16 node_id, UINT32 item_id, UINT16 dim, const UINT32 position []);
 
-        void SetCycleTag(char tag_name [], UINT64 value);
-        void SetCycleTagString(char tag_name [], char str []);
-        void SetCycleTagSet(char tag_name [], UINT32 nval, UINT64 set []);
+        void SetCycleTag(const char tag_name [], UINT64 value);
+        void SetCycleTagString(const char tag_name [], const char str []);
+        void SetCycleTagSet(const char tag_name [], UINT32 nval, const UINT64 set []);
 
-        inline void SetItemTag(UINT32 item_id, char tag_name [], UINT64 value);
-        inline void SetItemTagString(UINT32 item_id, char tag_name [], char str []);
-        inline void SetItemTagSet(UINT32 item_id, char tag_name [], UINT32 nval, UINT64 set []);
+        inline void SetItemTag(UINT32 item_id, const char tag_name [], UINT64 value);
+        inline void SetItemTagString(UINT32 item_id, const char tag_name [], const char str []);
+        inline void SetItemTagSet(UINT32 item_id, const char tag_name [], UINT32 nval, const UINT64 set []);
 
-        void SetNodeTag(UINT16 node_id, char tag_name [], UINT64 value,UINT16 level, UINT32 list []);
-        void SetNodeTagString(UINT16 node_id, char tag_name [], char str [],
-             UINT16 level, UINT32 list []);
-        void SetNodeTagSet(UINT16 node_id, char tag_name [], UINT16 n, UINT64 set [],
-             UINT16 level, UINT32 list []);
+        void SetNodeTag(UINT16 node_id, const char tag_name [], UINT64 value,UINT16 level, const UINT32 list []);
+        void SetNodeTagString(UINT16 node_id, const char tag_name [], const char str [],
+             UINT16 level, const UINT32 list []);
+        void SetNodeTagSet(UINT16 node_id, const char tag_name [], UINT16 n, const  UINT64 set [],
+             UINT16 level, const UINT32 list []);
 
-        void Comment (UINT32 magic_num, char comment []);
+        void Comment (UINT32 magic_num, const char comment []);
 
-        void CommentBin (UINT16 magic_num, char comment [], UINT32 length);
+        void CommentBin (UINT16 magic_num, const char comment [], UINT32 length);
         
         void StartActivity(UINT64);
         void SetNodeInputBandwidth(UINT16, UINT32);
         void SetNodeOutputBandwidth(UINT16, UINT32);
-        void SetTagDescription(char [], char []);
+        void SetTagDescription(const char [], const char []);
 
         void SetNodeClock(UINT16, UINT16) {}
         void NewClock(UINT16, UINT64, UINT16, const char []) {}
@@ -400,19 +400,19 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
 };
 
 void
-DBListener::SetItemTag(UINT32 item_id, char tag_name [], UINT64 value)
+DBListener::SetItemTag(UINT32 item_id, const char tag_name [], UINT64 value)
 {
     SetTagSingleValue (item_id,tag_name,value,0);
 }
 
 
-void DBListener::SetItemTagString(UINT32 item_id, char tag_name [], char str [])
+void DBListener::SetItemTagString(UINT32 item_id, const char tag_name [], const char str [])
 {
     SetTagString (item_id,tag_name,str,0);
 }
 
 void
-DBListener::SetItemTagSet(UINT32 item_id, char tag_name [], UINT32 nval, UINT64 set [])
+DBListener::SetItemTagSet(UINT32 item_id, const char tag_name [], UINT32 nval, const UINT64 set [])
 {
     SetTagSet (item_id, tag_name, nval,set,0);
 }

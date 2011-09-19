@@ -95,7 +95,7 @@ class TagHeapChunk
         setFirstFreeSlot(UINT32 slot)
         {
             Q_ASSERT(slot <= TAGS_PER_CHUNK);
-            content[0].reserved = (content[0].reserved & 0x1F) | (slot << 5);
+            content[0].reserved = static_cast<unsigned char>((content[0].reserved & 0x1F) | (slot << 5));
         }
 
         /*
@@ -111,7 +111,7 @@ class TagHeapChunk
             temp = content[0].reserved >> 5;
             temp++;
             Q_ASSERT(temp <= TAGS_PER_CHUNK);
-            content[0].reserved = (content[0].reserved & 0x1F) | (temp << 5);
+            content[0].reserved = static_cast<unsigned char>((content[0].reserved & 0x1F) | (temp << 5));
             return (temp - 1);
         }
 
@@ -138,10 +138,10 @@ class TagHeapChunk
         void
         setNextChunk(UINT32 slot)
         {
-            content[0].reserved = (content[0].reserved & 0xE0) | ((slot >> 24) & 0x0F);
-            content[1].reserved = (slot >> 16) & 0xFF;
-            content[2].reserved = (slot >> 8) & 0xFF;
-            content[3].reserved = slot & 0xFF;
+            content[0].reserved = static_cast<unsigned char>((content[0].reserved & 0xE0) | ((slot >> 24) & 0x0F));
+            content[1].reserved = static_cast<unsigned char>((slot >> 16) & 0xFF);
+            content[2].reserved = static_cast<unsigned char>((slot >> 8) & 0xFF);
+            content[3].reserved = static_cast<unsigned char>(slot & 0xFF);
         }
 
         TagHeapNode content[TAGS_PER_CHUNK]; // Four tags per chunk.

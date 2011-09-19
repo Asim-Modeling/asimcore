@@ -74,7 +74,7 @@ ItemTagHeap::ItemTagHeap()
 {
     myLogMgr = LogMgr::getInstance();
     tdv = TagDescVector::getInstance();
-    dralVersion = 9999999;
+    dralVersion = 999; 
     canonicalItemId = (UINT16) (TagDescVector::getItemId_TagId());
     itemVector = new ItemHeapVector();
     tagVector = new TagHeapVector();

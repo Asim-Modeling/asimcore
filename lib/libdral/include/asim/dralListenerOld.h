@@ -103,7 +103,7 @@ class DRAL_LISTENER_OLD_CLASS
       * Client will not process more events
       * @param error The description of the error found
       */
-    virtual void Error (char * error)=0;
+    virtual void Error (const char * error)=0;
 
     /**
       * @brief Notifies a non critical error
@@ -113,7 +113,7 @@ class DRAL_LISTENER_OLD_CLASS
       * will still be able to process the rest of events.
       * @param error The description of the non critical error found
       */
-    virtual void NonCriticalError (char * error)=0;
+    virtual void NonCriticalError (const char * error)=0;
 
     /**
       * @brief Notifies the DRAL version used in the dral trace
@@ -141,7 +141,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param instance The instance number
       */
     virtual void NewNode (
-        UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance)=0;
+        UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance)=0;
 
     /**
       * @brief Notifies the declaration of a new edge
@@ -154,7 +154,7 @@ class DRAL_LISTENER_OLD_CLASS
       */
     virtual void NewEdge (
         UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-        UINT32 bandwidth, UINT32 latency, char * name)=0;
+        UINT32 bandwidth, UINT32 latency, const char * name)=0;
 
     /**
       * @brief Notifies the definition of the layout structure of a given node
@@ -165,7 +165,7 @@ class DRAL_LISTENER_OLD_CLASS
       * the layout
       */
     virtual void SetNodeLayout (
-        UINT16 node_id, UINT32 capacity, UINT16 dim, UINT32 capacities [])=0;
+        UINT16 node_id, UINT32 capacity, UINT16 dim, const UINT32 capacities [])=0;
 
     /**
       * @brief Notifies the flow of an item into a given node
@@ -179,7 +179,7 @@ class DRAL_LISTENER_OLD_CLASS
       * single position list 
       */
     virtual void EnterNode (
-        UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position [])=0;
+        UINT16 node_id, UINT32 item_id, UINT16 dim,  const UINT32 position [])=0;
 
     /**
       * @brief Notifies the flow of an item exiting a given node
@@ -193,21 +193,21 @@ class DRAL_LISTENER_OLD_CLASS
       * single position list 
       */
     virtual void ExitNode (
-        UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position [])=0;
+        UINT16 node_id, UINT32 item_id, UINT16 dim, const UINT32 position [])=0;
 
     /**
       * @brief Notifies that the current cycle has been set a single value tag
       * @param tag_name The tag name
       * @param value The value of the tag
       */
-    virtual void SetCycleTag(char * tag_name, UINT64 value)=0;
+    virtual void SetCycleTag(const char * tag_name, UINT64 value)=0;
 
     /**
       * @brief Notifies that the current cycle has been set a string tag
       * @param tag_name The tag name
       * @param str The value of the tag
       */
-    virtual void SetCycleTagString(char * tag_name, char * str)=0;
+    virtual void SetCycleTagString(const char * tag_name, const char * str)=0;
 
     /**
       * @brief Notifies that the current cycle has been set a set tag
@@ -215,7 +215,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param nval The set size
       * @param set The set
       */
-    virtual void SetCycleTagSet(char * tag_name, UINT32 nval, UINT64 set [])=0;
+    virtual void SetCycleTagSet(const char * tag_name, UINT32 nval, const UINT64 set [])=0;
 
     /**
       * @brief Notifies that an item has been set a single value tag
@@ -224,7 +224,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param value The value of the tag
       */
     virtual void SetItemTag(
-        UINT32 item_id, char * tag_name, UINT64 value)=0;
+        UINT32 item_id, const char * tag_name, UINT64 value)=0;
 
     /**
       * @brief Notifies that an item has been set a string tag
@@ -233,7 +233,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param str The value of the tag
       */
     virtual void SetItemTagString(
-        UINT32 item_id, char * tag_name, char * str)=0;
+        UINT32 item_id, const char * tag_name, const char * str)=0;
 
     /**
       * @brief Notifies that an item has been set a set tag
@@ -243,7 +243,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param set The set
       */
     virtual void SetItemTagSet(
-        UINT32 item_id, char * tag_name, UINT32 nval, UINT64 set [])=0;
+        UINT32 item_id, const char * tag_name, UINT32 nval, const UINT64 set [])=0;
 
     /**
       * @brief Notifies that one or more slots within a node have been set a
@@ -256,8 +256,8 @@ class DRAL_LISTENER_OLD_CLASS
       * multiple position list
       */
     virtual void SetNodeTag(
-        UINT16 node_id, char * tag_name, UINT64 value,
-        UINT16 level, UINT32 list [])=0;
+        UINT16 node_id, const char * tag_name, UINT64 value,
+        UINT16 level, const UINT32 list [])=0;
 
     /**
       * @brief Notifies that one or more slots within a node have been set a
@@ -270,8 +270,8 @@ class DRAL_LISTENER_OLD_CLASS
       * multiple position list
       */
     virtual void SetNodeTagString(
-        UINT16 node_id, char * tag_name, char * str,
-        UINT16 level, UINT32 list [])=0;
+        UINT16 node_id, const char * tag_name, const char * str,
+        UINT16 level, const UINT32 list [])=0;
 
     /**
       * @brief Notifies that one or more slots within a node have been set a
@@ -285,15 +285,15 @@ class DRAL_LISTENER_OLD_CLASS
       * multiple position list
       */
     virtual void SetNodeTagSet(
-        UINT16 node_id, char * tag_name, UINT16 n, UINT64 set [],
-        UINT16 level, UINT32 list [])=0;
+        UINT16 node_id, const char * tag_name, UINT16 n, const UINT64 set [],
+        UINT16 level, const UINT32 list [])=0;
 
     /**
       * @brief Notifies a certain comment in the dral trace
       * @param magic_num The comment identifier
       * @param comment The comment
       */
-    virtual void Comment (UINT32 magic_num, char * cont)=0;
+    virtual void Comment (UINT32 magic_num, const char * cont)=0;
 
     /**
       * @brief Notifies a certain binary comment in the dral trace
@@ -301,7 +301,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param comment The comment
       * @param length The comment length
       */
-    virtual void CommentBin (UINT16 magic_num, char * cont, UINT32 length)=0;
+    virtual void CommentBin (UINT16 magic_num, const char * cont, UINT32 length)=0;
 
     /**
       * @brief Notifies the input bandwidth of a node. The input bandwidth is
@@ -331,7 +331,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param tag_name The tag
       * @param description The description
       */
-    virtual void SetTagDescription (char * tag_name, char description [])=0;
+    virtual void SetTagDescription (const char * tag_name, const char description [])=0;
 
     /**
     * @brief Notifies the frequency domain of a node
@@ -379,7 +379,7 @@ class DRAL_LISTENER_OLD_CLASS
       * command without this flag
       */
     virtual void SetTagSingleValue (
-        UINT32 item_id, char * tag_name,
+        UINT32 item_id, const char * tag_name,
         UINT64 value, UBYTE time_span_flags)=0;
 
     /**
@@ -391,8 +391,8 @@ class DRAL_LISTENER_OLD_CLASS
       * command without this flag
       */
     virtual void SetTagString (
-        UINT32 item_id, char * tag_name,
-        char * str, UBYTE time_span_flags)=0;
+        UINT32 item_id, const char * tag_name,
+        const char * str, UBYTE time_span_flags)=0;
 
     /**
       * @brief Notifies that an item has been set a set tag
@@ -404,8 +404,8 @@ class DRAL_LISTENER_OLD_CLASS
       * command without this flag
       */
     virtual void SetTagSet (
-        UINT32 item_id, char * tag_name, UINT32 set_size,
-        UINT64 * set, UBYTE time_span_flags)=0;
+        UINT32 item_id, const char * tag_name, UINT32 set_size,
+       const UINT64 * set, UBYTE time_span_flags)=0;
 
     /**
       * @brief Notifies the flow of an item into a given node
@@ -443,7 +443,7 @@ class DRAL_LISTENER_OLD_CLASS
       */
     virtual void SetCapacity (
         UINT16 node_id, UINT32 capacity,
-        UINT32 capacities [], UINT16 dimensions)=0;
+        const UINT32 capacities [], UINT16 dimensions)=0;
 
     /**
       * @brief Notifies that a node in the graph has been set a high water mark
@@ -462,7 +462,7 @@ class DRAL_LISTENER_OLD_CLASS
       * number of the comment
       * @param comment The comment
       */
-    virtual void Comment (char * comment)=0;
+    virtual void Comment (const char * comment)=0;
 
     /**
       * @brief Notifies the declaration of a new node
@@ -472,7 +472,7 @@ class DRAL_LISTENER_OLD_CLASS
       * @param instance The instance number
       */
     virtual void AddNode (
-        UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance)=0;
+        UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance)=0;
 
     /**
       * @brief Notifies the declaration of a new edge
@@ -485,7 +485,7 @@ class DRAL_LISTENER_OLD_CLASS
       */
     virtual void AddEdge (
         UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-        UINT32 bandwidth, UINT32 latency, char * name)=0;
+        UINT32 bandwidth, UINT32 latency, const char * name)=0;
 
     /*@}*/ // End of the block: CallBacks for commands only found in DRAL 1.0
 

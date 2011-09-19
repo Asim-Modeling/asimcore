@@ -112,7 +112,7 @@ class DBItoa
             int cnt=0;
             while (--count >= 0)
             {
-                result[cnt++] = ((value >> count) & 1) + '0';
+                result[cnt++] = static_cast<char>(((value >> count) & 1) + '0');
             }
 
             for (int i = cnt; i < width; i++)

@@ -65,7 +65,7 @@ DBGraphNode::~DBGraphNode()
  * @return void.
  */
 void
-DBGraphNode::setLayout(UINT16 _dimensions, UINT32* _capacities)
+DBGraphNode::setLayout(UINT16 _dimensions, const UINT32* _capacities)
 {
     Q_ASSERT(_dimensions>=1);
     Q_ASSERT(_capacities!=NULL);

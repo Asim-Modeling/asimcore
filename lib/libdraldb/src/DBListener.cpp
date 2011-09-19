@@ -229,7 +229,7 @@ DBListener::NewItem (UINT32 item_id)
 
 
 void
-DBListener::SetTagSingleValue (UINT32 item_id,char* tag_name,UINT64 value,UBYTE time_span)
+DBListener::SetTagSingleValue (UINT32 item_id, const char* tag_name,UINT64 value,UBYTE time_span)
 {
     if (!doTrackItemTags) { return; }
 
@@ -279,7 +279,7 @@ DBListener::SetTagSingleValue (UINT32 item_id,char* tag_name,UINT64 value,UBYTE 
 
 
 void
-DBListener::SetTagString (UINT32 item_id,char* tag_name,char* str,UBYTE time_span)
+DBListener::SetTagString (UINT32 item_id, const char* tag_name, const char* str, UBYTE time_span)
 {
     if (!lastProcessedEventOk || !doTrackItemTags ) { return; }
     bool mutant=false;
@@ -328,8 +328,8 @@ DBListener::SetTagString (UINT32 item_id,char* tag_name,char* str,UBYTE time_spa
 
 
 void
-DBListener::SetTagSet (UINT32 item_id,char* tag_name,UINT32 nval,
-               UINT64* value,UBYTE time_span)
+DBListener::SetTagSet (UINT32 item_id, const char* tag_name, UINT32 nval,
+               const UINT64* value, UBYTE time_span)
 {
     if (!lastProcessedEventOk || !doTrackItemTags) { return; }
     bool mutant=false;
@@ -567,14 +567,14 @@ DBListener::Do_EndSimulation()
 }
 
 void
-DBListener::Comment (char * comment)
+DBListener::Comment (const char * comment)
 {
     /** @todo check if something more needs to be done */
     DBLISTENER_DISPATCH_LISTENERS(listener->Comment(comment);)
 }
 
 void
-DBListener::AddNode (UINT16 node_id,char * node_name,UINT16 parent_id,UINT16 instance)
+DBListener::AddNode (UINT16 node_id, const char * node_name,UINT16 parent_id,UINT16 instance)
 {
     QString qnodename(node_name);
     // errors already dumped into the log file by ConfigDB class
@@ -584,8 +584,8 @@ DBListener::AddNode (UINT16 node_id,char * node_name,UINT16 parent_id,UINT16 ins
 }
 
 void
-DBListener::AddEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,UINT32 bandwidth,
-                 UINT32 latency,char* name)
+DBListener::AddEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 bandwidth,
+                 UINT32 latency, const char* name)
 {
 //printf("DBListener::AddEdge snode=%d,dnode=%d, edge=%d,bw=%d,lat=%d,name=%s\n",(int)sourceNode,(int)destNode,(int)edge_id,(int)bandwidth,(int)latency,name);
     QString qname(name);
@@ -599,7 +599,7 @@ DBListener::AddEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,UINT32 b
 
 void
 DBListener::SetCapacity (UINT16 node_id,UINT32 capacity,
-                     UINT32 capacities [], UINT16 dimensions)
+                    const UINT32 capacities [], UINT16 dimensions)
 {
     lastProcessedEventOk = dbGraph->setNodeLayout(node_id,dimensions,capacities);
     DBLISTENER_DISPATCH_LISTENERS(listener->SetCapacity(node_id,capacity,capacities,dimensions);)
@@ -613,7 +613,7 @@ DBListener::SetHighWaterMark (UINT16 node_id,UINT32 mark)
 }
 
 void
-DBListener::Error (char * error)
+DBListener::Error (const char * error)
 {
     lastProcessedEventOk = false;
     myLogMgr->addLog(QString(error));
@@ -622,7 +622,7 @@ DBListener::Error (char * error)
 }
 
 void
-DBListener::NonCriticalError (char * error)
+DBListener::NonCriticalError (const char * error)
 {
     myLogMgr->addLog(QString(error));
     DBLISTENER_DISPATCH_LISTENERS(listener->NonCriticalError(error);)
@@ -646,20 +646,20 @@ DBListener::Version (UINT16 version)
 }
 
 void
-DBListener::NewNode (UINT16 node_id, char * node_name,UINT16 parent_id, UINT16 instance)
+DBListener::NewNode (UINT16 node_id, const char * node_name,UINT16 parent_id, UINT16 instance)
 { AddNode (node_id,node_name,parent_id, instance); }
 
 void
 DBListener::NewEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id,
-     UINT32 bandwidth, UINT32 latency, char * name)
+     UINT32 bandwidth, UINT32 latency, const char * name)
 { AddEdge(sourceNode,destNode,edge_id,bandwidth,latency,name); }
 
 void
-DBListener::SetNodeLayout (UINT16 node_id, UINT32 capacity, UINT16 dim, UINT32 capacities [])
+DBListener::SetNodeLayout (UINT16 node_id, UINT32 capacity, UINT16 dim, const UINT32 capacities [])
 { SetCapacity (node_id,capacity,capacities,dim); }
 
 void
-DBListener::EnterNode (UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position [])
+DBListener::EnterNode (UINT16 node_id, UINT32 item_id, UINT16 dim, const UINT32 position [])
 {
     //if (!lastProcessedEventOk) { return; }
 
@@ -701,7 +701,7 @@ DBListener::EnterNode (UINT16 node_id,UINT32 item_id,UINT32 slot_index)
 }
 
 void
-DBListener::ExitNode (UINT16 node_id, UINT32 item_id, UINT16 dim, UINT32 position [])
+DBListener::ExitNode (UINT16 node_id, UINT32 item_id, UINT16 dim, const UINT32 position [])
 {
     //if (!lastProcessedEventOk) { return; }
 
@@ -742,7 +742,7 @@ DBListener::ExitNode (UINT16 node_id,UINT32 slot_index)
 }
 
 void
-DBListener::SetCycleTag(char tag_name [], UINT64 value)
+DBListener::SetCycleTag(const char tag_name [], UINT64 value)
 {
     INT32 trackId = trHeap->resolveTrackIdForCycleTag();
     if (trackId<0)
@@ -762,7 +762,7 @@ DBListener::SetCycleTag(char tag_name [], UINT64 value)
 }
 
 void
-DBListener::SetCycleTagString(char tag_name [], char str [])
+DBListener::SetCycleTagString(const char tag_name [], const char str [])
 {
     INT32 trackId = trHeap->resolveTrackIdForCycleTag();
     if (trackId<0)
@@ -783,13 +783,13 @@ DBListener::SetCycleTagString(char tag_name [], char str [])
 }
 
 void
-DBListener::SetCycleTagSet(char tag_name [], UINT32 nval, UINT64 set [])
+DBListener::SetCycleTagSet(const char tag_name [], UINT32 nval, const UINT64 set [])
 {
     DBLISTENER_DISPATCH_LISTENERS(listener->SetCycleTagSet(tag_name,nval,set);)
 }
 
 void
-DBListener::SetNodeTag(UINT16 node_id, char tag_name [], UINT64 value,UINT16 level, UINT32 list [])
+DBListener::SetNodeTag(UINT16 node_id, const char tag_name [], UINT64 value,UINT16 level, const UINT32 list [])
 {
     // resolve track id...
     INT32 trackId = trHeap->resolveTrackIdForNode(node_id,level,list);
@@ -810,8 +810,8 @@ DBListener::SetNodeTag(UINT16 node_id, char tag_name [], UINT64 value,UINT16 lev
 }
 
 void
-DBListener::SetNodeTagString(UINT16 node_id, char tag_name [], char str [],
-     UINT16 level, UINT32 list [])
+DBListener::SetNodeTagString(UINT16 node_id, const char tag_name [], const char str [],
+     UINT16 level, const UINT32 list [])
 {
     // resolve track id...
     INT32 trackId = trHeap->resolveTrackIdForNode(node_id,level,list);
@@ -832,20 +832,20 @@ DBListener::SetNodeTagString(UINT16 node_id, char tag_name [], char str [],
 }
 
 void
-DBListener::SetNodeTagSet(UINT16 node_id, char tag_name [], UINT16 n, UINT64 set [],
-     UINT16 level, UINT32 list [])
+DBListener::SetNodeTagSet(UINT16 node_id, const char tag_name [], UINT16 n, const UINT64 set [],
+     UINT16 level, const  UINT32 list [])
 {
     DBLISTENER_DISPATCH_LISTENERS(listener->SetNodeTagSet(node_id,tag_name,n,set,level,list);)
 }
 
 void
-DBListener::Comment (UINT32 magic_num, char comment [])
+DBListener::Comment (UINT32 magic_num, const char comment [])
 {
     DBLISTENER_DISPATCH_LISTENERS(listener->Comment(magic_num,comment);)
 }
 
 void
-DBListener::CommentBin (UINT16 magic_num, char comment [], UINT32 length)
+DBListener::CommentBin (UINT16 magic_num, const char comment [], UINT32 length)
 {
     DBLISTENER_DISPATCH_LISTENERS(listener->CommentBin(magic_num, comment, length);)
 }
@@ -861,7 +861,7 @@ DBListener::SetNodeOutputBandwidth(UINT16, UINT32)
 }
 
 void 
-DBListener::SetTagDescription(char tag[], char desc[])
+DBListener::SetTagDescription(const char tag[], const char desc[])
 {
     tgdescvec->setTagLongDesc(QString(tag),QString(desc));
 }
