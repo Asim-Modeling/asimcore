@@ -1,9 +1,12 @@
-asim-core (11.08~svn20110504r331+lucid) lucid; urgency=low
+asim-core (11.09~svn20110919r344+lucid) lucid; urgency=low
 
   [ Joel Emer ]
   * r328
       Start of release v11.04 development.
   * r331
       v11.04 is released. Start of release v11.08 development.
+  [ Michael Pellauer ]
+  * r344
+      Branch for v11.09 release.
 
- -- Joel Emer <jsemer@intel.com>  Mon, 11 Apr 2011 17:54:29 -0400
+ -- Joel Emer <jsemer@intel.com>  Mon, 19 Sep 2011 17:54:29 -0400
