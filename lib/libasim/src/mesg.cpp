@@ -140,7 +140,6 @@ ASIM_MESG_CLASS::Finish(void)
         
     if (terminate)
     {
-        out << flush;
         if (ASIM_SMP_CLASS::GetRunningThreadNumber() > 0)
         {
             // Thread attempting to exit is a child thread.  exit() may

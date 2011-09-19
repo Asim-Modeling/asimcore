@@ -57,7 +57,7 @@ using namespace std;
  *
  */
 typedef class ASIM_MESG_CLASS *ASIM_MESG;
-class ASIM_MESG_CLASS 
+class ASIM_MESG_CLASS
 {
   private:
     // variables
@@ -85,16 +85,16 @@ class ASIM_MESG_CLASS
         const string & _prefix = "",
         const bool _printLocation = false,
         const bool _terminate = false);
-    
+
     /// filename constructor
     ASIM_MESG_CLASS (
         const string & _name,
         const string & _prefix = "",
         const bool _printLocation = false,
         const bool _terminate = false);
-    
+
     ~ASIM_MESG_CLASS ();
-    
+
     // message print methods
 
     /// prepare printing of a message
@@ -111,44 +111,58 @@ extern ASIM_MESG_CLASS asim_assert;
 // Global ASIM message mutex for thread safe logging
 extern pthread_mutex_t asim_mesg_mutex;
 
+//------------------------------------------------------------------------------
 //
-// Assertion macros. When 'condition' is not true,
-// these print the file and line number and exit.
+// Assertion macros
+//
+// Usage:
+//
+// WARN( cond )
+// WARN( cond, msg )
+// ASSERT( cond )
+// ASSERT( cond, msg )
+// VERIFY( cond )
+// VERIFY( cond, msg )
+// ASIMWARNING( mgs )
+// ASIMERROR( msg )
+//
+// When 'condition' is not true, these print
+// the file, line number, current cycle, msg (if provided)
+// and exit (except WARN-ings).
+//
 // ASSERT is checked only when compiled with ASIM_ENABLE_ASSERTIONS defined.
 // VERIFY is always checked.
 //
-// ASSERT, VERIFY, WARN macros can take one (condition) or two (condition,mesg) params.
-// ASSERTX, VERIFYX, WARNX are no longer required but kept for backwards compatibility.
+// For backwards compatibility:
+// WARNX( cond )     - same as WARN( cond )
+// ASSERTX( cond )   - same as ASSERT( cond )
+// VERIFYX( cond )   - same as VERIYX( cond )
 //
-
-// Macro dispatcher to pick message type and version with one or two arguments
-#define MESG_DISPATCHER( type, ... ) MESG_CHOOSER( __VA_ARGS__, MESG_TWOARGS, MESG_ONEARG )( type, __VA_ARGS__ )
-#define MESG_CHOOSER( a, b, impl, ... ) impl
-#define MESG_ONEARG( type, condition ) \
-    if (! (condition)) { \
-        asim_ ## type.Prepare(__FILE__,__LINE__); \
+//------------------------------------------------------------------------------
+#define ASSERTION_COND_MSG( type, condition, ... )  if (! (condition)) ASSERTION_MSG( type, ## __VA_ARGS__ )
+#define ASSERTION_MSG( ... )  MSG_ADDON_CHOOSER( __VA_ARGS__, MSG_WITH_ADDON, MSG_WITHOUT_ADDON )( __VA_ARGS__ )
+#define MSG_ADDON_CHOOSER( type, skip, impl, ... )  impl
+#define MSG_WITH_ADDON( type, msg )  ASSERTION_MSG_DUMP( type, << msg << endl )
+#define MSG_WITHOUT_ADDON( type )    ASSERTION_MSG_DUMP( type, )
+#define ASSERTION_MSG_DUMP( type, addon ) \
+    { \
+        asim_ ## type.Prepare(__FILE__,__LINE__) addon; \
         asim_ ## type.Finish(); \
     }
 
-#define MESG_TWOARGS( type, condition, mesg ) \
-    if (! (condition)) { \
-        asim_ ## type.Prepare(__FILE__,__LINE__) << mesg << endl; \
-        asim_ ## type.Finish(); \
-    }
-
-// Assertion macros implemnetation
+// Assertion macros implementation
 #ifdef ASIM_ENABLE_ASSERTIONS
 
-#define WARN( ... )           MESG_DISPATCHER( warn, __VA_ARGS__ ) 
-#define ASSERT( ... )         MESG_DISPATCHER( assert, __VA_ARGS__ )
+#define WARN( condition, ... )     ASSERTION_COND_MSG( warn, condition, ## __VA_ARGS__ )
+#define ASSERT( condition, ... )   ASSERTION_COND_MSG( assert, condition, ## __VA_ARGS__ )
 // Backwards compatibility
-#define WARNX( condition )    MESG_ONEARG( warn, condition )
-#define ASSERTX( condition )  MESG_ONEARG( assert, condition )
+#define WARNX( condition )         ASSERTION_COND_MSG( warn, condition )
+#define ASSERTX( condition )       ASSERTION_COND_MSG( assert, condition )
 
 #else // ASIM_ENABLE_ASSERTIONS
 
-#define WARN( ... )
-#define ASSERT( ... )
+#define WARN( condition, ... )
+#define ASSERT( condition, ... )
 // Backwards compatibility
 #define WARNX( condition )
 #define ASSERTX( condition )
@@ -156,21 +170,13 @@ extern pthread_mutex_t asim_mesg_mutex;
 #endif // ASIM_ENABLE_ASSERTIONS
 
 // same as ASSERT macros but can't be turned off
-#define VERIFY( ... )         MESG_DISPATCHER( assert, __VA_ARGS__ )
+#define VERIFY( condition, ... )   ASSERTION_COND_MSG( assert, condition, ## __VA_ARGS__ )
 // Backwards compatibility
-#define VERIFYX( condition )  MESG_ONEARG( assert, condition )
+#define VERIFYX( condition )       ASSERTION_COND_MSG( assert, condition )
 
 // Macros for errors and warnings.
-#define ASIMERROR( mesg ) \
-    { \
-        asim_error.Prepare(__FILE__,__LINE__) << mesg; \
-        asim_error.Finish(); \
-    }
+#define ASIMERROR( msg )           ASSERTION_MSG( error, msg )
+#define ASIMWARNING( msg )         ASSERTION_MSG( warn, msg )
 
-#define ASIMWARNING( mesg ) \
-    { \
-        asim_warn.Prepare(__FILE__,__LINE__) << mesg; \
-        asim_warn.Finish(); \
-    }
-
+//------------------------------------------------------------------------------
 #endif /* ASIM_MESG_H */
