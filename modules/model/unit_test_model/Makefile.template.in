@@ -1,0 +1,154 @@
+##############################################################################
+#
+# AWB Makefile template for unit testing of simcore package
+#
+# $REPLACE$PmName
+# $REPLACE$PmDesc
+#
+##############################################################################
+
+prefix = @prefix@
+
+#-----------------------------------------------------------------------------
+# set defaults for make configuration
+#-----------------------------------------------------------------------------
+GNU = $REPLACE$GNU
+OPT = $REPLACE$OPT
+DEBUG = $REPLACE$DEBUG
+STATIC = $REPLACE$STATIC
+WARN = $REPLACE$WARN
+PAR = $REPLACE$PAR
+COMMON_LFLAGS:=$REPLACE$COMMON_LFLAGS
+LOCAL_LFLAGS:=$REPLACE$LOCAL_LFLAGS
+LOCAL_CFLAGS:=$REPLACE$LOCAL_CFLAGS
+USE_TCL=yes
+#-----------------------------------------------------------------------------
+# top-level make configuration
+#-----------------------------------------------------------------------------
+include $REPLACE$MAKEFILECONFIG
+
+#-----------------------------------------------------------------------------
+# includes
+#-----------------------------------------------------------------------------
+ASIM_INCDIRS=$REPLACE$INCDIRS
+INCDIRS=$(ASIM_INCDIRS) -I. -I$(CXXTESTDIR) -I$(CXXTESTEXTDIR) -I$(BOOST_INC)
+TMP_LFLAGS=$(LFLAGS) -Wl,-rpath,$(BOOST_LIB) -L$(BOOST_LIB) -l$(BOOST_NAM)
+#-----------------------------------------------------------------------------
+# TARGET and required components
+#-----------------------------------------------------------------------------
+TARGET=$REPLACE$TARGET
+SUBDIRS=$REPLACE$SUBDIRS
+SUBTARGETS=$REPLACE$SUBTARGETS
+PMOBJS=$REPLACE$OBJS
+TESTOBJS=$(TARGET).o
+OBJS=$(PMOBJS) $(TESTOBJS)
+OOBJS:=$(addprefix obj/, $(OBJS))
+
+#-----------------------------------------------------------------------------
+# paths to sources
+#-----------------------------------------------------------------------------
+VPATH=$REPLACE$VPATH
+CPPTARGETS=$(VPATH)/$(TARGET).cpp
+
+#-----------------------------------------------------------------------------
+# build rules
+#-----------------------------------------------------------------------------
+.PHONY: all
+all : $(TARGET)
+
+TMP_TARGET := $(shell mktemp /tmp/$(TARGET).XXXXXX)
+$(TARGET) : $(CPPTARGETS) $(OOBJS) $(SUBTARGETS)
+	@rm -f $(TARGET)
+	$(CXX_REAL) -o $(TMP_TARGET) $(OOBJS) $(LIBS) $(TMP_LFLAGS) $(SUBTARGETS) && mv -f $(TMP_TARGET) $@ || (rm -f $(TMP_TARGET) && false)
+	@/bin/ls -l $@
+	@echo done building $@
+
+$(CPPTARGETS):
+	$(CXXTESTGEN) --runner=FErrorPrinter --include="cxxtest/FRoot.cpp" --part -o $@ src/include/asim/restricted/*.h
+
+# generate both .o files and .d files for #include dependencies;
+# we create all .o file in a separate obj/ directory;
+# we move the .d files into a separate .depend/ directory;
+# Note1: Ccache compilations leave the .d in . so we move it to obj/
+# Note2: GEM cxx -MD is broken and needs the sed fix!
+obj/%.o : %.cpp .dirs
+	$(CXX) $(MKDEPEND) -c -o $@ $(CFLAGS) -fno-inline $(INCDIRS) $<
+	@dfile=$(notdir $(basename $@)).d; if [ -e $$dfile ]; then mv $$dfile obj/$$dfile; fi
+	@sed -e 's/^\([^/]*\.o:\)/obj\/\1/' $(DEPEND_FILE) > .depend/$(notdir $(basename $@)).d
+	@rm -f $(DEPEND_FILE)
+
+#-----------------------------------------------------------------------------
+# tag file creation
+#-----------------------------------------------------------------------------
+# Find files
+CPP := $(shell find $(PWD) -name '*.cpp')
+H   := $(shell find $(PWD) -name '*.h')
+TAGFILEs := $(CPP) $(H)
+
+print_tags:     $(TAGFILEs)
+	echo $^ >/dev/null
+
+# Emacs style
+TAGS:  $(TAGFILEs)
+	/usr/intel/bin/etags --typedefs --language=c++ $^
+
+# Vim readable
+gctags:  $(TAGFILEs)
+	(gctags --typedefs-and-c++ --defines --members --language=c++ $^ 2>/dev/null)
+	cscope -b -c $^
+
+
+#-----------------------------------------------------------------------------
+# Generate documentation with Doxygen
+#-----------------------------------------------------------------------------
+.PHONY: dox
+dox: src/base/asim_doxy_model.dox
+	doxygen src/base/asim_doxy_model.dox
+	@echo "Doxygen output is at `pwd`/dox/html/index.html"
+
+#-----------------------------------------------------------------------------
+# utility rules
+#-----------------------------------------------------------------------------
+$(SUBTARGETS): $(SUBDIRS)
+	@true # dummy rule to force make to check target after building subdir
+
+.PHONY: $(SUBDIRS)
+$(SUBDIRS) : 
+	@$(MAKE) -C $@ $(MAKECMDGOALS)
+
+#
+# .dirs rule confirms that required directories have been built and creates
+# target file ".dirs" instead of being a .PHONY rule.  Use "echo > .dirs"
+# to create the file instead of touch.  touch seemed to have a strange
+# property that the mtime of the created file could be a second later than
+# touch ran.  This caused .dirs to appear to be built after some .o files.
+#
+.dirs: .depend obj
+	@if [ ! -e .dirs ] ; then echo > .dirs ; fi
+.depend obj:
+	@mkdir $@
+	@rm -f .dirs
+
+.PHONY: clean
+clean : $(SUBDIRS)
+	rm -rf obj dox .depend .dirs cxx_repository
+	rm -f $(CPPTARGETS)
+
+.PHONY: realclean
+realclean : $(SUBDIRS) clean
+	rm -f $(TARGET)
+	rm -f $(CPPTARGETS)
+
+.PHONY: nuke
+nuke :  realclean
+	rm -rf *
+
+install: all
+	cp $(TARGET) $(prefix)/libexec/asim/models
+
+#-----------------------------------------------------------------------------
+# include all generated dependencies (unless *clean* goal)
+#-----------------------------------------------------------------------------
+ifneq ($(findstring clean, $(MAKECMDGOALS)), clean)
+-include .depend/*.d
+endif

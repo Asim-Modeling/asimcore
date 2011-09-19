@@ -1,0 +1,451 @@
+##############################################################################
+#
+# Determine configuration for other Makefiles
+#  from asim-simcore
+###############################################################################
+
+#-----------------------------------------------------------------------------
+# make Makefiles more robust - always use the same shell
+# Note: On alpha POSIX shell is the one to use
+#-----------------------------------------------------------------------------
+SHELL:=$(firstword $(foreach sh, /bin/posix/sh /bin/sh, $(wildcard $(sh))))
+
+#-----------------------------------------------------------------------------
+# set defaults for make configuration
+#
+# command line options can override any of these default values, e.g.
+# with "make GNU=1 OPT=1"
+#-----------------------------------------------------------------------------
+# use GNU compilers
+ifndef GNU
+  GNU=0
+endif
+#
+# use Intel compilers
+#
+# Note, the following are equivalent:
+#   make INTELC=1
+#   make CC=icc
+#   make CXX=icc
+#
+ifndef INTELC
+  INTELC=@ICC_IS_DEFAULT_COMPILER@
+endif
+ifeq ($(CC),icc)
+  INTELC=1
+endif
+ifeq ($(CXX),icc)
+  INTELC=1
+endif
+# INTELC=1 overrides GNU=1 !
+ifeq ($(INTELC),1)
+  GNU=0
+endif
+#
+# compile optimized
+ifndef OPT
+  OPT=0
+endif
+#
+# include debugging code
+ifndef DEBUG
+  DEBUG=1
+  MEC_STATS=1
+  IEC_STATS=1
+  FEC_STATS=1
+  FPC_STATS=1
+  BASE_STATS=1
+endif
+#
+# include trace code
+ifndef TRACE
+  TRACE=0
+endif
+#
+# include profile code
+ifndef PROFILE
+  PROFILE=0
+endif
+#
+# include events code
+ifndef PTV_EVENTS
+  PTV_EVENTS=1
+endif
+#
+# include events code
+ifndef EVENTS
+  EVENTS=0
+endif
+#
+# static executable
+ifndef STATIC
+  STATIC=0
+endif
+#
+# stats generation flags
+ifdef BASE_STATS_ONLY
+  BASE_STATS=1
+  MEC_STATS=0
+  IEC_STATS=0
+  FPC_STATS=0
+  FEC_STATS=0
+else
+  ifndef MEC_STATS
+    MEC_STATS=1
+  endif
+  ifndef IEC_STATS
+    IEC_STATS=1
+  endif
+  ifndef FPC_STATS
+    FPC_STATS=1
+  endif
+  ifndef FEC_STATS
+    FEC_STATS=1
+  endif
+  ifndef BASE_STATS
+    BASE_STATS=1
+  endif
+endif
+#
+# extensive compiler warnings
+ifndef WARN
+  WARN=1
+endif
+#
+# parallel make
+ifndef PAR
+  PAR=1
+endif
+#
+# parallel make with NetBatch
+NB ?= 0
+#
+# make use of shared CCACHE
+GPROF ?= 0
+DISTCC ?= 0
+CCACHE ?= 0
+#
+# use TCL
+ifndef USE_TCL
+  USE_TCL=yes
+endif
+#
+# Intel Vtune ThreadProfiler user instrumentation
+ifndef THREAD_PROFILE
+  THREAD_PROFILE=0
+endif
+#
+# host type
+ifndef HOSTOS
+  HOSTOS:=$(shell uname -s)
+endif
+ifndef HOSTMACHINE
+  HOSTMACHINE:=$(shell uname -m)
+endif
+ifndef HOSTOSRELEASE
+  HOSTOSRELEASE:=$(shell uname -r)
+endif
+
+# prefix of installed tools.  (Used to find certain libraries...)
+PREFIX = @prefix@
+
+# location of the libz compression library
+LIBZDIR = @LIBZDIR@
+
+# GCC architecture flag for cross compiling 32-bit on 64-bit hardware
+ARCHFLAGS = @ARCHFLAGS@
+
+# location of Tcl
+TCLLIBDIR  = @TCLLIBDIR@
+TCLINCDIR  = @TCLINCDIR@
+TCLVERSION = @TCLVERSION@
+
+#location of BOOST 
+BOOST_LIB = @BOOST_LIB@
+BOOST_NAM = @BOOST_NAM@
+BOOST_INC = @BOOST_INC@
+
+#location of cxxtest directory and generator script
+CXXTESTDIR = @CXXTESTDIR@
+CXXTESTGEN = @CXXTESTGEN@
+
+#location of cxxtest extension directory 
+CXXTESTEXTDIR = @CXXTESTEXTDIR@
+
+# location of ThreadProfiler
+THREAD_PROFILER_PATH = @THREAD_PROFILER_PATH@
+
+#-----------------------------------------------------------------------------
+# pick compilers: GNU, Intel, or native, and choose compiler-specific libraries to link.
+#-----------------------------------------------------------------------------
+ifeq ($(GNU),1)
+  CXX = g++
+  CC = gcc
+  # do this so we dont have to set LD_LIBRARY_PATH to find C++ libs
+  EXTRA_GCC_LIBRARIES := -Wl,-rpath,@GCC_LIB_LOC@
+else
+  # compiling with Intel C compiler?
+  ifeq ($(INTELC),1)
+    CXX = icc
+    CC = icc
+    EXTRA_GCC_LIBRARIES := -lstdc++ -Wl,-rpath,@GCC_LIB_LOC@ -limf -Wl,-rpath,@ICC_LIB_LOC@
+  else
+    CXX = cxx
+    CC = cc
+  endif
+endif
+CPLRFLAGS = -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
+
+#-----------------------------------------------------------------------------
+# optimization settings.
+# Compiler-specific settings are similar to $OPTFLAGS in ../configure.in
+#-----------------------------------------------------------------------------
+ifeq ($(OPT),1)
+  ifeq ($(GNU),1)
+    OFLAGS = @GCC_OPTFLAGS@
+  else
+    ifeq ($(INTELC),1)
+      OFLAGS = @ICC_OPTFLAGS@
+    else
+      OFLAGS = @CC_OPTFLAGS@
+    endif
+  endif
+else
+  ifeq ($(GNU),1)
+    OFLAGS = @GCC_NO_OPTFLAGS@
+  else
+    ifeq ($(INTELC),1)
+      OFLAGS = @ICC_NO_OPTFLAGS@
+    else
+      OFLAGS = @CC_NO_OPTFLAGS@
+    endif
+  endif
+endif
+
+#-----------------------------------------------------------------------------
+# GPROF (for object files)
+#-----------------------------------------------------------------------------
+ifeq ($(GPROF),1)
+  OFLAGS  := $(OFLAGS) -pg
+endif
+
+
+#-----------------------------------------------------------------------------
+# stats generation settings [fec, mec, iec, fpc, bus, base]
+#-----------------------------------------------------------------------------
+ifeq ($(BASE_STATS),1)
+  STATFLAGS = -DENABLE_BASE_STATS=1
+ 
+  ifeq ($(MEC_STATS),1)
+    STATFLAGS += -DENABLE_MEC_STATS=1
+  endif
+  ifeq ($(FEC_STATS),1)
+    STATFLAGS += -DENABLE_FEC_STATS=1
+  endif
+  ifeq ($(IEC_STATS),1)
+    STATFLAGS += -DENABLE_IEC_STATS=1
+  endif
+  ifeq ($(FPC_STATS),1)
+    STATFLAGS += -DENABLE_FPC_STATS=1
+  endif
+endif
+
+#-----------------------------------------------------------------------------
+# debug settings
+#-----------------------------------------------------------------------------
+ifeq ($(DEBUG),1)
+  ifeq ($(EVENTS),1)
+  DBGFLAGS = -D_REENTRANT -DASIM_ENABLE_ASSERTIONS -DASIM_ENABLE_MM_DEBUG \
+    -DASIM_ENABLE_TRACE -DASIM_ENABLE_PROFILE \
+    -DASIM_ENABLE_DISASSEMBLE -DENABLE_LOG -DASIM_ENABLE_EVENTS
+  else
+  DBGFLAGS = -D_REENTRANT -DASIM_ENABLE_ASSERTIONS -DASIM_ENABLE_MM_DEBUG \
+    -DASIM_ENABLE_TRACE -DASIM_ENABLE_PROFILE \
+    -DASIM_ENABLE_DISASSEMBLE -DENABLE_LOG 
+  endif
+else 
+  DBGFLAGS = -D_REENTRANT -DASIM_ENABLE_ASSERTIONS 
+  ifeq ($(TRACE),1)
+    DBGFLAGS += -DASIM_ENABLE_TRACE
+  endif
+  ifeq ($(EVENTS),1)
+    DBGFLAGS += -DASIM_ENABLE_EVENTS 
+  endif
+  ifeq ($(PROFILE),1)
+    DBGFLAGS += -DASIM_ENABLE_PROFILE
+  endif
+endif
+
+ifeq ($(PTV_EVENTS),1)
+  DBGFLAGS += -DPTV_EVENTS
+endif
+
+#-----------------------------------------------------------------------------
+# static/non_shared compilation settings
+#-----------------------------------------------------------------------------
+ifeq ($(STATIC),1)
+  ifeq ($(GNU),1)
+    S_COMPILER_FLAGS = -static
+  else
+    # for the GEM compiler
+    S_COMPILER_FLAGS = -non_shared -L/usr/lib/cmplrs/cxx -lcxx
+  endif
+
+    SLFLAGS = $(S_COMPILER_FLAGS) 
+endif
+
+#-----------------------------------------------------------------------------
+# compiler warning level
+# Compiler-specific settings are similar to $WARNFLAGS in ../configure.in
+#-----------------------------------------------------------------------------
+ifeq ($(WARN),1)
+  ifeq ($(GNU),1)
+    WFLAGS = @GCC_WARNFLAGS@ -Wno-uninitialized -Werror
+  else
+    ifeq ($(INTELC),1)
+      WFLAGS = @ICC_WARNFLAGS@ -wd191 -Werror
+    else
+      WFLAGS = @CC_WARNFLAGS@
+    endif
+  endif
+else
+  ifeq ($(GNU),1)
+    WFLAGS = @GCC_NO_WARNFLAGS@
+  else
+    ifeq ($(INTELC),1)
+      WFLAGS = @ICC_NO_WARNFLAGS@
+    else
+      WFLAGS = @CC_NO_WARNFLAGS@
+    endif
+  endif
+endif
+
+#-----------------------------------------------------------------------------
+# host type specific settings
+#-----------------------------------------------------------------------------
+HFLAGS = @ASIMCOREFLAGS@
+HINCS  = @ASIMCOREINCS@
+HLIBS  = @ASIMCORELIBS@
+ifneq ($(HOSTOS),OSF1)
+  ifneq ($(HOSTOS),FreeBSD)
+    # For linux hosts:
+    HLIBS =
+    ifeq ($(USE_TCL),yes)
+      HLIBS += -L$(TCLLIBDIR) -Wl,-rpath,$(TCLLIBDIR) -ltcl$(TCLVERSION)
+      HINCS += -isystem $(TCLINCDIR)
+    endif
+    ### This ordering matters on static builds CTW
+    HLIBS += $(EXTRA_GCC_LIBRARIES) @ASIMCORELIBS@
+  endif
+endif
+
+#-----------------------------------------------------------------------------
+# ThreadProfiler user level instrumentation
+#-----------------------------------------------------------------------------
+ifeq ($(THREAD_PROFILE),1)
+  TPCFLAGS = -I$(THREAD_PROFILER_PATH) -DCLOCKSERVER_INSTRUMENT_TPROFILER=1
+  TPLFLAGS = -L$(THREAD_PROFILER_PATH) -littnotify
+else
+  TPCFLAGS =
+  TPLFLAGS =
+endif
+
+#-----------------------------------------------------------------------------
+# parallel make settings
+#-----------------------------------------------------------------------------
+ifeq ($(PAR),1)
+  MKFLAGS = -j 4
+else
+  MKFLAGS =
+endif
+
+CC_REAL := $(CC)
+CXX_REAL := $(CXX)
+
+#-----------------------------------------------------------------------------
+# distcc (must come before ccache)
+#-----------------------------------------------------------------------------
+ifeq ($(DISTCC),1)
+  CC  := distcc $(CC)
+  CXX := distcc $(CXX)
+endif
+
+#-----------------------------------------------------------------------------
+# ccache (must come after distcc)
+#-----------------------------------------------------------------------------
+ifeq ($(CCACHE),1)
+  CC  := ccache $(CC)
+  CXX := ccache $(CXX)
+endif
+
+#-----------------------------------------------------------------------------
+# NetBatch parallel make settings
+#-----------------------------------------------------------------------------
+ifeq ($(NB),1)
+  NBQ = nbq -i --local-signals --silent -J /dev/null $(NB_SITE_FLAGS)
+  CC  := $(NBQ) $(CC)
+  CXX := $(NBQ) $(CXX)
+endif
+
+#-----------------------------------------------------------------------------
+# generating dependency files for different compilers
+#-----------------------------------------------------------------------------
+ifeq ($(GNU),1)
+  # GNU makes foo.d for foo.o
+  DEPEND_FILE=$(basename $@).d
+  # make dependencies and ignore system header files
+  MKDEPEND=-MMD
+else
+  ifeq ($(INTELC),1)
+    # ICC is just like GCC
+    DEPEND_FILE=$(basename $@).d
+    MKDEPEND=-MMD
+  else
+    # GEM makes foo.o.d for foo.o
+    DEPEND_FILE=$@.d
+    MKDEPEND=-MD
+  endif
+endif
+
+#-----------------------------------------------------------------------------
+# XML support:
+#
+#   The following libraries are required:
+#     libxml2   XML, XPath          http://www.xmlsoft.org/
+#     gdome2    DOM 2.0             http://phd.cs.unibo.it/gdome2/
+#     gmetadom  DOM C++ bindings    http://gmetadom.sourceforge.net/
+#
+#   The following libraries are also recommended:
+#     libxslt   XSLT 1.0            http://xmlsoft.org/XSLT/
+# 
+#-----------------------------------------------------------------------------
+## XMLCFLAGS := $(shell gmetadom-config --module=gdome_cpp_smart --cflags)
+## XMLLFLAGS := $(shell gmetadom-config --module=gdome_cpp_smart --libs)
+
+#=============================================================================
+#=============================================================================
+# pulling it all together
+#=============================================================================
+#=============================================================================
+ifeq ($(strip $(COMMON_LFLAGS)),)
+  COMMON_LDIR =
+  COMMON_INCDIR =
+else
+  COMMON_LDIR   = -L$(PREFIX)/lib
+  COMMON_INCDIR = -I$(PREFIX)/include
+endif
+
+CFLAGS = $(WFLAGS) $(OFLAGS) $(DBGFLAGS) $(CPLRFLAGS) $(HFLAGS) $(HINCS) \
+         $(STATFLAGS) $(XMLCFLAGS) $(TPCFLAGS) \
+         $(LOCAL_CFLAGS) $(COMMON_INCDIR) $(ARCHFLAGS)
+
+LFLAGS = $(HLIBS) $(SLFLAGS) $(XMLLFLAGS) $(TPLFLAGS) \
+         $(LOCAL_LFLAGS) $(COMMON_LDIR) $(COMMON_LFLAGS) $(ARCHFLAGS)
+
+#-----------------------------------------------------------------------------
+# GPROF (for link stage)
+#-----------------------------------------------------------------------------
+ifeq ($(GPROF),1)
+  LFLAGS  := $(LFLAGS) -pg
+endif
+

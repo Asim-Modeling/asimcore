@@ -1,0 +1,16 @@
+********************************************************************
+* Awb module specification
+********************************************************************
+
+%AWB_START
+
+%name Unit Test Model Foundation
+%desc Default module foundation for unit testing in Cameroon
+%provides model
+%requires unit_test
+%attributes model
+%makefile Makefile.template Makefile.config 
+%library lib/libasim/libasim.a
+%library lib/libdral/libdral.a
+
+%AWB_END
