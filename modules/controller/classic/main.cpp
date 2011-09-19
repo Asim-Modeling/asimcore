@@ -80,7 +80,6 @@ int CONTROLLER_CLASS::main(INT32 argc, char *argv[], char *envp[])
     //
     AWB_Initialize();
 
-    //
     // Initialize for stack dumping on segfaults
     StackDumpInit(argv[0]);
 

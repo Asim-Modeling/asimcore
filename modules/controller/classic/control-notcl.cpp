@@ -998,8 +998,9 @@ CMD_EXIT_CLASS::CmdAction (void)
  *******************************************************************/
 
 void
-CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket)
+CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket, SEEN_SSC_MARKS* sscMarks)
 {
+    ASIM_XMSG("CMD_PROGRESS_CLASS::Schedule");
     //
     // If 'type' is a clearing progress action, then we clear
     // progress events from the schedule.
@@ -1020,7 +1021,7 @@ CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, U
         schedule->ClearPacketProgress();
     }
     else {
-        schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+      schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, sscMarks);
     }
 }
 

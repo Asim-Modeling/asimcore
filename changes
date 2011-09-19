@@ -7284,3 +7284,21 @@ Sync of Intel commit 3389
     - Added minimal dral event support to the minimal controller. 
       - events can only be turned on at cycle 0
       - events cannon be turned off during the simulation run. 
+
+----------
+mpellaue    Date: Mon Sep 19 17:26:39 EDT 2011  CSN: CSN-asimcore-343
+                  Mon Sep 19 21:26:39 UTC 2011
+
+
+Directory modules/controller/classic
+ control-notcl.h           Locally Modified          342 
+ main.cpp                  Locally Modified          342 
+ control-notcl.cpp         Locally Modified          342 
+
+
+Sync of Intel commit 3390. Now up to date vs revision 3391.
+
+    mgambhir    Date: Thu Aug 25 16:23:51 EDT 2011  CSN: CSN-simcore-3390
+
+    - Patch by Khasawneh, Shadi T to add SSC marker support in the "No-tcl"
+    version of the controller
