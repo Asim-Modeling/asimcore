@@ -272,15 +272,15 @@ __atomic_add (volatile _Atomic64* __mem, _Atomic64 __val)
 #else
     __asm__ __volatile__ ( "movl  %0, %%eax\n\t" 
                            "movl  %1, %%edx\n\t" 
-                           "1:\t movl %2, %%ebx\n\t"
+                           "1:\t movl %2, %%edi\n\t"
                            "xorl %%ecx, %%ecx\n" 
-                           "addl %%eax, %%ebx\n\t" 
+                           "addl %%eax, %%edi\n\t" 
                            "adcl %%edx, %%ecx\n\t"
                            "lock;  cmpxchg8b       %0\n\t"
                            "jnz             1b"
                            : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem))
                            : "m" (__val) 
-                           : "memory", "eax", "ebx", "ecx", "edx", "cc"); 
+                           : "memory", "eax", "edi", "ecx", "edx", "cc"); 
 #endif
 }
 
@@ -298,9 +298,9 @@ __exchange_and_add (volatile _Atomic64 *__mem, _Atomic64 __val)
 #else
     __asm__ __volatile__("movl  %0, %%eax\n\t" 
                          "movl  %1, %%edx\n\t"
-                         "1:\t movl %4, %%ebx\n\t"
+                         "1:\t movl %4, %%edi\n\t"
                          "xorl %%ecx, %%ecx\n"
-                         "addl %%eax, %%ebx\n\t"
+                         "addl %%eax, %%edi\n\t"
                          "adcl %%edx, %%ecx\n\t" 
                          "lock;  cmpxchg8b       %0\n\t"
                          "jnz             1b\n\t"
@@ -308,7 +308,7 @@ __exchange_and_add (volatile _Atomic64 *__mem, _Atomic64 __val)
                          "movl            %%edx, %3\n" 
                          : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (ll_low(__result)),  "=m" (ll_high(__result))
                          : "m" (__val) 
-                         : "memory", "eax", "ebx", "ecx", "edx", "cc"); 
+                         : "memory", "eax", "edi", "ecx", "edx", "cc"); 
 #endif
     return __result;
 }
@@ -323,15 +323,15 @@ __atomic_decr (volatile _Atomic64* __mem, _Atomic64 __val)
 #else
     __asm__ __volatile__ ( "movl  %0, %%eax\n\t" 
                            "movl  %1, %%edx\n\t" 
-                           "1:\t movl %2, %%ebx\n\t"
+                           "1:\t movl %2, %%edi\n\t"
                            "movl $0xffffffff, %%ecx\n" 
-                           "addl %%eax, %%ebx\n\t" 
+                           "addl %%eax, %%edi\n\t" 
                            "adcl %%edx, %%ecx\n\t" 
                            "lock;  cmpxchg8b       %0\n\t"
                            "jnz             1b"
                            : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem))
                            : "m" (__val) 
-                           : "memory", "eax", "ebx", "ecx", "edx", "cc"); 
+                           : "memory", "eax", "edi", "ecx", "edx", "cc"); 
 #endif
 }
     
@@ -347,9 +347,9 @@ __exchange_and_decr (volatile _Atomic64 *__mem, _Atomic64 __val)
 
     __asm__ __volatile__("movl  %0, %%eax\n\t" 
                          "movl  %1, %%edx\n\t" 
-                         "1:\t movl %4, %%ebx\n\t"
+                         "1:\t movl %4, %%edi\n\t"
                          "movl $0xffffffff, %%ecx\n" 
-                         "addl %%eax, %%ebx\n\t"
+                         "addl %%eax, %%edi\n\t"
                          "adcl %%edx, %%ecx\n\t" 
                          "lock;  cmpxchg8b       %0\n\t"
                          "jnz             1b\n\t"
@@ -357,7 +357,7 @@ __exchange_and_decr (volatile _Atomic64 *__mem, _Atomic64 __val)
                          "movl            %%edx, %3\n" 
                          : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (ll_low(__result)),  "=m" (ll_high(__result))
                          : "m" (__val) 
-                         : "memory", "eax", "ebx", "ecx", "edx", "cc"); 
+                         : "memory", "eax", "edi", "ecx", "edx", "cc"); 
     return __result;
 #endif
 }
@@ -374,14 +374,14 @@ __read_val(const _Atomic64 * target)
 #else
     __asm__ __volatile__("       xorl            %%eax, %%eax\n"
                          "       xorl            %%edx, %%edx\n"
-                         "       xorl            %%ebx, %%ebx\n"
+                         "       xorl            %%ebx, %%edi\n"
                          "       xorl            %%ecx, %%ecx\n"
                          "lock;  cmpxchg8b       %2\n"
                          "       movl            %%eax, %0\n"
                          "       movl            %%edx, %1"
                          : "=m" (ll_low(__out)), "=m" (ll_high(__out))
                          : "o" (*target)
-                         : "memory", "eax", "ebx", "ecx", "edx", "cc");
+                         : "memory", "eax", "edi", "ecx", "edx", "cc");
 #endif
 
     return __out;
