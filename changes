@@ -7175,3 +7175,37 @@ mgambhir    Date: Mon Jun  6 14:55:24 EDT 2011  CSN: CSN-simcore-3372
   - some data type conversion warnings were removed by using
     static_cast<T> and const_cast<T>
 
+
+----------
+mpellaue    Date: Mon Sep 19 16:48:57 EDT 2011  CSN: CSN-asimcore-338
+                  Mon Sep 19 20:48:57 UTC 2011
+
+
+Directory lib/libasim/include/asim
+ mesg.h                    Locally Modified          337 
+
+Directory lib/libasim/src
+ mesg.cpp                  Locally Modified          337 
+
+
+Sync of Intel commit 3377
+
+    mgambhir    Date: Mon Jun 20 14:15:31 EDT 2011  CSN: CSN-simcore-3375
+
+    Patch from Sergey A Rostkov - 
+    Rewrote mesg.h macros in simcore to support macro overloading (this requires variadic macro support in compilers, but gcc supports it since 3.x).
+    With this patch assertion-like macros can take 1 or 2 arguments and their counterpart versions (with "X" suffix) are no longer necessary. 
+
+    This patch defines these macros:
+
+    ASSERT( condition )
+    ASSERT( condition, msg )
+    WARN( condition )
+    WARN( condition, msg )
+    VERIFY( condition )
+    VERIFY( condition, msg )
+
+    "X" versions are left for backwards compatibility:
+    ASSERTX( condition ) - same as ASSERT( condition )
+    WARNX( condition ) - same as WARN( condition )
+    VERIFYX( condition )  - same as VERIFY( condition )
