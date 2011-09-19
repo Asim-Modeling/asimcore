@@ -47,7 +47,9 @@
 #include "args_mini.h"
 
 
-static int ParseVariables (char **argv);
+static int ParseVariables (INT32 argc, char **argv);
+static int parseTraceCmd(const char *progName, const char *command, string &regex, int &level);
+
 
 // Arguments partitioned into awb's, system's and feeder's
 UINT32 origArgc, awbArgc, sysArgc, fdArgc;
@@ -58,7 +60,7 @@ extern bool stripsOn;
 
 
 // Partition arguments into awb's, system's and feeder's.
-void
+    void
 PartitionArgs (INT32 argc, char **argv)
 {
     origArgc = argc;
@@ -72,7 +74,7 @@ PartitionArgs (INT32 argc, char **argv)
 
     //
     // Partition...
-    
+
     bool feederArgs = false;
     bool systemArgs = false;
     for (INT32 i = 1; i < argc; i++) 
@@ -82,43 +84,43 @@ PartitionArgs (INT32 argc, char **argv)
         // --system   following args are system's
 
         if (strcmp(argv[i], "--") == 0) 
-	{
+        {
             feederArgs = systemArgs = false;
         }
         else if (strcmp(argv[i], "--feeder") == 0) 
-	{
+        {
             feederArgs = true;
             systemArgs = false;
         }
         else if (strcmp(argv[i], "--system") == 0) 
-	{
+        {
             feederArgs = false;
             systemArgs = true;
         }
         // a real argument, we handle -h and -t here since we want
         // them to have an immediate effect.
         else 
-	{
+        {
             if (feederArgs) 
-	    {
+            {
                 fdArgv[fdArgc++] = argv[i];
             }
             else if (systemArgs) 
-	    {
+            {
                 sysArgv[sysArgc++] = argv[i];
             }
             else 
-	    {
-		int incr = ParseVariables(&argv[i]); 
+            {
+                int incr = ParseVariables(argc, &argv[i]); 
 
-		if (incr == -1)
-		{
-		    awbArgv[awbArgc++] = argv[i];
-		}
-		else
-		{
-		    i += incr; 
-		}
+                if (incr == -1)
+                {
+                    awbArgv[awbArgc++] = argv[i];
+                }
+                else
+                {
+                    i += incr; 
+                }
             }
         }
     }
@@ -126,27 +128,27 @@ PartitionArgs (INT32 argc, char **argv)
 
 // Parse command line arguments
 // Return -1 if no argument is consumed, 0 if one argument consumed, 1 if two, 2 if three ...
-static int
-ParseVariables(char **argv)
+    static int
+ParseVariables(INT32 argc, char **argv)
 {
     int incr = 0; 
 
     // -h           print usage
     if (strcmp(argv[0], "-h") == 0) 
     {
-	Usage(argv[0], stdout);
-	exit(0);
+        Usage(argv[0], stdout);
+        exit(0);
     }
     // -c <n>       run simulation for 'n' cycles
     else if (strcmp(argv[0], "-c") == 0)
     {
-	extern UINT64 MaxCycles;
-	
+        extern UINT64 MaxCycles;
+
         MaxCycles = atoi_general_unsigned(argv[++incr]);
     }
     else if (strcmp(argv[0], "-t") == 0) 
     {
-	traceOn = true; 
+        traceOn = true; 
     }
     else if (strcmp(argv[0], "-e") == 0) 
     {
@@ -158,24 +160,40 @@ ParseVariables(char **argv)
     }
     else if (strcmp(argv[0], "-p") == 0)
     {
-	profileOn = true; 
+        profileOn = true; 
     }
     else if (strcmp(argv[0], "-w") == 0)
     {
-	warningsOn = true; 
+        warningsOn = true; 
     }
     else if (strcmp(argv[0], "-rps") == 0) 
     {
-	registerPortStats = true; 
+        registerPortStats = true; 
     }
     // -tm <n>		set trace mask (see trace.h)
     else if (strcmp(argv[0], "-tm") == 0) 
     {
         traceMask = atoi_general_unsigned(argv[++incr]);
     }
+    // -tr </regex/=[012]>		set trace regular expression (see trace.h)
+    else if (strcmp(argv[0], "-tr") == 0)
+    {
+        string regex;
+        int level;
+        
+        ASSERT(BUILT_WITH_TRACE_FLAGS,"You are trying to generate trace in a "
+              "model not compiled with tracing enabled. Build the model with TRACE=1");
+
+        if(argc > 1)
+            incr += parseTraceCmd(argv[0], argv[1], regex, level);
+        else
+            incr += parseTraceCmd(argv[0], " ", regex, level);
+        
+        TRACEABLE_CLASS::EnableTraceByRegex(regex, level);
+    }
     else if (strcmp(argv[0], "-ppc") == 0) 
     {
-      profilePc = atoi_general_unsigned(argv[++incr]);
+        profilePc = atoi_general_unsigned(argv[++incr]);
     }
     // -batch        batch workbench
     //
@@ -188,33 +206,33 @@ ParseVariables(char **argv)
     else if (strcmp(argv[0], "-awb") == 0) 
     {
         ASIMERROR ("ASIM no longer supports the -awb flag" <<
-                   " for interactive Cycledisplay mode\n")
+                " for interactive Cycledisplay mode\n")
     }
     // -cf          file holding commands for awb to execute after initializing
     //
     else if ((strcmp(argv[0], "-cf") == 0))
     {
-	// awbCmdFile = argv[++incr];
+        // awbCmdFile = argv[++incr];
     }
     // -wb <w>      use workbench 'w' instead of built-in workbench
     //
     else if ((strcmp(argv[0], "-wb") == 0))
     {
-	// overrideWorkbench = argv[++incr];
+        // overrideWorkbench = argv[++incr];
     }
     // -s <f>
     else if ((strcmp(argv[0], "-s") == 0))
     {
-	extern char *StatsFileName;
-	
-	StatsFileName = new char[strlen(argv[incr+1]+1)];  
-	strcpy(StatsFileName, argv[incr+1]); 
-	++incr;
+        extern char *StatsFileName;
+
+        StatsFileName = new char[strlen(argv[incr+1]+1)];  
+        strcpy(StatsFileName, argv[incr+1]); 
+        ++incr;
     }
     // debug on
     else if ((strcmp(argv[0], "-d") == 0))
     {
-	debugOn = true; 
+        debugOn = true; 
     }
     // dynamic parameters
     else if ((strcmp(argv[0], "-param") == 0))
@@ -228,8 +246,8 @@ ParseVariables(char **argv)
         if ( ! eq )
         {
             ASIMERROR("Invalid parameter specification in '"
-                << argv[0] << " " << argv[1] << "'" << endl
-                << "    Correct syntax: -param <name>=<value>" << endl);
+                    << argv[0] << " " << argv[1] << "'" << endl
+                    << "    Correct syntax: -param <name>=<value>" << endl);
         }
         else
         {
@@ -239,9 +257,9 @@ ParseVariables(char **argv)
             {
                 *eq = '=';
                 ASIMWARNING("Don't know about dynamic parameter "
-                    << name << endl
-                    << "    ignoring command line portion '"
-                    << argv[0] << " " << argv[1]  << "'" << endl);
+                        << name << endl
+                        << "    ignoring command line portion '"
+                        << argv[0] << " " << argv[1]  << "'" << endl);
             }
             *eq = '=';
         }
@@ -250,65 +268,111 @@ ParseVariables(char **argv)
     // -listparams           list dynamic parameters
     else if (strcmp(argv[0], "-listparams") == 0) 
     {
-	ListParams();
-	exit(0);
+        ListParams();
+        exit(0);
     }
     else
     {	
-	return -1; 
+        return -1; 
     }
-    
+
     return incr; 
 }
 
+int
+parseTraceCmd(const char *progName, const char *command, string &regex, int &level) 
+{
+    if(*command != '/') 
+    {
+        // no regex given, match every name
+        regex = ".*";
+        level = 1;
+        return(0);
+    }
 
-void
+    regex = command;
+    int pos = regex.size() - 1;
+    // the last char should be '0', '1', or '2'
+    if(regex[pos] != '0' && regex[pos] != '1' && regex[pos] != '2') 
+    {
+        // If a level was not given, default to 1.
+        level = 1;
+    } 
+    else 
+    {
+        level = regex[pos] - '0';
+        pos--;
+
+        if(regex[pos] != '=') {
+            Usage((char *)progName, stdout);
+            cout << "\nExpected -tr [/regex/[=012]]" << endl;
+            exit(-1);
+        }
+        pos--;
+    }
+
+    // remove the '/' at front and back
+    if(regex[pos] != '/' || regex[0] != '/') 
+    {
+        Usage((char *)progName, stdout);
+        cout << "\nExpected -tr [/regex/[=012]]" << endl;
+        exit(-1);
+    }
+    regex.erase(pos);
+    regex.erase(0,1);
+    
+    return(1);
+}
+
+    void
 Usage (char *exec, FILE *file)
-/*
- * Dump general stand-alone usage, and then specific usage for the feeder
- * and system.
- */
+    /*
+     * Dump general stand-alone usage, and then specific usage for the feeder
+     * and system.
+     */
 {
     ostringstream os;
 
     os << "\nUsage: " << exec
-       << " <arg1> <arg2> .. --feeder <feeder args> --system <system args>\n"
-       << "\n" << exec << " flags:\n"
-       << "\t-h\t\t\tPrint this help\n"
-       << "\n"
-       << "\t-batch\t\t\tTurn on batch architect's workbench\n"
-       << "\t-awb\t\t\tTurn on interactive architect's workbench\n"
-       << "\t-cf <c>\t\t\tFile holding commands for awb to execute after init\n"
-       << "\t-wb <w>\t\t\tUse workbench 'w' instead of built-in workbench\n"
-       << "\n"
-       << "\t-c <n>\t\t\tRun simulation for <n> cycles\n"
-       << "\t-i <n>\t\t\tRun simulation for <n> committed insts.\n"
-       << "\t-s <f>\t\t\tDump statistics to file 'f' on exit\n"
-       << "\n"
-       << "\t-t\t\t\tTurn on instruction tracing\n"
-       << "\t-tm\t\t\tSet Trace Mask\n"
-       << "\t-rbs\t\t\tDump Buffer Stats in Stats file\n"
-       << "\t-rps\t\t\tDump Port Stats in Stats file\n"
-       << "\t-tsc <n>\t\tStart tracing on cycle <n>\n"
-       << "\t-tec <n>\t\tStop tracing on cycle <n>\n"
-       << "\t-tsi <n>\t\tStart tracing after <n> committed insts.\n"
-       << "\t-tei <n>\t\tStop tracing after <n> committed insts.\n"
-       << "\t-psc <n>\t\tStart profiling on cycle <n>\n"
-       << "\t-pec <n>\t\tStop profiling on cycle <n>\n"
-       << "\t-psi <n>\t\tStart profiling after <n> committed insts.\n"
-       << "\t-pei <n>\t\tStop profiling after <n> committed insts.\n"
-       << "\n"
-       << "\t-p <n>\t\t\tTurn profiling on\n"
-       << "\t-d <n>\t\t\tTurn warnings and debug information on\n"
-       << "\n"
-       << "\t-pc <n>\t\t\tIndicate progress info every <n> cycles\n"
-       << "\t-pi <n>\t\t\tIndicate progress info every <n> committed insts.\n"
-       << "\n"
-       << "\t-param <name>=<value>\tdefine dynamic parameter <name> = <value>\n"
-       << "\t-listparams\t\tlist all registered dynamic parameters\n"
-       << "\n"
-       << "\t-xcheck <file>\t\tGenerate output for cross-checking to file <file>\n"
-       << endl;
+        << " <arg1> <arg2> .. --feeder <feeder args> --system <system args>\n"
+        << "\n" << exec << " flags:\n"
+        << "\t-h\t\t\tPrint this help\n"
+        << "\n"
+        << "\t-batch\t\t\tTurn on batch architect's workbench\n"
+        << "\t-awb\t\t\tTurn on interactive architect's workbench\n"
+        << "\t-cf <c>\t\t\tFile holding commands for awb to execute after init\n"
+        << "\t-wb <w>\t\t\tUse workbench 'w' instead of built-in workbench\n"
+        << "\n"
+        << "\t-c <n>\t\t\tRun simulation for <n> cycles\n"
+        << "\t-i <n>\t\t\tRun simulation for <n> committed insts.\n"
+        << "\t-s <f>\t\t\tDump statistics to file 'f' on exit\n"
+        << "\n"
+        << "\t-t\t\t\tTurn on instruction tracing\n"
+        << "\t-tm\t\t\tSet Trace Mask\n"
+        << "\t-tr [</regex/[=012]]>\tSet trace level by regular expression. Can be given multiple times.\n"
+        << "\t\t\t\tIf not specified, the trace level will default to 1 and the regex to .*\n"
+        << "\t-rbs\t\t\tDump Buffer Stats in Stats file\n"
+        << "\t-rps\t\t\tDump Port Stats in Stats file\n"
+        << "\t-tsc <n>\t\tStart tracing on cycle <n>\n"
+        << "\t-tec <n>\t\tStop tracing on cycle <n>\n"
+        << "\t-tsi <n>\t\tStart tracing after <n> committed insts.\n"
+        << "\t-tei <n>\t\tStop tracing after <n> committed insts.\n"
+        << "\t-psc <n>\t\tStart profiling on cycle <n>\n"
+        << "\t-pec <n>\t\tStop profiling on cycle <n>\n"
+        << "\t-psi <n>\t\tStart profiling after <n> committed insts.\n"
+        << "\t-pei <n>\t\tStop profiling after <n> committed insts.\n"
+        << "\n"
+        << "\t-p <n>\t\t\tTurn profiling on\n"
+        << "\t-d <n>\t\t\tTurn warnings and debug information on\n"
+        << "\n"
+        << "\t-pc <n>\t\t\tIndicate progress info every <n> cycles\n"
+        << "\t-pi <n>\t\t\tIndicate progress info every <n> committed insts.\n"
+        << "\n"
+        << "\t-param <name>=<value>\tdefine dynamic parameter <name> = <value>\n"
+        << "\t-listparams\t\tlist all registered dynamic parameters\n"
+        << "\n"
+        << "\t-xcheck <file>\t\tGenerate output for cross-checking to file <file>\n"
+        << endl;
 
     fputs (os.str().c_str(), file);
     SYS_Usage(file);

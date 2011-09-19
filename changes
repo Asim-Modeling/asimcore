@@ -7251,3 +7251,18 @@ Sync of Intel commit 3377.
 
     Patch form Rostkov, Sergey A in continuation  to the patch in r3375 to
     fix formatting inconsistency between Assert Errors and Warnings. 
+
+----------
+mpellaue    Date: Mon Sep 19 17:19:38 EDT 2011  CSN: CSN-asimcore-341
+                  Mon Sep 19 21:19:38 UTC 2011
+
+
+Directory modules/controller/minimal
+ args_mini.cpp             Locally Modified          340 
+
+
+Sync of Intel commit 3381
+
+    mgambhir    Date: Wed Jul  6 17:49:38 EDT 2011  CSN: CSN-simcore-3381
+
+    * Added regex based tracing support to Asim minimal controller 
