@@ -1118,7 +1118,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     if (strcmp(option, "progress") == 0) {
         if (argc != 4) {
-            Tcl_SetResult(interp, "Usage:\tPmSchedule progress ?inst|cycle|nanosecond? ?clear|period?\n",
+            Tcl_SetResult(interp, const_cast<char*>("Usage:\tPmSchedule progress ?inst|macroinst|sscmark|cycle|nanosecond? ?clear|period?\n"),
                           TCL_STATIC);
             return(TCL_ERROR);
         }
@@ -1129,6 +1129,8 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
             action = ACTION_INST_PERIOD;
         else if (strcmp(argv[2], "macroinst") == 0)
             action = ACTION_MACROINST_PERIOD;
+        else if (strcmp(argv[2], "sscmark") == 0)
+            action = ACTION_SSCMARK_PERIOD;
         else if (strcmp(argv[2], "cycle") == 0)
             action = ACTION_CYCLE_PERIOD;
         else if (strcmp(argv[2], "nanosecond") == 0)
@@ -1137,7 +1139,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
         {
             os.str(""); // clear
             os << "invalid action option \"" << argv[2] << "\""
-               << ": must be inst, cycle or nanosecond";
+               << ": must be inst, macroinst, sscmark, cycle or nanosecond";
             Tcl_SetResult(interp,
                 const_cast<char*>(os.str().c_str()), TCL_VOLATILE);
             return(TCL_ERROR);
@@ -1149,6 +1151,8 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
                 CMD_Progress(AWBPROG_CLEARCYCLE, "", ACTION_NOW);
             else if (action == ACTION_MACROINST_PERIOD)
                 CMD_Progress(AWBPROG_CLEARMACROINST, "", ACTION_NOW);
+            else if (action == ACTION_SSCMARK_PERIOD)
+                CMD_Progress(AWBPROG_CLEARSSCMARK, const_cast<char*>(""), ACTION_NOW);
             else if (action == ACTION_NANOSECOND_PERIOD)
                 CMD_Progress(AWBPROG_CLEARNANOSECOND, "", ACTION_NOW);
             else
@@ -1165,6 +1169,10 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
         else if (action == ACTION_MACROINST_PERIOD)
         {
             CMD_Progress(AWBPROG_MACROINST, "", action, atoi_general(period));
+        }
+        else if (action == ACTION_SSCMARK_PERIOD)
+        {
+            CMD_Progress(AWBPROG_SSCMARK, const_cast<char*>(""), action, ssc_mark_action_time(period));
         }
         else
         {
@@ -1404,6 +1412,14 @@ DecodeActionTime (char *aStr, char *tStr, CMD_ACTIONTRIGGER *action, UINT64 *tim
             }
             else if (strcmp(aStr, "macroinst_period") == 0) {
                 *action = ACTION_MACROINST_PERIOD;
+                return(true);
+            }
+            else if (strcmp(aStr, "sscmark_once") == 0) {
+                *action = ACTION_SSCMARK_ONCE;
+                return(true);
+            }
+            else if (strcmp(aStr, "sscmark_period") == 0) {
+                *action = ACTION_SSCMARK_PERIOD;
                 return(true);
             }
             else if (strcmp(aStr, "packet_once") == 0) {

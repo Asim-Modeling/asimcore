@@ -7078,3 +7078,25 @@ Directory lib/libasim/include/asim
       - 32 bit version required changing ebx to edi in the inline assembly
         code in atomic.h. PIC uses ebx register to store the GOT 
         (global offset table) address
+
+----------
+mpellaue    Date: Mon Sep 19 16:37:16 EDT 2011  CSN: CSN-asimcore-335
+                  Mon Sep 19 20:37:16 UTC 2011
+
+
+Directory modules/controller/classic
+ awb.cpp                   Locally Modified          334 
+ awb.h                     Locally Modified          334 
+ control.cpp               Locally Modified          334 
+ control.h                 Locally Modified          334 
+ args.cpp                  Locally Modified          334 
+ schedule.cpp              Locally Modified          334 
+
+Directory modules/system/basesystem_classic
+ basesystem_classic.h      Locally Modified          334 
+
+
+Sync of Intel revision 3370.
+
+    mgambhir    Date: Fri Jun  3 13:16:02 EDT 2011  CSN: CSN-simcore-3371
+    - Patch from Oren Ben-Kiki to control simulation based on SSC marker instructions.

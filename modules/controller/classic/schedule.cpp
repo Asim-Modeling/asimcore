@@ -46,6 +46,7 @@ CMD_SCHEDULE_CLASS::CMD_SCHEDULE_CLASS ()
     macroInstList = new CMD_WORKLIST_CLASS;
 
     packetList = new CMD_WORKLIST_CLASS;
+    sscList = new CMD_WORKLIST_CLASS;
 }
 
 CMD_SCHEDULE_CLASS::~CMD_SCHEDULE_CLASS ()
@@ -68,11 +69,15 @@ CMD_SCHEDULE_CLASS::~CMD_SCHEDULE_CLASS ()
     if(macroInstList){
         delete macroInstList;
     }
+    if (sscList) {
+        delete sscList;
+    }
 }
 
 
 CMD_WORKITEM
-CMD_SCHEDULE_CLASS::ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket)
+CMD_SCHEDULE_CLASS::ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                                SEEN_SSC_MARKS* sscMarks)
 /*
  * Return the next event item that should be handled. Return NULL
  * if there is no action ready.
@@ -179,12 +184,32 @@ CMD_SCHEDULE_CLASS::ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, U
                 && (head->ReadyPacket() > currentPacket));
     }
 
+    //
+    // 'sscList' can't be ordered so we need to examine all possibilities.
+
+    if (sscMarks)
+    {
+        CMD_WORKITEM next = sscList->Head();
+        while (next != NULL)
+        {
+            VERIFYX((next->Trigger() == ACTION_SSCMARK_ONCE) ||
+                    (next->Trigger() == ACTION_SSCMARK_PERIOD));
+            if (next->SscMarkOccurrence() == (*sscMarks)[next->SscMarkID()])
+            {
+                CMD_WORKITEM removed = sscList->RemoveItem(next);
+                VERIFYX(removed == next);
+                return(next);
+            }
+            next = next->Next();
+        }
+    }
+
     return(NULL);
 }
 
 
 void
-CMD_SCHEDULE_CLASS::Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket)
+CMD_SCHEDULE_CLASS::Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket, SEEN_SSC_MARKS* sscMarks)
 /*
  * Schedule 'item' as specified by its trigger.
  */
@@ -219,10 +244,20 @@ CMD_SCHEDULE_CLASS::Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT6
                                   item->Period()) * item->Period();
         ASSERTX(item->ReadyMacroInst() != currentMacroInst);
     }
+    else if (trig == ACTION_SSCMARK_PERIOD)
+    {
+        // TODO: Should we ASSERTX(sscMarks != 0) ?
+        if (sscMarks)
+        {
+            // TRICKY: In normal operation, this is a single iteration, but better safe than sorry.
+            while (item->SscMarkOccurrence() <= (*sscMarks)[item->SscMarkID()]) item->SscMarkAdvance();
+            ASSERTX (item->SscMarkOccurrence() > (*sscMarks)[item->SscMarkID()]);
+        }
+    }
     else if (trig == ACTION_NANOSECOND_PERIOD)
     {
         item->ReadyNanosecond() = ((currentNanosecond + item->Period()) /
-                              item->Period()) * item->Period();
+                                   item->Period()) * item->Period();
         ASSERTX(item->ReadyNanosecond() != currentNanosecond);        
     }
     
@@ -245,10 +280,14 @@ CMD_SCHEDULE_CLASS::Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT6
     {
         nanosecondList->InsertOrdered(item);
     }
+    else if ((trig == ACTION_SSCMARK_ONCE) || (trig == ACTION_SSCMARK_PERIOD))
+    {
+      sscList->Add(item);
+    }
     else
     {
         VERIFYX((trig == ACTION_PACKET_ONCE));
-        packetList->InsertOrdered(item);
+        packetList->Add(item);
     }
 }
 
@@ -298,6 +337,11 @@ CMD_SCHEDULE_CLASS::MacroInstForNextEvent (UINT64 currentMacroInst)
  * should occur.
  */
 {
+    // TODO: We have no idea what the next SSC marker instruction might be, so
+    // as long we we have any such events, we need to move at most one macro
+    // instruction at a time.
+    if (sscList->Head() != NULL) return currentMacroInst + 1;
+
     //
     // 'macroinstList' is ordered so we only need to read the head item.
 
@@ -364,6 +408,11 @@ void
 CMD_SCHEDULE_CLASS::ClearMacroInstProgress (void)
 {
     macroInstList->ClearProgress();
+}
+void
+CMD_SCHEDULE_CLASS::ClearSscMarkProgress (void)
+{
+    sscList->ClearProgress();
 }
 void
 CMD_SCHEDULE_CLASS::ClearPacketProgress (void)

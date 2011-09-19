@@ -43,6 +43,20 @@
 typedef class CONTEXT_SCHEDULER_CLASS *CONTEXT_SCHEDULER;
 typedef class WARMUP_MANAGER_CLASS *WARMUP_MANAGER;
 
+typedef map<UINT32, UINT32> SEEN_SSC_MARKS;
+inline ostream& operator<< (ostream &stream, const SEEN_SSC_MARKS &sscMarks) {
+    bool did_print = false;
+    stream << '[';
+    for (SEEN_SSC_MARKS::const_iterator iter = sscMarks.begin(); iter != sscMarks.end(); ++iter)
+    {
+        if (did_print) stream << ',';
+        stream << ' ' << iter->first << ':' << iter->second;
+        did_print = true;
+    }
+    if (did_print) stream << ' ';
+    stream << ']';
+    return stream;
+}
 
 typedef class ASIM_SYSTEM_CLASS *ASIM_SYSTEM;
 class ASIM_SYSTEM_CLASS : public ASIM_MODULE_CLASS
@@ -59,6 +73,7 @@ class ASIM_SYSTEM_CLASS : public ASIM_MODULE_CLASS
         UINT64 committedMarkers;
         UINT64 *macroCommitted;	// indexed by cpu number
         bool hasMicroOps;
+        SEEN_SSC_MARKS sscMarks; // How many time each SSC marker was seen.
 
 
         UINT64 nonDrainCycles; /* cycles not counting the time that the pipeline is being drained inbetween samples */
@@ -164,6 +179,8 @@ class ASIM_SYSTEM_CLASS : public ASIM_MODULE_CLASS
         virtual UINT64& SYS_Cycle (void) { return(cycles); }
         virtual UINT64& SYS_BaseCycle (void) { return(base_cycles); }        
         virtual UINT64 SYS_Cycle (UINT32 cpunum) { return cycles; }        
+
+        SEEN_SSC_MARKS &SYS_SSC_Marks() { return sscMarks; }
 
         UINT64& SYS_CommittedInsts (UINT32 cpunum) { return(committed[cpunum]); }
         UINT64* SYS_CommittedInsts () { return committed; }

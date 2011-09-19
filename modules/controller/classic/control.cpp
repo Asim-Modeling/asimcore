@@ -588,6 +588,8 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
         
         const UINT64 currentNanosecond = asimSystem->SYS_Nanosecond();
         
+        SEEN_SSC_MARKS &sscMarks = asimSystem->SYS_SSC_Marks();
+
         UINT64 currentInst = 0;
         for (UINT32 i = 0; i < asimSystem->NumCpus(); i++)
         {
@@ -608,12 +610,13 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
         while (ctrlWorkList->Head())
         {
             CMD_WORKITEM wItem = ctrlWorkList->Remove();
-            wItem->Schedule(schedule, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+            wItem->Schedule(schedule, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, &sscMarks);
             ASIM_XMSG("CMD Scheduled item " << wItem->Name()
                  << ": current nanosecond = " << currentNanosecond
                  << ": current cycle = " << currentCycle
                  << ": current macroinst = " << currentMacroInst
-                 << ", inst = " << currentInst );
+                 << ", inst = " << currentInst
+                 << ", ssc marks = " << sscMarks );
         }
 
         //
@@ -625,7 +628,7 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
         //
         // Process any scheduled events that are ready to occur.
 
-        CMD_WORKITEM sItem = schedule->ReadyEvent(currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+        CMD_WORKITEM sItem = schedule->ReadyEvent(currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, &sscMarks);
         while (sItem != NULL)
         {
             //
@@ -651,15 +654,17 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
 
             if ((sItem->Trigger() == ACTION_INST_PERIOD) ||
                 (sItem->Trigger() == ACTION_MACROINST_PERIOD) ||
+                (sItem->Trigger() == ACTION_SSCMARK_PERIOD) ||
                 (sItem->Trigger() == ACTION_CYCLE_PERIOD) ||
                 (sItem->Trigger() == ACTION_NANOSECOND_PERIOD))
             {
-                sItem->Schedule(schedule, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+                sItem->Schedule(schedule, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, &sscMarks);
                 ASIM_XMSG( "CMD Rescheduled periodic item " << sItem->Name()
                       << ": current nanosecond = " << currentNanosecond
                       << ": current macroinst = " << currentMacroInst
                       << ": current cycle = " << currentCycle
-                      << ", inst = " << currentInst );
+                      << ", inst = " << currentInst
+                      << ", ssc mark = " << sscMarks );
             }
             else
             {
@@ -668,7 +673,7 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
 
             delete ack;
 
-            sItem = schedule->ReadyEvent(currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+            sItem = schedule->ReadyEvent(currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, &sscMarks);
         }
 
         //
@@ -805,7 +810,8 @@ CMD_PROGRESS_CLASS::CmdAction (void)
     // If 'type' is a clearing progress action, then we don't perform any
     // action for it. It's action takes place at schedule time.
 
-    if ((type != AWBPROG_CLEARCYCLE) && (type != AWBPROG_CLEARINST)  && (type != AWBPROG_CLEARMACROINST) && (type != AWBPROG_CLEARNANOSECOND) && (type != AWBPROG_CLEARPACKET)) {
+    if ((type != AWBPROG_CLEARCYCLE) && (type != AWBPROG_CLEARINST) && (type != AWBPROG_CLEARMACROINST)
+     && (type != AWBPROG_CLEARSSCMARK) && (type != AWBPROG_CLEARNANOSECOND) && (type != AWBPROG_CLEARPACKET)) {
         AWB_Progress(type, args);
     }
 }
@@ -920,7 +926,8 @@ CMD_EXIT_CLASS::CmdAction (void)
  *******************************************************************/
 
 void
-CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket)
+CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                              SEEN_SSC_MARKS* sscMarks)
 {
     ASIM_XMSG("CMD_PROGRESS_CLASS::Schedule");
     //
@@ -939,12 +946,15 @@ CMD_PROGRESS_CLASS::Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, U
     else if (type == AWBPROG_CLEARMACROINST) {
         schedule->ClearMacroInstProgress();
     }
+    else if (type == AWBPROG_CLEARSSCMARK) {
+        schedule->ClearSscMarkProgress();
+    }
 
     else if (type == AWBPROG_CLEARPACKET) {
         schedule->ClearPacketProgress();
     }
     else {
-        schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+        schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, sscMarks);
     }
 }
 

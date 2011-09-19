@@ -123,6 +123,25 @@ CONTROLLER_CLASS::PartitionArgs (INT32 argc, char *argv[])
     fdArgv[fdArgc] = NULL;
 }
 
+// Parse action time for an SSC mark event. This is expected to be in the
+// format "<n>:<m>", where <n> is the SSC mark identifier and <m> is the number
+// of occurrences. If the ":<m>" part is missing, 1 is assumed.
+UINT64
+ssc_mark_action_time(char *str)
+{
+    char *middle = strstr(str, ":");
+    if (middle)
+    {
+        *middle = '\0';
+        middle++;
+        return (UINT64(atoi_general(str)) << 32) | UINT64(atoi_general(middle));
+    }
+    else
+    {
+      return (UINT64(atoi_general(str)) << 32) | UINT64(1);
+    }
+}
+
 // Partition arguments into awb's, system's and feeder's,
 // one single loop iteration.
 void
@@ -586,6 +605,8 @@ CONTROLLER_CLASS::ParseEvents(INT32 argc, char **argv)
 // Parse command line arguments, 
 // return false if there is a parse error.
 // Advance the argument pointer i, passed by reference.
+// TODO: There is a lot of copy-and-paste here that can be replaced by a more
+// robust general code pattern (arguments of the form "-<command><operand><event>").
 bool
 CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
 {
@@ -611,6 +632,10 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         // -m <n>       run simulation for 'n' insts.
         else if ((strcmp(argv[i], "-m") == 0) && (argc > (i+1))) {
             theController.CMD_Exit(ACTION_MACROINST_ONCE, atoi_general(argv[++i]));
+        }
+        // -S <m>:<n>   run simulation until <n>th occurrence of SSC mark <m>.
+        else if ((strcmp(argv[i], "-S") == 0) && (argc > (i+1))) {
+            theController.CMD_Exit(ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
         }
         // -xcheck <file>		Activate Cross-check going to file <file> (see xcheck.h)
         else if ((strcmp(argv[i], "-xcheck") == 0) && (argc > (i+1))) 
@@ -943,6 +968,83 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         {
             theController.CMD_Profile(false, ACTION_NANOSECOND_ONCE, atoi_general(argv[++i]));
         }
+
+        //--------------------------------------------------------------------
+        // turning things on 'by SSC mark'
+        //--------------------------------------------------------------------
+        // -tsS <m>:<n> turn on tracing after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-tsS") == 0) && (argc > (i+1))) {
+            theController.CMD_Debug(true, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -trS <m>:<n> Take all traces that were turned on by -tr
+        //              and turn them on after <n>th occurrence of SSC mark <m>
+        //              instead of now.
+        else if (strcmp(argv[i], "-trS") == 0 && (argc > (i+1))) 
+        {
+            theController.CMD_Trace(new TRACEABLE_DELAYED_ACTION_CLASS(), 
+                      ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -tS </regex/=[012]> <m>:<n> turn on tracing after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-tS") == 0) && (argc > (i+1))) {
+            string regex;
+            int level;
+            i += theController.parseTraceCmd(argv[0], argv[i + 1], regex, level);
+            theController.CMD_Trace(new TRACEABLE_DELAYED_ACTION_CLASS(regex, level), 
+                      ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -ssS <m>:<n> turn on stats after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-ssS") == 0) && (argc > (i+1))) {
+            theController.CMD_Stats(true, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -esS <m>:<n> turn on events after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-esS") == 0) && (argc > (i+1))) {
+            ASSERT(runWithEventsOn,"You are trying to generate events in a "
+              "model not compiled with events. Build the model with EVENTS=1");
+            theController.CMD_Events(true, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -csS <m>:<n> turn on stripCharts after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-csS") == 0) && (argc > (i+1))) {
+            theController.CMD_Stripchart(true, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -psS <m>:<n> turn on profiling after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-psS") == 0) && (argc > (i+1))) {
+            theController.CMD_Profile(true, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        //--------------------------------------------------------------------
+        // turning things off 'by SSC mark'
+        //--------------------------------------------------------------------
+        // -teS <m>:<n> turn off tracing after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-teS") == 0) && (argc > (i+1))) {
+            theController.CMD_Debug(false, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -seS <m>:<n> turn off stats after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-seS") == 0) && (argc > (i+1))) {
+            theController.CMD_Stats(false, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -eeS <m>:<n> turn off events after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-eeS") == 0) && (argc > (i+1))) {
+            theController.CMD_Events(false, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -ceS <m>:<n> turn off stripCharts after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-ceS") == 0) && (argc > (i+1))) {
+            theController.CMD_Stripchart(false, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+        // -peS <m>:<n> turn off profiling after <n>th occurrence of SSC mark <,>.
+        //
+        else if ((strcmp(argv[i], "-peS") == 0) && (argc > (i+1))) {
+            theController.CMD_Profile(false, ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
+
         //--------------------------------------------------------------------
         // -pc <n>       indicate progress every <n> cycles
         //
@@ -964,6 +1066,13 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         {
             theController.CMD_Progress(AWBPROG_MACROINST, "", ACTION_MACROINST_PERIOD,
                          atoi_general(argv[++i]));
+        }
+        // -pS <m>:<n>   indicate progress info every <n> occurences of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-pS") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_Progress(AWBPROG_SSCMARK, const_cast<char*>(""), ACTION_SSCMARK_PERIOD,
+                         ssc_mark_action_time(argv[++i]));
         }
         // -pn <n>       indicate progress info every <n> nanoseconds.
         //
@@ -996,6 +1105,12 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         {
             theController.CMD_EmitStats(ACTION_MACROINST_PERIOD, atoi_general(argv[++i]));
         }
+        // -sS <m>:<n>   emit stats every <n>th occurrences of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-sS") == 0) && (argc > (i+1)))
+        {
+            theController.CMD_EmitStats(ACTION_SSCMARK_PERIOD, ssc_mark_action_time(argv[++i]));
+        }
         // -rsc <n>       reset stat on cycle <n>
         //
         else if ((strcmp(argv[i], "-rsc") == 0) && (argc > (i+1))) 
@@ -1020,6 +1135,12 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         {
             theController.CMD_ResetStats(ACTION_MACROINST_ONCE, atoi_general(argv[++i]));
         }
+        // -rsS <m>:<n>   reset stat on <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-rsS") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_ResetStats(ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }
         // -rscp <n>       reset stat every <n> cycles
         //
         else if ((strcmp(argv[i], "-rscp") == 0) && (argc > (i+1))) 
@@ -1043,7 +1164,13 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         else if ((strcmp(argv[i], "-rsmp") == 0) && (argc > (i+1))) 
         {
             theController.CMD_ResetStats(ACTION_MACROINST_PERIOD, atoi_general(argv[++i]));
-        }        
+        } 
+        // -rsmS <n>       reset stat every <m>th occurrences of SSC mark <n>.
+        //
+        else if ((strcmp(argv[i], "-rsSp") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_ResetStats(ACTION_SSCMARK_PERIOD, ssc_mark_action_time(argv[++i]));
+        }       
         else 
         {
             ASIMWARNING("Unknown flag, " << argv[i] << endl);
@@ -1077,6 +1204,7 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t-c <n>\t\t\tRun simulation for <n> cycles\n"
        << "\t-i <n>\t\t\tRun simulation for <n> committed insts/uops.\n"
        << "\t-m <n>\t\t\tRun simulation for <n> committed macro insts.\n"
+       << "\t-S <m>:<n>\t\tRun simulation until <n>th occurrence of SSC mark <m>.\n"
        << "\t-s <f>\t\t\tDump statistics to file 'f' on exit\n"
        << "\n"
        << "\t-t\t\t\tTurn on instruction tracing\n"
@@ -1087,7 +1215,7 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t-rbs\t\t\tDump Buffer Stats in Stats file\n"
        << "\t-rps\t\t\tDump Port Stats in Stats file\n"
        << "\tTurning various things on and off:\n"
-       << "\t\tSyntax: -[cepst][se][cinm] <n>\n"
+       << "\t\tSyntax: -[cepst][se][cinmS] <n>\n"
        << "\t\t\t1st char:\n"
        << "\t\t\t\tc ... stripChart\n"
        << "\t\t\t\te ... Events\n"
@@ -1102,11 +1230,13 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t\t\t\ti ... commited Instructions\n"
        << "\t\t\t\tn ... nanoseconds\n"
        << "\t\t\t\tm ... Macro Instructions (equivalent to i on non-x86uop simulators)\n"
-       << "\t\t\t<n>: ........ # of cycles or instructions or nanoseconds or macro instructions\n"
+       << "\t\t\t\tS ... SSC Marks\n"
+       << "\t\t\t<n>: ........ # of cycles or instructions or nanoseconds or macro instructions. For SSC\n"
+       << "\t\t\t              Marks, is <m>:<n> where <m> is the SSC mark ID and <n> is the # of occurrences.\n"
        << "\n"
-       << "\t\t\t-t[cinm] [</regex/[=012]]> <n>\n"
+       << "\t\t\t-t[cinmS] [</regex/[=012]]> <n>\n"
        << "\t\t\t\tLike -tr but delay the effect.\n"
-       << "\t\t\t-tr[cinm] <n>\n"
+       << "\t\t\t-tr[cinmS] <n>\n"
        << "\t\t\t\tDelay the effect of all previous -tr commands until time <n>.\n"
        << "\t\tExample:\n"
        << "\t\t\t-tsc 1000 ... start tracing at cycle 1000\n"
@@ -1123,11 +1253,13 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t-sn <n>\t\t\tEmit stats file every <n> nanoseconds\n"
        << "\t-si <n>\t\t\tEmit stats file every <n> instructions\n"
        << "\t-sm <n>\t\t\tEmit stats file every <n> macro instructions\n"
+       << "\t-sS <m>:<n>\t\tEmit stats file every <n>th occurrence of SSC mark <m>\n"
        << "\n"
        << "\t-rsc <n>\t\t\tReset stats on cycle <n>\n"
        << "\t-rsi <n>\t\t\tReset stats on instruction <n>\n"
        << "\t-rsm <n>\t\t\tReset stats on macro instruction <n>\n"
        << "\t-rsn <n>\t\t\tReset stats on nanosecond <n>\n"
+       << "\t-rsS <m>:<n>\t\t\tReset stats file on the <n>th occurrence of SSC mark <m>\n"
        << "\tAdding a p after the previous flags (for instance -rscp) will reset stats periodically after <n> events.\n"
        << "\n"
        << "\t-param <name>=<value>\tdefine dynamic parameter <name> = <value>\n"

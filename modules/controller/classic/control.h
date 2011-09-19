@@ -56,13 +56,16 @@ extern void CheckExitConditions(EXIT_CONDITION ec);
  * ACTION_INST_PERIOD  : Action occurs every 'n' committed instrs
  * ACTION_NOW          : Action occurs in the next cycle
  * ACTION_NEVER        : Action never occurs
+ * ACTION_SSCMARK_ONCE : Action occurs once at the specified SSC mark occurrence
+ * ACTION_SSCMARK_PERIOD : Action occurs once every N occurrences of an SSC mark
  *
  */
 enum CMD_ACTIONTRIGGER {ACTION_NANOSECOND_ONCE, ACTION_NANOSECOND_PERIOD,
                         ACTION_CYCLE_ONCE, ACTION_CYCLE_PERIOD,
                         ACTION_INST_ONCE, ACTION_INST_PERIOD,
                         ACTION_MACROINST_ONCE, ACTION_MACROINST_PERIOD,
-                        ACTION_NOW, ACTION_NEVER, ACTION_PACKET_ONCE};                        
+                        ACTION_NOW, ACTION_NEVER, ACTION_PACKET_ONCE,
+                        ACTION_SSCMARK_ONCE, ACTION_SSCMARK_PERIOD};
 
 
 /********************************************************************
@@ -240,6 +243,7 @@ class CMD_SCHEDULE_CLASS
         CMD_WORKLIST nanosecondList;        
         CMD_WORKLIST packetList;
         CMD_WORKLIST macroInstList;
+        CMD_WORKLIST sscList;
 
         
     public:
@@ -251,12 +255,14 @@ class CMD_SCHEDULE_CLASS
          * Return the next event item that should be handled. Return NULL
          * if there is no action ready.
          */
-        CMD_WORKITEM ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);
+        CMD_WORKITEM ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                                 SEEN_SSC_MARKS* sscMarks = 0);
 
         /*
          * Schedule 'item' as specified by 'trig' and 'cnt'.
          */
-        void Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);
+        void Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                       SEEN_SSC_MARKS* sscMarks = 0);
 
         /*
          * Return the cycles or number of committed instructions at which
@@ -276,6 +282,7 @@ class CMD_SCHEDULE_CLASS
         void ClearInstProgress (void);
         void ClearPacketProgress (void);
         void ClearMacroInstProgress (void);
+        void ClearSscMarkProgress (void);
 
 };
 
@@ -365,8 +372,16 @@ class CMD_WORKITEM_CLASS
         CMD_WORKITEM_CLASS (char *n, CMD_ACTIONTRIGGER t =ACTION_NEVER, UINT64 c =0) :
             name(n), next(NULL), trigger(t), actionTime(c), period(c) {
             VERIFYX((trigger != ACTION_NOW) || (actionTime == 0));
+            // TRICKY: This strips the SSC mark ID from the period, when
+            // the period is initialized by default to the full actionTime.
+            if (trigger == ACTION_SSCMARK_PERIOD) period &= 0xFFFFFFFF;
         }
         virtual ~CMD_WORKITEM_CLASS () { }
+
+        /*
+         * Return the next item in the list, or NULL if this is the last one.
+         */
+        CMD_WORKITEM Next (void) { return(next); }
 
         /*
          * Accessors...
@@ -394,6 +409,19 @@ class CMD_WORKITEM_CLASS
             ASSERTX((trigger == ACTION_PACKET_ONCE));
             return(actionTime);
         }
+        UINT32 SscMarkID (void) {
+            ASSERTX((trigger == ACTION_SSCMARK_ONCE) || (trigger == ACTION_SSCMARK_PERIOD));
+            return(UINT32(actionTime >> 32));
+        }
+        UINT32 SscMarkOccurrence (void) {
+            ASSERTX((trigger == ACTION_SSCMARK_ONCE) || (trigger == ACTION_SSCMARK_PERIOD));
+            return(UINT32(actionTime & 0xFFFFFFFF));
+        }
+        void SscMarkAdvance (void) {
+            ASSERTX(period > 0);
+            ASSERTX(UINT64(period) + UINT64(SscMarkOccurrence()) <= 0xFFFFFFFF);
+            actionTime += period;
+        }
         UINT64 Period (void) const {
 	    // CMP_FIX (remove this comment before checkin)
             // ASSERTX((trigger == ACTION_INST_PERIOD) || (trigger == ACTION_CYCLE_PERIOD));
@@ -420,8 +448,9 @@ class CMD_WORKITEM_CLASS
          * Schedule this work item in 'schedule' based on 'actionTime',
          * 'trigger', and 'period'.
          */
-        virtual void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket) {
-            schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket);
+        virtual void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                               SEEN_SSC_MARKS* sscMarks = 0) {
+            schedule->Schedule(this, currentNanosecond, currentCycle, currentInst, currentMacroInst, currentPacket, sscMarks);
         }
 
 };
@@ -460,7 +489,8 @@ class CMD_INIT_CLASS : public CMD_WORKITEM_CLASS
         /*
          * Schedule should not be called for this item.
          */
-        void Schedule (CMD_SCHEDULE schedule, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket) {
+        void Schedule (CMD_SCHEDULE schedule, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                       SEEN_SSC_MARKS* sscMarks = 0) {
             VERIFYX(false);
         }
 
@@ -513,7 +543,8 @@ class CMD_PROGRESS_CLASS : public CMD_WORKITEM_CLASS
         CMD_PROGRESS_CLASS (AWB_PROGRESSTYPE p, const char *a, CMD_ACTIONTRIGGER t, UINT64 c) :
             CMD_WORKITEM_CLASS("PROGRESS", t, c), type(p), args(a) { }
 
-        void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket);
+        void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst, UINT64 currentMacroInst, UINT64 currentPacket,
+                       SEEN_SSC_MARKS* sscMarks = 0);
         void CmdAction (void);
 
 };
@@ -714,7 +745,8 @@ class CMD_EXECUTE_CLASS : public CMD_WORKITEM_CLASS
         /*
          * Schedule should not be called for this item.
          */
-        void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst,UINT64 currentMacroInst, UINT64 currentPacket) {
+        void Schedule (CMD_SCHEDULE schedule, UINT64 currentNanosecond, UINT64 currentCycle, UINT64 currentInst,UINT64 currentMacroInst, UINT64 currentPacket,
+                       SEEN_SSC_MARKS* sscMarks = 0) {
             VERIFYX(false);
         }
 
@@ -919,6 +951,7 @@ class CMD_WORKLIST_CLASS
     private:
         CMD_WORKITEM head, tail;
 
+    public:
         /*
          * Remove an item from the list, it could be at the head, middle,
          * or tail.
@@ -949,7 +982,6 @@ class CMD_WORKLIST_CLASS
             return(item);
         }
         
-    public:
         // constructors / destructors
         CMD_WORKLIST_CLASS () : head(NULL), tail(NULL) { }
 
@@ -1134,6 +1166,11 @@ class CONTROLLER_CLASS {
     bool pmInitialized;
 };
 
+// Parse action time for an SSC mark event, to be used instead of atoi_generic
+// for SSC mark based actions. The argument is expected to be in the format
+// "<n>:<m>", where <n> is the SSC mark identifier and <m> is the number of
+// occurrences. If the ":<m>" part is missing, 1 is assumed.
+extern UINT64 ssc_mark_action_time(char *str);
 
 /*******************************************************************
  *
