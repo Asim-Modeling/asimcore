@@ -7317,3 +7317,14 @@ Directory admin/packages
 
 * Update branch admin files for release.
 
+
+----------
+emer        Date: Wed Sep 21 12:10:47 EDT 2011  CSN: CSN-asimcore-346
+                  Wed Sep 21 16:10:47 UTC 2011
+
+
+Directory debian
+ changelog                 Locally Modified          345 
+ rules                     Locally Modified          345 
+
+Updates to reflect v11.09 release.
