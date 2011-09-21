@@ -1,4 +1,4 @@
-asim-core (11.09+fixes~svn20110921r346+lucid) lucid; urgency=low
+asim-core (11.09+fixes~svn20110921r347+lucid) lucid; urgency=low
 
   [ Michael Pellauer ]
   * r344
@@ -9,4 +9,4 @@ asim-core (11.09+fixes~svn20110921r346+lucid) lucid; urgency=low
       v11.04 is released. Start of release v11.08 development.
 
 
- -- Joel Emer <emer@csail.mit.edu>  Wed, 21 Sep 2011 12:04:46 -0400
+ -- Joel Emer <emer@csail.mit.edu>  Wed, 21 Sep 2011 12:19:52 -0400

@@ -7328,3 +7328,14 @@ Directory debian
  rules                     Locally Modified          345 
 
 Updates to reflect v11.09 release.
+
+----------
+emer        Date: Wed Sep 21 12:21:58 EDT 2011  CSN: CSN-asimcore-347
+                  Wed Sep 21 16:21:58 UTC 2011
+
+
+Directory debian
+ control                   Locally Modified          346 
+ changelog                 Locally Modified          346 
+
+Another change to reflect version 11.09.
