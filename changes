@@ -7302,3 +7302,15 @@ Sync of Intel commit 3390. Now up to date vs revision 3391.
 
     - Patch by Khasawneh, Shadi T to add SSC marker support in the "No-tcl"
     version of the controller
+
+----------
+emer        Date: Wed Sep 21 19:33:10 EDT 2011  CSN: CSN-asimcore-348
+                  Wed Sep 21 23:33:10 UTC 2011
+
+
+Directory debian
+ control                   Locally Modified          347 
+ changelog                 Locally Modified          347 
+ rules                     Locally Modified          347 
+
+Start development of v11.12 release.
