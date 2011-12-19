@@ -45,7 +45,7 @@ libdraldb_a_SOURCES = src/Hash6431.cpp \
                     src/DralDB.cpp \
                     src/DBConfig.cpp
 
-WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wconversion -Winline -Wno-unused -Wno-parentheses -Wno-long-long
+WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wno-unused -Wno-parentheses -Wno-long-long
 AM_CXXFLAGS += -I./include -I../libdral/include $(QTINCDIR) 
 
 CLEANFILES = *moc*

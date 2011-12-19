@@ -23,7 +23,7 @@
 #define _DEFAULT_ADF_ 1
 
 /// create default adf string 
-char *DefaultADF (void) { return ""; }
+char *DefaultADF (void) { return const_cast<char *>(""); }
 
 #endif // _DEFAULT_ADF_
 /**************************************************************************

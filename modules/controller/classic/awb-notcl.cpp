@@ -77,14 +77,14 @@ using namespace std;
     cerr << __FILE__ << ":" << __LINE__ << ": " << x << endl; \
 })
 
-#define XMSG(x) \
+/*#define ASIM_XMSG(x) \
 ({ \
        TMSG(Trace_Cmd, __FILE__ << ":" << __LINE__ << ": " <<  x); \
 })
 #define DMSG(x) \
 ({\
     cout << __FILE__ << ":" << __LINE__ << ": " << x << endl; \
-})
+})*/
 
 ////////////////////////////////////////////////////////////////////////////
 // Prototypes
@@ -142,7 +142,7 @@ extern bool stripsOn;
 /*
  * File holding commands for awb to execute after initializing.
  */
-char *awbCmdFile = "awbcmds"; // default -- can be overridden by args.cpp
+const char *awbCmdFile = "awbcmds"; // default -- can be overridden by args.cpp
 
 /*
  * not used. Just for compatibility with args.cpp '-wb' option
@@ -235,7 +235,7 @@ AWB_Progress (AWB_PROGRESSTYPE type,
     //
     // Add progress to the list of pending progress events.
 
-    XMSG("AWB_Progress: " << pStrs[type] << " args: " << args);
+    ASIM_XMSG("AWB_Progress: " << pStrs[type] << " args: " << args);
     pendingProgress.push_back(pStrs[type]);
 
     if (args.length() > 0)
@@ -253,7 +253,7 @@ AWB_InformProgress (void)
  * events.
  */
 {
-    XMSG("AWB_InformProgress");
+    ASIM_XMSG("AWB_InformProgress");
     if ( ! pendingProgress.empty() )
     {
         awbCmdIntrp->BatchProgress( pendingProgress );
@@ -268,7 +268,7 @@ AWB_Exit (void)
  * Exit awb...
  */
 {
-    XMSG("AWB_Exit");
+    ASIM_XMSG("AWB_Exit");
     //
     // Send awb a progress message ordering it to exit, then wait
     // for awb to signal that it has exited.
@@ -288,7 +288,7 @@ AwbStartInterpreter (void)
  * Start point for thread responding to event in awb.
  */
 {
-    XMSG("AwbStartInterpreter");
+    ASIM_XMSG("AwbStartInterpreter");
     awbCmdIntrp = new COMMAND_PARSER_CLASS(awbCmdFile);
 }
 
@@ -321,7 +321,7 @@ PmStateList (void)  // MJC: ok
  * Return the list of exposed performance model state.
  */
 {
-    XMSG("PmStateList");
+    ASIM_XMSG("PmStateList");
 
     class StateListKeeper {
       public:
@@ -442,7 +442,7 @@ void PmStateSuspend(string& thread_desc)
 
 void PmStateUnsuspend(string& thread_desc)
 {
-    XMSG("PmStateUnsuspend " << thread_desc);
+    ASIM_XMSG("PmStateUnsuspend " << thread_desc);
     prep();
     //
     // unsuspend   - requires state descriptor argument
@@ -456,7 +456,7 @@ void PmStateUnsuspend(string& thread_desc)
              scan != NULL;
              scan = scan->next)
         {
-            //XMSG("PmStateUnsuspend: unsuspending " << scan->state->Name());
+            //ASIM_XMSG("PmStateUnsuspend: unsuspending " << scan->state->Name());
             scan->state->Unsuspend();
         }
         return;
@@ -882,7 +882,7 @@ PmMarkerClear( string& desc,
 void
 PmScheduleStart()
 {
-    XMSG("PmScheduleStart");
+    ASIM_XMSG("PmScheduleStart");
     prep();
     CMD_Start();
 }
@@ -890,7 +890,7 @@ PmScheduleStart()
 void
 PmScheduleStopNow()
 {
-    XMSG("PmScheduleStopNow");
+    ASIM_XMSG("PmScheduleStopNow");
     CMD_ACTIONTRIGGER action = ACTION_NOW;
     UINT64 stopTime = 0;
     CMD_Stop(action, stopTime);
@@ -899,7 +899,7 @@ PmScheduleStopNow()
 void
 PmScheduleStopNanosecond(UINT64 stopTime)
 {
-    XMSG("PmScheduleNanosecond");
+    ASIM_XMSG("PmScheduleNanosecond");
     CMD_ACTIONTRIGGER action = ACTION_NANOSECOND_ONCE;
     CMD_Stop(action, stopTime);
 }
@@ -907,7 +907,7 @@ PmScheduleStopNanosecond(UINT64 stopTime)
 void
 PmScheduleStopCycle(UINT64 stopTime)
 {
-    XMSG("PmScheduleStopCycle");
+    ASIM_XMSG("PmScheduleStopCycle");
     CMD_ACTIONTRIGGER action = ACTION_CYCLE_ONCE;
     CMD_Stop(action, stopTime);
 }
@@ -915,7 +915,7 @@ PmScheduleStopCycle(UINT64 stopTime)
 void 
 PmScheduleStopInst(UINT64 stopCount)
 {
-    XMSG("PmScheduleStopInst");
+    ASIM_XMSG("PmScheduleStopInst");
     CMD_ACTIONTRIGGER action = ACTION_INST_ONCE;
     CMD_Stop(action, stopCount);
 }
@@ -923,7 +923,7 @@ PmScheduleStopInst(UINT64 stopCount)
 void 
 PmScheduleStopMacroInst(UINT64 stopCount)
 {
-    XMSG("PmScheduleStopMacroInst");
+    ASIM_XMSG("PmScheduleStopMacroInst");
     CMD_ACTIONTRIGGER action = ACTION_MACROINST_ONCE;
     CMD_Stop(action, stopCount);
 }
@@ -999,31 +999,31 @@ PmScheduleProgress(string& type,
     else if (action == ACTION_CYCLE_PERIOD)
     {
         INT32 p = atoi(period);
-        XMSG("PmScheduleProgress cycle period " << p);
+        ASIM_XMSG("PmScheduleProgress cycle period " << p);
         CMD_Progress(AWBPROG_CYCLE, "", action, p);
     }
     else if (action == ACTION_NANOSECOND_PERIOD)
     {
         INT32 p = atoi(period);
-        XMSG("PmScheduleProgress nanosecond period " << p);
+        ASIM_XMSG("PmScheduleProgress nanosecond period " << p);
         CMD_Progress(AWBPROG_NANOSECOND, "", action, p);
     }
     else if (action == ACTION_MACROINST_PERIOD)
     {
         INT32 p = atoi(period);
-        XMSG("PmScheduleProgress macro inst period " << p);
+        ASIM_XMSG("PmScheduleProgress macro inst period " << p);
         CMD_Progress(AWBPROG_MACROINST, "", action, p);
     }
     else if (action == ACTION_SSCMARK_PERIOD)
     {
         INT32 p = atoi(period);
-        XMSG("PmScheduleProgress ssc mark  period " << p);
+        ASIM_XMSG("PmScheduleProgress ssc mark  period " << p);
         CMD_Progress(AWBPROG_SSCMARK, "", action, p);
     }
     else
     {
         INT32 p = atoi(period);
-        XMSG("PmScheduleProgress inst period " << p);
+        ASIM_XMSG("PmScheduleProgress inst period " << p);
         CMD_Progress(AWBPROG_INST, "", action, p);
     }
 }
@@ -1033,7 +1033,7 @@ void PmScheduleThread(string& desc,
                       UINT64 time)
 {
 
-    XMSG("PmScheduleThread desc: " << desc
+    ASIM_XMSG("PmScheduleThread desc: " << desc
          << " trigger: " << trigger
          << " time: " << time);
 

@@ -125,7 +125,7 @@
 typedef struct AlphaInstruction
 {
     unsigned int i;
-    char *name;
+    const char *name;
     int type;
 
 } alpha_insn;

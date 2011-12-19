@@ -224,7 +224,7 @@ SHELL = @SHELL@
 STLPORTINC = @STLPORTINC@
 STRIP = @STRIP@
 VERSION = @VERSION@
-WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wconversion -Winline -Wno-unused -Wno-parentheses -Wno-long-long
+WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wno-unused -Wno-parentheses -Wno-long-long
 XMKMF = @XMKMF@
 XML_CFLAGS = @XML_CFLAGS@
 XML_LFLAGS = @XML_LFLAGS@

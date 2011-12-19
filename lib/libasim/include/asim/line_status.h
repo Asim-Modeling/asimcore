@@ -43,7 +43,7 @@ typedef enum
     S_MAX_LINE_STATUS 
 } LINE_STATUS;
 
-static char * LINE_STATUS_STRINGS[S_MAX_LINE_STATUS] =
+static const char * LINE_STATUS_STRINGS[S_MAX_LINE_STATUS] =
 { 
     "Perfect",
     "Warm",

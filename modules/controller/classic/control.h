@@ -344,7 +344,7 @@ class CMD_WORKITEM_CLASS
         /*
          * Name for this item...
          */
-        char *name;
+        const char *name;
         
         /*
          * Next workitem in a list...
@@ -369,7 +369,7 @@ class CMD_WORKITEM_CLASS
         UINT64 period;
         
     public:
-        CMD_WORKITEM_CLASS (char *n, CMD_ACTIONTRIGGER t =ACTION_NEVER, UINT64 c =0) :
+        CMD_WORKITEM_CLASS (const char *n, CMD_ACTIONTRIGGER t =ACTION_NEVER, UINT64 c =0) :
             name(n), next(NULL), trigger(t), actionTime(c), period(c) {
             VERIFYX((trigger != ACTION_NOW) || (actionTime == 0));
             // TRICKY: This strips the SSC mark ID from the period, when
@@ -386,7 +386,7 @@ class CMD_WORKITEM_CLASS
         /*
          * Accessors...
          */
-        char *Name (void) { return(name); }
+        const char *Name (void) { return(name); }
         CMD_ACTIONTRIGGER Trigger (void) const { return(trigger); }
         UINT64& ReadyNanosecond (void) {
             ASSERTX((trigger == ACTION_NANOSECOND_ONCE) || (trigger == ACTION_NANOSECOND_PERIOD));

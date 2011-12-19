@@ -36,6 +36,7 @@
 #include <vector>
 #include <pthread.h>
 #include <string.h>
+#include <stdlib.h>
 
 // ASIM core
 #include "asim/syntax.h"

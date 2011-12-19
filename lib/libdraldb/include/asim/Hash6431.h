@@ -102,7 +102,7 @@ INT32
 Hash6431::find(UINT64 key)
 {
     INT32 lastValue=-1;
-    INT32 bk = key % buckets;
+    UINT64 bk = key % buckets;
     Hash6431Node* current = &(bvector[bk]);
     if (! (current->used) )
     {
@@ -134,7 +134,7 @@ Hash6431::find(UINT64 key)
 void
 Hash6431::insert(UINT64 key, INT32 value)
 {
-    INT32 bk = key % buckets;
+    UINT64 bk = key % buckets;
     Hash6431Node* current = &(bvector[bk]);
     Hash6431Node* prev = current;
     // If the bucket is already used.

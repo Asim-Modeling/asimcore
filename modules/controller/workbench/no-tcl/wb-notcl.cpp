@@ -372,7 +372,7 @@ COMMAND_PARSER_CLASS::do_run(vector<string>& vs) // cycle/inst/marker amount
     }
     else
     {
-        INT64 stopTime;
+        INT64 stopTime=0;
         INT64 amount = atoi_general(vs[2]);
         if (vs[1] == "cycle")
         {

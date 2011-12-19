@@ -99,7 +99,7 @@ static Tcl_Interp *awbInterp = NULL;
 /*
  * File holding commands for awb to execute after initializing.
  */
-char *awbCmdFile = "";
+char *awbCmdFile = const_cast<char*>("");
  
 /*
  * If non-null, this is the full pathname of a workbench to
@@ -116,7 +116,7 @@ static char *pendingProgress = NULL;
 /*
  * Dump file for events
  */
-char* event_dumpfilename = "";
+char* event_dumpfilename = const_cast<char*>("");
 FILE* event_dumpfile = NULL;
 
 /*
@@ -162,7 +162,7 @@ AWB_Progress (AWB_PROGRESSTYPE type, const char *args)
  * Exit awb...
  */
 {
-    static char *pStrs[] = AWB_PROGRESSSTRS;
+    static const char *pStrs[] = AWB_PROGRESSSTRS;
     
     //
     // Add progress to the list of pending progress events.
@@ -394,7 +394,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     ostringstream os;
 
     if (argc < 2) {
-        Tcl_SetResult(interp, "Usage: PmState option ?arg ...?", TCL_STATIC);
+        Tcl_SetResult(interp, const_cast<char*>("Usage: PmState option ?arg ...?"), TCL_STATIC);
         return(TCL_ERROR);
     }
 
@@ -414,7 +414,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     if (strcmp(option, "states") == 0) {
         if ((argc != 2) && (argc != 3)) {
-            Tcl_SetResult(interp, "Usage: PmState states ?path?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState states ?path?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -427,7 +427,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "find") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState find ?name?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState find ?name?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -439,7 +439,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "dump") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState dump ?filename?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState dump ?filename?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -494,7 +494,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         }
 
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState suspend ?state?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState suspend ?state?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -529,7 +529,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         }
 
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState unsuspend ?state?",
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState unsuspend ?state?"),
                           TCL_STATIC);
             return(TCL_ERROR);
         }
@@ -553,7 +553,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "value") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState value ?state?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState value ?state?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -565,7 +565,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "path") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState path ?state?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState path ?state?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -587,7 +587,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "name") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState name ?state?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState name ?state?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -609,7 +609,7 @@ PmStateCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "desc") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: PmState desc ?state?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmState desc ?state?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -674,7 +674,7 @@ PmStateStates (Tcl_Interp *interp, char *path)
                 // construct the next longest path prefix for 'state'.
 
                 char prefix[AWB_TCLBUF_SZ+10];
-                char *nel = strchr(state->Path()+strlen(path)+1, '/');
+                const char *nel = strchr(state->Path()+strlen(path)+1, '/');
                 if (nel == NULL) {
                     ASSERTX(strlen(state->Path()) < AWB_TCLBUF_SZ);
                     strcpy(prefix, state->Path());
@@ -729,7 +729,7 @@ PmStateFind (Tcl_Interp *interp, char *name)
         scan = scan->next;
     }
 
-    Tcl_SetResult(interp, "", TCL_STATIC);
+    Tcl_SetResult(interp, const_cast<char*>(""), TCL_STATIC);
     return(TCL_OK);
 }
 
@@ -800,8 +800,7 @@ PmEventCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     if (!runWithEventsOn)
     {
         Tcl_SetResult(
-            interp, "You are trying to generate events in a model not compiled "
-            "with events. Build the model with EVENTS=1", TCL_STATIC);
+            interp, const_cast<char*>("You are trying to generate events in a model not compiled with events. Build the model with EVENTS=1"), TCL_STATIC);
         return(TCL_ERROR);
     }
     if (strcmp(option, "on") == 0) {
@@ -820,7 +819,7 @@ PmEventCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     }
     else if (strcmp(option, "filename") == 0) {
         if (argc != 3) {
-            Tcl_SetResult(interp, "Usage: AwbEvents filename ?filename?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: AwbEvents filename ?filename?"), TCL_STATIC);
             return(TCL_ERROR);
         }
         /*
@@ -876,7 +875,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     ostringstream os;
 
     if (argc < 2) {
-        Tcl_SetResult(interp, "Usage: PmMarker option ?arg ...?", TCL_STATIC);
+        Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker option ?arg ...?"), TCL_STATIC);
         return(TCL_ERROR);
     }
 
@@ -898,7 +897,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     if (strcmp(option, "set") == 0) {
         if ((argc < 5)) {
-            Tcl_SetResult(interp, "Usage: PmMarker set ?thread? ?id? ?subcmd?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker set ?thread? ?id? ?subcmd?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -911,7 +910,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         // subcommand: pc <addr>
         if (strcmp(subcmd, "pc") == 0) {
             if ((argc != 6)) {
-                Tcl_SetResult(interp, "Usage: PmMarker set ?thread? ?id? pc ?addr?", TCL_STATIC);
+                Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker set ?thread? ?id? pc ?addr?"), TCL_STATIC);
                 return(TCL_ERROR);
             }
             UINT64 addr = atoi_general_unsigned(argv[5]);
@@ -925,7 +924,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         // subcommand: inst
         else if (strcmp(subcmd, "inst") == 0) {
             if ((argc != 7)) {
-                Tcl_SetResult(interp, "Usage: PmMarker set ?thread? ?id? inst ?bits? ?mask?", TCL_STATIC);
+                Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker set ?thread? ?id? inst ?bits? ?mask?"), TCL_STATIC);
                 return(TCL_ERROR);
             }
 
@@ -957,7 +956,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     else if (strcmp(option, "clear") == 0) {
         if ((argc < 5)) {
-            Tcl_SetResult(interp, "Usage: PmMarker clear ?thread? ?id? ?subcmd?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker clear ?thread? ?id? ?subcmd?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -970,7 +969,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         // subcommand: pc <addr>
         if (strcmp(subcmd, "pc") == 0) {
             if ((argc != 6)) {
-                Tcl_SetResult(interp, "Usage: PmMarker clear ?thread? ?id? pc ?addr?", TCL_STATIC);
+                Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker clear ?thread? ?id? pc ?addr?"), TCL_STATIC);
                 return(TCL_ERROR);
             }
 
@@ -985,7 +984,7 @@ PmMarkerCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
         // subcommand: all
         else if (strcmp(subcmd, "all") == 0) {
             if ((argc != 5)) {
-                Tcl_SetResult(interp, "Usage: PmMarker clear ?thread? ?id? all", TCL_STATIC);
+                Tcl_SetResult(interp, const_cast<char*>("Usage: PmMarker clear ?thread? ?id? all"), TCL_STATIC);
                 return(TCL_ERROR);
             }
 
@@ -1026,7 +1025,7 @@ PmSymbolCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     ostringstream os;
 
     if (argc < 2) {
-        Tcl_SetResult(interp, "Usage: PmSymbol option ?arg ...?", TCL_STATIC);
+        Tcl_SetResult(interp, const_cast<char*>("Usage: PmSymbol option ?arg ...?"), TCL_STATIC);
         return(TCL_ERROR);
     }
 
@@ -1047,7 +1046,7 @@ PmSymbolCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     //
     if (strcmp(option, "find") == 0) {
         if ((argc != 4)) {
-            Tcl_SetResult(interp, "Usage: PmSymbol find ?thread? ?name?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSymbol find ?thread? ?name?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1099,7 +1098,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     bool timeError = false;
     
     if (argc < 2) {
-        Tcl_SetResult(interp, "Usage: PmSchedule option ?arg ...?", TCL_STATIC);
+        Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule option ?arg ...?"), TCL_STATIC);
         return(TCL_ERROR);
     }
 
@@ -1148,27 +1147,27 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
         if (strcmp(period, "clear") == 0)
         {
             if (action == ACTION_CYCLE_PERIOD)
-                CMD_Progress(AWBPROG_CLEARCYCLE, "", ACTION_NOW);
+                CMD_Progress(AWBPROG_CLEARCYCLE, const_cast<char*>(""), ACTION_NOW);
             else if (action == ACTION_MACROINST_PERIOD)
-                CMD_Progress(AWBPROG_CLEARMACROINST, "", ACTION_NOW);
+                CMD_Progress(AWBPROG_CLEARMACROINST, const_cast<char*>(""), ACTION_NOW);
             else if (action == ACTION_SSCMARK_PERIOD)
                 CMD_Progress(AWBPROG_CLEARSSCMARK, const_cast<char*>(""), ACTION_NOW);
             else if (action == ACTION_NANOSECOND_PERIOD)
-                CMD_Progress(AWBPROG_CLEARNANOSECOND, "", ACTION_NOW);
+                CMD_Progress(AWBPROG_CLEARNANOSECOND, const_cast<char*>(""), ACTION_NOW);
             else
-                CMD_Progress(AWBPROG_CLEARINST, "", ACTION_NOW);
+                CMD_Progress(AWBPROG_CLEARINST, const_cast<char*>(""), ACTION_NOW);
         }
         else if (action == ACTION_CYCLE_PERIOD)
         {
-            CMD_Progress(AWBPROG_CYCLE, "", action, atoi_general(period));
+            CMD_Progress(AWBPROG_CYCLE, const_cast<char*>(""), action, atoi_general(period));
         }
         else if (action == ACTION_NANOSECOND_PERIOD)
         {
-            CMD_Progress(AWBPROG_NANOSECOND, "", action, atoi_general(period));
+            CMD_Progress(AWBPROG_NANOSECOND, const_cast<char*>(""), action, atoi_general(period));
         }
         else if (action == ACTION_MACROINST_PERIOD)
         {
-            CMD_Progress(AWBPROG_MACROINST, "", action, atoi_general(period));
+            CMD_Progress(AWBPROG_MACROINST, const_cast<char*>(""), action, atoi_general(period));
         }
         else if (action == ACTION_SSCMARK_PERIOD)
         {
@@ -1176,7 +1175,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
         }
         else
         {
-            CMD_Progress(AWBPROG_INST, "", action, atoi_general(period));
+            CMD_Progress(AWBPROG_INST, const_cast<char*>(""), action, atoi_general(period));
         }
 
         return(TCL_OK);
@@ -1186,7 +1185,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "start") == 0) {
         if (argc != 2) {
-            Tcl_SetResult(interp, "Usage: PmSchedule start", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule start"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1205,7 +1204,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "stop") == 0) {
         if ((argc != 3) && (argc != 4)) {
-            Tcl_SetResult(interp, "Usage: PmSchedule stop ?action? ?time?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule stop ?action? ?time?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1225,7 +1224,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "exit") == 0) {
         if ((argc != 3) && (argc != 4)) {
-            Tcl_SetResult(interp, "Usage: PmSchedule exit ?action? ?time?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule exit ?action? ?time?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1244,7 +1243,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "schedthread") == 0) {
         if ((argc != 4) && (argc != 5)) {
-            Tcl_SetResult(interp, "Usage: PmSchedule schedthread ?thread? ?action? ?time?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule schedthread ?thread? ?action? ?time?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1272,7 +1271,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "unschedthread") == 0) {
         if ((argc != 4) && (argc != 5)) {
-            Tcl_SetResult(interp, "Usage: PmSchedule unschedthread ?thread? ?action? ?time?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule unschedthread ?thread? ?action? ?time?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1300,7 +1299,7 @@ PmScheduleCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[]
     //
     else if (strcmp(option, "skipthread") == 0) {
         if ((argc != 6) && (argc != 7)) {
-            Tcl_SetResult(interp, "Usage: PmSchedule skipthread ?thread? ?insts? ?markerID? ?action? ?time?", TCL_STATIC);
+            Tcl_SetResult(interp, const_cast<char*>("Usage: PmSchedule skipthread ?thread? ?insts? ?markerID? ?action? ?time?"), TCL_STATIC);
             return(TCL_ERROR);
         }
 
@@ -1442,7 +1441,7 @@ PmControlCmd (ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
     ostringstream os;
     
     if (argc < 2) {
-        Tcl_SetResult(interp, "Usage: PmControl option", TCL_STATIC);
+        Tcl_SetResult(interp, const_cast<char*>("Usage: PmControl option"), TCL_STATIC);
         return(TCL_ERROR);
     }
 

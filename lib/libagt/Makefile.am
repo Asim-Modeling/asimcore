@@ -72,7 +72,7 @@ src/%_moc.cpp: include/asim/%.h src/%.cpp
 
 # Note: QT .h files produce tons of warning if -Wall is present
 # so we redefine the warning flags to an intermediate level:
-WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wconversion -Winline -Wno-unused -Wno-parentheses -Wno-long-long
+WARNFLAGS = -ansi -pedantic -W -Wall -Wcast-align -Wformat=2 -Wno-unused -Wno-parentheses -Wno-long-long
 AM_CXXFLAGS += -I./include/asim $(QTINCDIR) $(OPTFLAGS)
 
 CLEANFILES = src/*moc* src/*.lo

@@ -694,7 +694,7 @@ void ASIM_CLOCK_SERVER_CLASS::SetDomainFrequency(string domainName, float freq)
     bool found = false;
     list<CLOCK_DOMAIN>::iterator iter_dom = lDomain.begin();
     for( ; !found && (iter_dom != lDomain.end()); ++iter_dom)
-        if(found = ((*iter_dom)->name == domainName)) domain = (*iter_dom);
+        if((found = ((*iter_dom)->name == domainName))) domain = (*iter_dom);
     VERIFY(found, "Clocking domain doesn't exist!");    
     
     UINT32 normFreq = static_cast<UINT32>(freq * 100.0);

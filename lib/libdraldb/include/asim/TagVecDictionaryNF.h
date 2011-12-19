@@ -85,7 +85,7 @@ TagVecDictionaryNF::getTagValue(INT32 cycle, UINT64* value, UINT32* atcycle)
     INT32 i=0;
     bool fnd = false ;
 	UINT32 ccycle = 0;
-    while ( (i<nextEntry) && !fnd && ((valvec[i].cycleOffset+baseCycle)<=(UINT32)cycle) )
+    while ( (i<nextEntry) && !fnd && ((valvec[i].cycleOffset+baseCycle)<=cycle) )
     {
 		ccycle = valvec[i].cycleOffset+baseCycle;
         fnd = ccycle == (UINT32)cycle ;

@@ -60,11 +60,12 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/lib/libdral/pkgconfig/libdral.pc.in \
 	$(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc.in \
 	$(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib.pc.in \
-	COPYING INSTALL aux-scripts/compile aux-scripts/config.guess \
+	$(top_srcdir)/modules/Makefile.config.in \
+	$(top_srcdir)/modules/Makefile.template.in COPYING INSTALL \
+	aux-scripts/compile aux-scripts/config.guess \
 	aux-scripts/config.sub aux-scripts/depcomp \
 	aux-scripts/install-sh aux-scripts/ltmain.sh \
-	aux-scripts/missing aux-scripts/mkinstalldirs config.guess \
-	config.sub
+	aux-scripts/missing aux-scripts/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -78,7 +79,8 @@ CONFIG_CLEAN_FILES = lib/libasim/pkgconfig/libasim.pc \
 	lib/libdral/pkgconfig/libdral.pc \
 	lib/libdral/pkgconfig/libdral-uninstalled.pc \
 	lib/libnullptlib/pkgconfig/libnullptlib.pc \
-	lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc
+	lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc \
+	modules/Makefile.template modules/Makefile.config
 CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
@@ -331,6 +333,10 @@ lib/libdral/pkgconfig/libdral-uninstalled.pc: $(top_builddir)/config.status $(to
 lib/libnullptlib/pkgconfig/libnullptlib.pc: $(top_builddir)/config.status $(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc: $(top_builddir)/config.status $(top_srcdir)/lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+modules/Makefile.template: $(top_builddir)/config.status $(top_srcdir)/modules/Makefile.template.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+modules/Makefile.config: $(top_builddir)/config.status $(top_srcdir)/modules/Makefile.config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 # This directory's subdirectories are mostly independent; you can cd

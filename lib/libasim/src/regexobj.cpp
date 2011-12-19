@@ -30,9 +30,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <asim/regexobj.h>
+#include <stdlib.h>
 #include <iostream>
 #include <stdlib.h>
+
+#include "asim/regexobj.h"
 
 Regex::Regex(const char *pattern, bool caseSensitive)
 {
@@ -218,9 +220,7 @@ Regex::error(int status)
 {
     char errorBuf[REGEX_ERRORBUF_SIZE];
     regerror(status, &regexPattern, errorBuf, REGEX_ERRORBUF_SIZE);
-    if (errorBuf) {
-        cerr << "REGEX ERROR: " << errorBuf << endl;
-    }
+    cerr << "REGEX ERROR: " << errorBuf << endl;
 }
 
 void

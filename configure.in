@@ -642,17 +642,17 @@ else
     case $HOSTMACHINE in
       i?86*) 
         ASIMCOREFLAGS="-DHOST_LINUX_X86 -DLINUX_$HOSTOSRELEASE_SUBST -D__STDC_LIMIT_MACROS -DHASH_NAMESPACE=__gnu_cxx -DQT_CLEAN_NAMESPACE -DQT_NO_STL -DQ_STRICT_INLINING_RULES" ;
-        ASIMCORELIBS="-L/usr/X11R6/lib -lX11 -ldl -lm"
+        ASIMCORELIBS="-L/usr/X11R6/lib -lX11 -ldl -lm -lpthread -lz"
         ASIMCOREINCS="-idirafter /usr/local/include" ;
         AC_DEFINE(HOST_LINUX_X86, 1, [system is Linux x86]) ;;
       x86_64*) 
         ASIMCOREFLAGS="-DHOST_LINUX_X86 -DLINUX_$HOSTOSRELEASE_SUBST -D__STDC_LIMIT_MACROS -DHASH_NAMESPACE=__gnu_cxx -DQT_CLEAN_NAMESPACE -DQT_NO_STL -DQ_STRICT_INLINING_RULES" ;
-        ASIMCORELIBS="-L/usr/X11R6/lib64 -lX11 -ldl -lm"
+        ASIMCORELIBS="-L/usr/X11R6/lib64 -lX11 -ldl -lm -lpthread -lz"
         ASIMCOREINCS="-idirafter /usr/local/include" ;
         AC_DEFINE(HOST_LINUX_X86, 1, [system is Linux x86-64]) ;;
       ia64*) 
         ASIMCOREFLAGS="-DHOST_LINUX_IA64 -DLINUX_$HOSTOSRELEASE_SUBST -DHASH_NAMESPACE=__gnu_cxx -DQT_CLEAN_NAMESPACE -DQT_NO_STL -DQ_STRICT_INLINING_RULES" ;
-        ASIMCORELIBS="-L/usr/X11R6/lib -lX11 -ldl -lm" ;
+        ASIMCORELIBS="-L/usr/X11R6/lib -lX11 -ldl -lm -lpthread -lz" ;
         ASIMCOREINCS="-idirafter /usr/local/include" ;
         AC_DEFINE(HOST_LINUX_IA64, 1, [system is Linux IA64]) ;;
     esac
@@ -739,6 +739,11 @@ else
     echo "*******************************************************************"
     echo ""
 fi
+
+# Default model Makefile and Makefile.config
+AC_CONFIG_FILES(modules/Makefile.template)
+AC_CONFIG_FILES(modules/Makefile.config)
+
 
 # now generate all files
 AC_OUTPUT

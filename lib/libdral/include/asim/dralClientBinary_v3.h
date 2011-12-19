@@ -30,7 +30,7 @@
                                         there is the definition of the
                                         DRAL_VERSION command code */
 
-typedef enum DRAL3_COMMANDS
+enum DRAL3_COMMANDS
 {
     DRAL3_CYCLE,
     DRAL3_STARTACTIVITY,
@@ -68,7 +68,7 @@ typedef enum DRAL3_COMMANDS
     DRAL3_NEWSTRINGVALUE
 } ;
 
-typedef enum DRAL3_VALUE_SIZE
+enum DRAL3_VALUE_SIZE
 {
     VALUE_8_BITS,
     VALUE_16_BITS,

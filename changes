@@ -7314,3 +7314,80 @@ Directory debian
  rules                     Locally Modified          347 
 
 Start development of v11.12 release.
+
+----------
+mgambhir    Date: Mon Dec 19 07:50:47 EST 2011  CSN: CSN-asimcore-349
+                  Mon Dec 19 12:50:47 UTC 2011
+
+
+Directory .
+ configure                 Locally Modified          348 
+ Makefile.in               Locally Modified          348 
+ configure.in              Locally Modified          348 
+
+Directory tools/dreams
+ null_adf_file.h           Locally Modified          348 
+
+Directory config/pm/asim/controllers
+ controllerNoTCL.apm       Locally Modified          348 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          348 
+
+Directory lib/libdraldb/include/asim
+ TagVecDenseDictionary.h   Locally Modified          348 
+ TagVecDenseShortItemIdx.h Locally Modified          348 
+ TagVecDictionary.h        Locally Modified          348 
+ Hash6431.h                Locally Modified          348 
+ TagVecDenseDictionaryNF.h Locally Modified          348 
+ TagVecDenseItemIdx.h      Locally Modified          348 
+ TagVecDictionaryNF.h      Locally Modified          348 
+
+Directory lib/libdraldb
+ Makefile.am               Locally Modified          348 
+
+Directory lib/libasim/include/asim
+ mm.h                      Locally Modified          348 
+ disasm.h                  Locally Modified          348 
+ port.h                    Locally Modified          348 
+ line_status.h             Locally Modified          348 
+ cache_manager.h           Locally Modified          348 
+ state.h                   Locally Modified          348 
+ syntax.h                  Locally Modified          348 
+
+Directory lib/libasim/src
+ trace_legacy.cpp          Locally Modified          348 
+ module.cpp                Locally Modified          348 
+ regexobj.cpp              Locally Modified          348 
+ disasm.cpp                Locally Modified          348 
+ clockserver.cpp           Locally Modified          348 
+
+Directory lib/libagt
+ Makefile.in               Locally Modified          348 
+
+Directory lib/libagt/src
+ AnnotationRect.cpp        Locally Modified          348 
+
+Directory lib/libagt
+ Makefile.am               Locally Modified          348 
+
+Directory lib/libdral/include/asim
+ dralClientBinary_v3.h     Locally Modified          348 
+ dralStringMapping.h       Locally Modified          348 
+
+Directory modules/controller/classic
+ controller_classic_alg.awb Locally Modified          348 
+ awb.cpp                   Locally Modified          348 
+ control.h                 Locally Modified          348 
+ awb-notcl.cpp             Locally Modified          348 
+ args.cpp                  Locally Modified          348 
+
+Directory modules/controller/workbench/no-tcl
+ wb-notcl.cpp              Locally Modified          348 
+
+Directory modules
+ Makefile.config.in        Locally Added               0 
+ Makefile.template.in      Locally Added               0 
+
+- fixed warnings when compiled with gcc 4.4.2 
+- added openx86 feeder/model development related infrastructure support

@@ -56,7 +56,7 @@ namespace IoFormat
 class TRACE_OPTS_CLASS 
 {
   public:
-    char* name;
+    const char* name;
     UINT32 code;
 };
 

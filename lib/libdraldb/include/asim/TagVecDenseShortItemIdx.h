@@ -141,7 +141,7 @@ TagVecDenseShortItemIdx::getTagValue(INT32 cycle, UINT64* value, UINT32* atcycle
     INT32 i=0;
     bool fnd = false ;
 	UINT32 ccycle = 0;
-    while (!fnd && ((valvec[i].offset+baseCycle)<=(UINT32)cycle) && (i<nextEntry))
+    while (!fnd && ((valvec[i].offset+baseCycle)<=cycle) && (i<nextEntry))
     {
 		ccycle = valvec[i].offset+baseCycle;
         fnd = ccycle == (UINT32)cycle ;

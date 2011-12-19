@@ -331,7 +331,7 @@ public:
 //
 #define OBJ_INSTANCE(type, obj, init, scope) \
 	scope: \
-	    const void Set ## obj(const type & t) { obj ## _(t); }; \
+	    void Set ## obj(const type & t) { obj ## _(t); }; \
 	public: \
 	    const type & Get ## obj() const { return obj ## _(); }; \
 	private: \
@@ -340,7 +340,7 @@ public:
 
 #define OBJ_INSTANCE_ASSERT(type, obj, init, scope, assertion) \
 	scope: \
-	    const void Set ## obj(const type & _NewVal) { \
+	    void Set ## obj(const type & _NewVal) { \
 	        ASSERTX(assertion); \
             obj ## _(_NewVal); \
         }; \

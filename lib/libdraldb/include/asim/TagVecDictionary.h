@@ -180,7 +180,7 @@ TagVecDictionary::getTagValue(INT32 cycle, UINT64*  value, UINT32* atcycle)
     INT32 i=0;
 	UINT32 ccycle = valvec[i].cycleOffset+baseCycle;
     bool somethingfnd = ccycle <= (UINT32)cycle ;
-    while ( (i<nextEntry) && ((valvec[i].cycleOffset+baseCycle) <= (UINT32)cycle) )
+    while ( (i<nextEntry) && ((valvec[i].cycleOffset+baseCycle) <= cycle) )
     {
 		ccycle = valvec[i].cycleOffset+baseCycle;
         *value = dict->getValueByCycle(valvec[i].key,ccycle);

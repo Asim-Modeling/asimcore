@@ -149,7 +149,7 @@ public:
   static bool ConnectPorts(int port, int writePort, int index, 
 		      asim::Vector<BasePort*>::Iterator i);
 
-  virtual const PortType GetType() const = 0;
+  virtual PortType GetType() const = 0;
   const char *GetTypeName() const;
 };
 
@@ -319,7 +319,7 @@ public:
   
   bool Write(T data, UINT64 cycle);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   virtual void EventConnect(int bufNum, int destination);
 
@@ -364,7 +364,7 @@ public:
 
   virtual void EventConnect(int bufNum, int destination);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -397,7 +397,7 @@ public:
 
   virtual void EventConnect(int bufNum, int destination);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -432,7 +432,7 @@ public:
 
   bool Read(T& data, UINT64 cycle);
   
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
   
@@ -481,7 +481,7 @@ public:
   // it decides if it wants to read it.
   bool SomethingToRead(UINT64 cycle) const;
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
 
@@ -520,7 +520,7 @@ public:
   // like read, but no side effects or pops
   bool Look(T& data, UINT64 cycle);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   // this sets the stall and delays the port contents by one cycle
   void Stall(bool s);
@@ -560,7 +560,7 @@ public:
   void PeekReset();
   bool PeekNext(T& data, UINT64 cycle);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
 
@@ -596,7 +596,7 @@ public:
   bool Write(T data, PHASE ph);
   bool Write(T data, UINT64 cycle, CLK_EDGE ed);
 
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   virtual void EventConnect(int bufNum, int destination);
 
@@ -645,7 +645,7 @@ public:
   bool Read(T& data, PHASE ph);
   bool Read(T& data, UINT64 cycle, CLK_EDGE ed);
   
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
 
@@ -667,7 +667,7 @@ protected:
 class ConfigPort : public BasePort
 {
 public:
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 
 protected:
   // not really used, but we have to implement it.
@@ -1440,7 +1440,7 @@ BufferStorage<T,S>::PeekNext(T& data, UINT64 cycle)
 /////////////////////
 // class ConfigPort
 //
-inline const BasePort::PortType
+inline BasePort::PortType
 ConfigPort::GetType() const
 { return ConfigType; }
 
@@ -1453,7 +1453,7 @@ ReadPort<T>::Read(T& data, UINT64 cycle)
 { return Buffer.Read(data, cycle, GetName()); }
 
 template <class T>
-inline const BasePort::PortType
+inline BasePort::PortType
 ReadPort<T>::GetType() const
 { return ReadType; }
 
@@ -1511,7 +1511,7 @@ ReadSkidPort<T,S>::SomethingToRead(UINT64 cycle) const
 { return Buffer.SomethingToRead(cycle); }
 
 template <class T, int S>
-inline const BasePort::PortType
+inline BasePort::PortType
 ReadSkidPort<T,S>::GetType() const
 { return ReadType; }
 
@@ -1591,7 +1591,7 @@ ReadStallPort<T>::Stall(bool s)
 }
 
 template <class T>
-inline const BasePort::PortType
+inline BasePort::PortType
 ReadStallPort<T>::GetType() const
 { return ReadType; }
 
@@ -1742,7 +1742,7 @@ WritePhasePort<T,F>::Write(T data, UINT64 cycle, CLK_EDGE ed)
 }
 
 template <class T, int F>
-inline const BasePort::PortType
+inline BasePort::PortType
 WritePhasePort<T,F>::GetType() const
 { return WritePhaseType; }
 
@@ -1828,7 +1828,7 @@ ReadPhasePort<T>::Read(T& data, UINT64 cycle, CLK_EDGE ed)
 }
 
 template <class T>
-inline const BasePort::PortType
+inline BasePort::PortType
 ReadPhasePort<T>::GetType() const
 { return ReadPhaseType; }
 
@@ -1969,7 +1969,7 @@ WritePort<T,F>::SetLastAccessed(UINT64 c)
 
 
 template <class T, int F>
-inline const BasePort::PortType
+inline BasePort::PortType
 WritePort<T,F>::GetType() const
 { return WriteType; }
 
@@ -2026,7 +2026,7 @@ WriteSkidPort<T,S>::Write(T data, UINT64 cycle)
 { return IsConnected() && Buffer->Write(data, cycle, GetName()); }
 
 template <class T, int S>
-inline const BasePort::PortType
+inline BasePort::PortType
 WriteSkidPort<T,S>::GetType() const
 { return WriteType; }
 
@@ -2070,7 +2070,7 @@ WriteStallPort<T>::IsStalled()
 { return Buffer->IsStalled(); }
 
 template <class T>
-inline const BasePort::PortType
+inline BasePort::PortType
 WriteStallPort<T>::GetType() const
 { return WriteType; }
 
@@ -2105,7 +2105,7 @@ PeekPort<T>::PeekNext(T& data, UINT64 cycle)
 { return Buffer->PeekNext(data, cycle); }
 
 template <class T>
-inline const BasePort::PortType
+inline BasePort::PortType
 PeekPort<T>::GetType() const
 { return PeekType; }
 
@@ -2241,7 +2241,7 @@ public:
   OrigPeekPort();
 
   ConstIterator& Begin(UINT64 cycle) const;
-  virtual const PortType GetType() const;
+  virtual PortType GetType() const;
 };
 
 #endif //_PORT_

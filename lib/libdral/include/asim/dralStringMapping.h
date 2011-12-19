@@ -88,7 +88,7 @@ class DRAL_STRING_MAPPING_CLASS
      * so when a string is requested, the entry can be moved directly
      * to the end of the LRU without a linear search.
      */
-    typedef struct StringMappingEntry
+    struct StringMappingEntry
     {
         LRUListIterator it; ///< Iterator to the LRU entry.
         UINT32 index;       ///< Mapping between of the string.

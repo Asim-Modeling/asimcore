@@ -313,7 +313,7 @@ CONTROLLER_CLASS::ParseConfigFile( char *cfg_file_name )
 // return TRUE if and only if the file exists and is readable
 //
 bool 
-CONTROLLER_CLASS::file_exists ( char *filename ) 
+CONTROLLER_CLASS::file_exists ( const char *filename ) 
 {
     ifstream fcheck;
     fcheck.open (filename);
@@ -333,13 +333,13 @@ CONTROLLER_CLASS::file_exists ( char *filename )
 // the config file
 //
 void
-CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, char *relative_name )
+CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_name )
 {
     char *absolute_name = NULL;
     if ( file_exists( relative_name ) )
     {
 	// filename is already an absolute path
-	absolute_name = relative_name;
+	absolute_name = const_cast<char*>(relative_name);
     }
     else
     {
@@ -356,8 +356,8 @@ CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, char *relative_name )
         if ( cfg_filename_stack.size() > 0 )
         {
             //            char *cfg_dir = (char *)alloca( 1 + strlen( cfg_filename_stack.front() ) );
-            char *cfg_dir = (char *)strdupa(cfg_filename_stack.front());
-            strcpy( cfg_dir, cfg_filename_stack.front() );
+            char *cfg_dir = strdupa(cfg_filename_stack.front().c_str());
+            strcpy( cfg_dir, cfg_filename_stack.front().c_str() );
 	    abs2 << dirname( cfg_dir ) << "/" << relative_name << '\0';
             abs2exists = file_exists( abs2.str() );
         }

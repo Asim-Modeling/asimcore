@@ -96,7 +96,7 @@ class CACHE_MANAGER
 
   public:
     void setClearLines() { clear_lines = true; }
-    const bool getClearLines() { return clear_lines; }
+    bool getClearLines() { return clear_lines; }
     
     void deactivate() { activated = false; }
 

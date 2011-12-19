@@ -56,7 +56,7 @@ ASIM_MODULE_CLASS::ASIM_MODULE_CLASS(ASIM_MODULE       p,
  * Initialize...
  */
 {
-    char *ppath = "";
+    const char *ppath = "";
     
     if (parent != NULL)
     {
@@ -71,7 +71,7 @@ ASIM_MODULE_CLASS::ASIM_MODULE_CLASS(ASIM_MODULE       p,
     SetRegPath(path);
 
     string traceName = path;
-    for(int i = 0; i < traceName[i] != 0; i++) {
+    for(int i = 0; i < (traceName[i] != 0); i++) {
         if(traceName[i] == '/') {
             traceName[i] = '.';
         }

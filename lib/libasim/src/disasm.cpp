@@ -36,7 +36,7 @@ using namespace iof;
 using namespace std;
 
 
-static char *alpha_int_regs[32] =
+static const char *alpha_int_regs[32] =
 {
   "r0",  "r1",  "r2",  "r3",  "r4",  "r5",  "r6",  "r7",  "r8",  "r9",
   "r10", "r11", "r12", "r13", "r14", "r15", "r16", "r17", "r18", "r19",
@@ -44,7 +44,7 @@ static char *alpha_int_regs[32] =
   "r30", "r31"
 };
 
-static char *alpha_fp_regs[32] =
+static const char *alpha_fp_regs[32] =
 {
   "f0",  "f1",  "f2",  "f3",  "f4",  "f5",  "f6",  "f7",  "f8",  "f9",
   "f10", "f11", "f12", "f13", "f14", "f15", "f16", "f17", "f18", "f19",

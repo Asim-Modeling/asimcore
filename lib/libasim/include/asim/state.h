@@ -79,8 +79,8 @@ class ASIM_STATE_CLASS
         /*
          * Name and description of the state.
          */
-        const char * const name;
-        const char * const desc;
+        const char * name;
+        const char * desc;
 
         /*
          * Path to the state.
@@ -175,8 +175,9 @@ class ASIM_STATE_CLASS
             {
                 *((RESOURCE_TEMPLATE<true> *)save) = *(u.rPtr);
             }
-            else
+            else {
                 ASSERTX(false);
+            }
         }
         
         void SaveInitialValue (void)
@@ -200,7 +201,9 @@ class ASIM_STATE_CLASS
                 // Not saved
             }
             else
+            {
                 ASSERTX(false);
+            }
         }        
 
         /*
@@ -226,8 +229,9 @@ class ASIM_STATE_CLASS
             {
                 *(u.rPtr) = *((RESOURCE_TEMPLATE<true> *)save);
             }
-            else
+            else {
                 ASSERTX(false);
+            }
         }
 
     public:
@@ -429,9 +433,9 @@ class ASIM_STATE_CLASS
         /*
          * Accessors...
          */
-        const char * const Name (void) const { return(name); }
-        const char * const Description (void) const { return(desc); }
-        const char * const Path (void) const { return(path); }
+        const char * Name (void) const { return(name); }
+        const char * Description (void) const { return(desc); }
+        const char * Path (void) const { return(path); }
         bool Suspended (void) const { return(suspended); }
         UINT32 Size (void) const { return(size); }
         ASIM_STATETYPE Type (void) const { return(type); }
