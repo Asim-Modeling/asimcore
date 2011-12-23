@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <iostream>
-#include <strstream> 
+#include <sstream> 
 #include <unistd.h>
 #include <libgen.h>
 #include <alloca.h>
@@ -343,13 +343,13 @@ CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_na
     }
     else
     {
-	ostrstream abs1, abs2;
+	stringstream abs1, abs2;
 
 	// relative to current working directory?
 	char   curr_dir[1024];
-	getcwd(curr_dir,1024);
+	ASSERT(getcwd(curr_dir,1024), "getcwd returned NULL");
 	abs1 << curr_dir << "/" << relative_name << '\0';
-        bool abs1exists = file_exists( abs1.str() );
+        bool abs1exists = file_exists( abs1.str().c_str() );
 
 	// relative to enclosing .cfg file?
         bool abs2exists = false;
@@ -359,12 +359,12 @@ CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_na
             char *cfg_dir = strdupa(cfg_filename_stack.front().c_str());
             strcpy( cfg_dir, cfg_filename_stack.front().c_str() );
 	    abs2 << dirname( cfg_dir ) << "/" << relative_name << '\0';
-            abs2exists = file_exists( abs2.str() );
+            abs2exists = file_exists( abs2.str().c_str());
         }
 
         if ( abs2exists )
         {
-	    absolute_name = abs2.str();
+	    absolute_name = const_cast<char*>(abs2.str().c_str());
 	    if ( abs1exists )
             {
 	        cerr << "WARNING: config file " << relative_name << " found in two locations, "
@@ -373,7 +373,7 @@ CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_na
         }
         else if ( abs1exists )
         {
-	    absolute_name = abs1.str();
+	    absolute_name = const_cast<char*>(abs1.str().c_str());
 	}
         else
         {

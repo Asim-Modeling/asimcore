@@ -7391,3 +7391,19 @@ Directory modules
 
 - fixed warnings when compiled with gcc 4.4.2 
 - added openx86 feeder/model development related infrastructure support
+
+----------
+mgambhir    Date: Fri Dec 23 05:18:58 EST 2011  CSN: CSN-asimcore-350
+                  Fri Dec 23 10:18:58 UTC 2011
+
+
+Directory lib/libasim/include/asim
+ mm.h                      Locally Modified          349 
+
+Directory modules/controller/classic
+ control-notcl.h           Locally Modified          349 
+ args.cpp                  Locally Modified          349 
+
+- Some more warnings fixed when built on Ubuntu.
+  - ostrstream is deprecated. Used sstream instead and converted ostringstream to stringstream. 
+  - Also fixed some perpetual const char * to char * conversion warnings

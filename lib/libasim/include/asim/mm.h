@@ -272,7 +272,7 @@ class ASIM_MM_CLASS : public ASIM_FREE_LIST_ELEMENT_CLASS<MM_TYPE>
 
 #ifdef ASIM_ENABLE_MM_DEBUG
     /// Check if object can legally be accessed in current state
-    void MmCheckRefCnt (UINT32 line, char *file) const;
+    void MmCheckRefCnt (UINT32 line, const char *file) const;
 #endif
 
     /// Get a free object from the free list
@@ -810,7 +810,7 @@ template <class MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::MmCheckRefCnt (
     UINT32 line, ///< line number where this check is performed
-    char *file)  ///< file name where this check is performed
+    const char *file)  ///< file name where this check is performed
 const
 {
     if (mmMagicKey != data.mmMagicKey)
