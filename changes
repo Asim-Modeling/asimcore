@@ -7407,3 +7407,16 @@ Directory modules/controller/classic
 - Some more warnings fixed when built on Ubuntu.
   - ostrstream is deprecated. Used sstream instead and converted ostringstream to stringstream. 
   - Also fixed some perpetual const char * to char * conversion warnings
+
+----------
+mcadler     Date: Thu Jan 19 08:17:02 EST 2012  CSN: CSN-asimcore-351
+                  Thu Jan 19 13:17:02 UTC 2012
+
+
+Directory lib/libasim/include/asim
+ regexobj.h                Locally Modified          350 
+
+Directory lib/libasim/src
+ regexobj.cpp              Locally Modified          350 
+
+Tag string parameter "const"

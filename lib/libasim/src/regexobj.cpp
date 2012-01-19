@@ -137,7 +137,7 @@ Regex::match(const char *str)
 }
 
 bool
-Regex::match(string& str)
+Regex::match(const string& str)
 {
     return _match(str.c_str());
 }
@@ -192,7 +192,7 @@ Regex::matchSub(const char *str)
 }
 
 bool
-Regex::matchSub(string& str)
+Regex::matchSub(const string& str)
 {
     return _matchSub(str.c_str());
 }

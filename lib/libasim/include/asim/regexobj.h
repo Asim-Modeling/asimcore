@@ -51,11 +51,11 @@ public:
     
     // match the pattern with the string; true on success, false otherwise 
     bool match(const char *);
-    bool match(string &);
+    bool match(const string &);
 
     // match the pattern with the string, storing substrings; true on success, false otherwise 
     bool matchSub(const char *);
-    bool matchSub(string &);
+    bool matchSub(const string &);
 
     // Get any error strings for the last match attempt.
     string getMatchError();
