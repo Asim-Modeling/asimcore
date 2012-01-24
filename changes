@@ -7420,3 +7420,18 @@ Directory lib/libasim/src
  regexobj.cpp              Locally Modified          350 
 
 Tag string parameter "const"
+
+----------
+emer        Date: Tue Jan 24 18:16:05 EST 2012  CSN: CSN-asimcore-352
+                  Tue Jan 24 23:16:05 UTC 2012
+
+
+Directory debian
+ control                   Locally Modified          351 
+ changelog                 Locally Modified          351 
+ rules                     Locally Modified          351 
+
+Directory .
+ modules/                  Locally Modified          351 
+
+Designate HEAD as 12.01 for new release.

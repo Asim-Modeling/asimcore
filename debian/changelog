@@ -1,9 +1,7 @@
-asim-core (11.12~svn20110921r348+lucid) lucid; urgency=low
+asim-core (12.01~svn20120124r352+lucid) lucid; urgency=low
 
   [ Joel Emer ]
 
-  * r348
-      Start of release v11.12.
+      For v12.01.
 
-
- -- Joel Emer <emer@csail.mit.edu>  Wed, 21 Sep 2011 19:30:23 -0400
+ -- Joel Emer <emer@csail.mit.edu>  Tue, 24 Jan 2012 18:08:07 -0500
