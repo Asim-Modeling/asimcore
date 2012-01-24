@@ -7445,3 +7445,13 @@ Directory admin/packages
  asimcore                  Locally Modified          353 
 
 Identify package as v12.01.
+
+----------
+emer        Date: Tue Jan 24 18:25:11 EST 2012  CSN: CSN-asimcore-355
+                  Tue Jan 24 23:25:11 UTC 2012
+
+
+Directory debian
+ changelog                 Locally Modified          354 
+
+Designate branch as 12.01+fixes.
