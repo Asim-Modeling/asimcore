@@ -7435,3 +7435,13 @@ Directory .
  modules/                  Locally Modified          351 
 
 Designate HEAD as 12.01 for new release.
+
+----------
+emer        Date: Tue Jan 24 18:18:43 EST 2012  CSN: CSN-asimcore-354
+                  Tue Jan 24 23:18:43 UTC 2012
+
+
+Directory admin/packages
+ asimcore                  Locally Modified          353 
+
+Identify package as v12.01.
