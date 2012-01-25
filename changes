@@ -7447,3 +7447,24 @@ Directory debian
 For apt installs, 'recommend' previous shared package release rather
 than 'require' it.
 
+
+----------
+emer        Date: Wed Jan 25 14:58:16 EST 2012  CSN: CSN-asimcore-357
+                  Wed Jan 25 19:58:16 UTC 2012
+
+
+Directory debian
+ changelog                 Locally Modified          356 
+
+Directory admin/packages
+ asimcore                  Locally Modified          356 
+
+To alleviate debian package file conflicts, put shared copy of
+repository in a version named directory rather than in HEAD. For
+example:
+
+/usr/share/asim/packages/awb/v12.01
+
+rather than
+
+/usr/share/asim/packages/awb/HEAD
