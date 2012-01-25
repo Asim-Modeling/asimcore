@@ -7435,3 +7435,15 @@ Directory .
  modules/                  Locally Modified          351 
 
 Designate HEAD as 12.01 for new release.
+
+----------
+emer        Date: Wed Jan 25 07:57:02 EST 2012  CSN: CSN-asimcore-356
+                  Wed Jan 25 12:57:02 UTC 2012
+
+
+Directory debian
+ control                   Locally Modified          355 
+
+For apt installs, 'recommend' previous shared package release rather
+than 'require' it.
+
