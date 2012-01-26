@@ -7468,3 +7468,13 @@ example:
 rather than
 
 /usr/share/asim/packages/awb/HEAD
+
+----------
+emer        Date: Thu Jan 26 13:54:20 EST 2012  CSN: CSN-asimcore-358
+                  Thu Jan 26 18:54:20 UTC 2012
+
+
+Directory admin/packages
+ asimcore                  Locally Modified          357 
+
+Mark packaage as a 'prerelease'.
