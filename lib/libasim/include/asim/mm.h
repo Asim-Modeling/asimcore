@@ -77,13 +77,13 @@ ASIM_MM_CLASS<M>::DATA ASIM_MM_CLASS<M>::data(MAX, #M);
  *  - in Makefile.config, add -I/proj/vssad/local/i386_linux24/include
  *    to CFLAGS (or whereever else you might have valgrind.h installed)
  *  - run benchmark under valgrind, e.g. with
- *    # valgrind --gdb-attach=yes --num-callers=12 <benchmark_and_flags>
+ *    # valgrind --db-attach=yes --num-callers=12 <benchmark_and_flags>
  *  - turn back off again (ie. restore this file) before you check in
  */
 //#define MM_VALGRIND
 
 #ifdef MM_VALGRIND
-#include <valgrind.h>
+#include <valgrind/memcheck.h>
 #endif
 
 
@@ -379,7 +379,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::FinalObjectCleanup(MM_TYPE * obj)
 #ifdef MM_VALGRIND
         // make it legal to call the destructor on the object now
         VALGRIND_DISCARD (
-            VALGRIND_MAKE_READABLE (obj, sizeof(MM_TYPE)));
+            VALGRIND_MAKE_MEM_DEFINED (obj, sizeof(MM_TYPE)));
 #endif
 
         // call the objects destructor
@@ -563,10 +563,10 @@ ASIM_MM_CLASS<MM_TYPE>::LastRefDropped (void)
 #ifdef MM_VALGRIND
     // object is on the free list and should not be accessed anymore!
     // revoke access permission from object's memory range
-    VALGRIND_DISCARD ( VALGRIND_MAKE_NOACCESS (obj, sizeof(MM_TYPE)));
+    VALGRIND_DISCARD ( VALGRIND_MAKE_MEM_NOACCESS (obj, sizeof(MM_TYPE)));
     // allow read+write on MM meta information though
     VALGRIND_DISCARD (
-        VALGRIND_MAKE_READABLE (obj, sizeof(ASIM_MM_CLASS<MM_TYPE>)));
+        VALGRIND_MAKE_MEM_DEFINED (obj, sizeof(ASIM_MM_CLASS<MM_TYPE>)));
 #endif
 
 }
@@ -602,10 +602,10 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::PreAllocateMemory (void)
 #ifdef MM_VALGRIND
         // object is on the free list and should not be accessed anymore!
         // revoke access permission from object's memory range
-        VALGRIND_DISCARD ( VALGRIND_MAKE_NOACCESS (newMmObj, sizeof(MM_TYPE)));
+        VALGRIND_DISCARD ( VALGRIND_MAKE_MEM_NOACCESS (newMmObj, sizeof(MM_TYPE)));
         // allow read+write on MM meta information though
         VALGRIND_DISCARD (
-            VALGRIND_MAKE_READABLE (newMmObj, sizeof(ASIM_MM_CLASS<MM_TYPE>)));
+            VALGRIND_MAKE_MEM_DEFINED (newMmObj, sizeof(ASIM_MM_CLASS<MM_TYPE>)));
 #endif
     }
     // fixup in case two or more threads preallocated, and overshot by a bit.
@@ -699,10 +699,10 @@ ASIM_MM_CLASS<MM_TYPE>::operator new (
 
 #ifdef MM_VALGRIND
     // make object address range writable, but containing invalid data
-    VALGRIND_DISCARD (VALGRIND_MAKE_WRITABLE (newMmObj, size));
+    VALGRIND_DISCARD (VALGRIND_MAKE_MEM_UNDEFINED (newMmObj, size));
     // allow read+write on MM meta information
     VALGRIND_DISCARD (
-        VALGRIND_MAKE_READABLE (
+        VALGRIND_MAKE_MEM_DEFINED (
             (ASIM_MM_CLASS<MM_TYPE>*) newMmObj,
             sizeof (ASIM_MM_CLASS<MM_TYPE>)));
 #endif

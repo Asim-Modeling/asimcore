@@ -96,7 +96,6 @@ ASIM_SYSTEM_CLASS::InitEvents (void)
             return;
         }
         adf = defaultADF;
-        delete [] defaultADF;
     } else {
         // no ADF file required
         if (ADF_DEFAULT.empty()) {

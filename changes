@@ -7478,3 +7478,17 @@ Directory admin/packages
  asimcore                  Locally Modified          357 
 
 Mark packaage as a 'prerelease'.
+
+----------
+mgambhir    Date: Tue Feb 21 19:40:00 EST 2012  CSN: CSN-asimcore-359
+                  Wed Feb 22 00:40:00 UTC 2012
+
+
+Directory lib/libasim/include/asim
+ mm.h                      Locally Modified          358 
+
+Directory modules/system/basesystem_classic
+ basesystem_classic.cpp    Locally Modified          358 
+
+- Patch by Trevor Carlson and  Wim Heirman
+  - Updated valgrind hooks to work with latest valgrind version
