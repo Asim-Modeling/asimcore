@@ -193,8 +193,8 @@ class DRAL_SETNODETAGSET_STORAGE_CLASS : public DRAL_COMMAND_STORAGE_CLASS
   public:
 
     DRAL_SETNODETAGSET_STORAGE_CLASS (
-        UINT16 node_id, const char tag_name [], UINT16 n, UINT64 set [],
-        UINT16 level, UINT32 lst [])
+        UINT16 node_id, const char tag_name [], UINT16 n, const UINT64 set [],
+        UINT16 level, const UINT32 lst [])
     {
         nodeId = node_id;
         tagName = strdup(tag_name);
@@ -248,7 +248,7 @@ class DRAL_SETNODETAGSTRING_STORAGE_CLASS : public DRAL_COMMAND_STORAGE_CLASS
 
     DRAL_SETNODETAGSTRING_STORAGE_CLASS (
         UINT16 node_id, const char tag_name [], const char str [],
-        UINT16 level, UINT32 lst [])
+        UINT16 level, const UINT32 lst [])
     {
         nodeId = node_id;
         tagName = strdup(tag_name);
@@ -301,7 +301,7 @@ class DRAL_SETNODETAG_STORAGE_CLASS
   
     DRAL_SETNODETAG_STORAGE_CLASS (
         UINT16 node_id, const char tag_name [], UINT64 value,
-        UINT16 level, UINT32 lst [])
+        UINT16 level, const UINT32 lst [])
     {
         nodeId = node_id;
         tagName = strdup(tag_name);

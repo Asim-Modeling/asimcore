@@ -846,7 +846,7 @@ DRAL_SERVER_CLASS::getNodeTagMap(const char tag_name[])
 void
 DRAL_SERVER_CLASS::SetNodeTag(
     UINT16 node_id, const char tag_name [], UINT64 value,
-    UINT16 level, UINT32 list [], bool persistent)
+    UINT16 level, const UINT32 list [], bool persistent)
 {
     DRAL_ASSERT(tag_name!=NULL,"No tag name provided");
     UINT16 tag_name_len = strlen(tag_name)+1;
@@ -903,7 +903,7 @@ DRAL_SERVER_CLASS::SetNodeTag(
 void
 DRAL_SERVER_CLASS::SetNodeTag(
     UINT16 node_id, const char tag_name [], const char str [],
-    UINT16 level, UINT32 list [], bool persistent)
+    UINT16 level, const UINT32 list [], bool persistent)
 {
     DRAL_ASSERT(tag_name!=NULL,"No tag name provided");
     DRAL_ASSERT(str!=NULL,"No string provided");
@@ -928,8 +928,8 @@ DRAL_SERVER_CLASS::SetNodeTag(
 
 void
 DRAL_SERVER_CLASS::SetNodeTag(
-    UINT16 node_id, const char tag_name [], UINT16 nval, UINT64 set [],
-    UINT16 level, UINT32 list [], bool persistent)
+    UINT16 node_id, const char tag_name [], UINT16 nval, const UINT64 set [],
+    UINT16 level, const UINT32 list [], bool persistent)
 {
     DRAL_ASSERT(tag_name!=NULL,"No tag name provided");
     UINT16 tag_name_len = strlen(tag_name)+1;

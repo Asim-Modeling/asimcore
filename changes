@@ -7507,3 +7507,32 @@ Directory admin/packages
  asimcore                  Locally Modified          359 
 
 Move to 12.02 release.
+
+----------
+mgambhir    Date: Mon Mar 26 16:08:53 EDT 2012  CSN: CSN-asimcore-361
+                  Mon Mar 26 20:08:53 UTC 2012
+
+
+Directory lib/libdral/include/asim
+ dralStorage.h             Locally Modified          360 
+ dralServer.h              Locally Modified          360 
+ dralServerBinary.h        Locally Modified          360 
+ dralServerImplementation.h Locally Modified          360 
+ dralServerAscii.h         Locally Modified          360 
+ dralListener.h            Locally Modified          360 
+
+Directory lib/libdral/src
+ dralServer.cpp            Locally Modified          360 
+ dralServerBinary.cpp      Locally Modified          360 
+ dralServerAscii.cpp       Locally Modified          360 
+
+- Sync with Intel repository
+
+r3422
+
+Author:	mgambhir
+Last modification:	Rev 3422 - 2012-03-15 21:47:27
+Log message:	CSN: CSN-simcore-3422
+
+- Fixes to make Dreams compile with latest build tools and on SLES 10,
+64 bit machines

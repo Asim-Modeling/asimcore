@@ -52,6 +52,7 @@ class DRAL_LISTENER_CLASS
 {
   public:
 
+    virtual ~DRAL_LISTENER_CLASS() {};
     /**
       * @name CallBacks for commands found in both DRAL 1.0 and DRAL 2.0
       */

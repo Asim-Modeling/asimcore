@@ -432,7 +432,7 @@ class DRAL_SERVER_CLASS
     */
     void SetNodeTag(
         UINT16 nodeId, const char tagName [], UINT64 value,
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent = false);
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent = false);
 
  
     /**
@@ -453,7 +453,7 @@ class DRAL_SERVER_CLASS
     */
     inline void SetNodeTag(
         UINT16 nodeId, const char tagName [], INT64 value,
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         SetNodeTag(nodeId,tagName,UINT64(value),level,lst,persistent);
     }
@@ -477,7 +477,7 @@ class DRAL_SERVER_CLASS
     */
     inline void SetNodeTag(
         UINT16 nodeId, const char tagName [], UINT32 value,
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         SetNodeTag(nodeId,tagName,UINT64(value),level,lst,persistent);
     }
@@ -501,7 +501,7 @@ class DRAL_SERVER_CLASS
     */
     inline void SetNodeTag(
         UINT16 nodeId, const char tagName [], INT32 value,
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         SetNodeTag(nodeId,tagName,UINT64(value),level,lst,persistent);
     }
@@ -525,8 +525,8 @@ class DRAL_SERVER_CLASS
     * @param persistent Tells if this command should be remembered when the dral server is turned off.
     */
     void SetNodeTag(
-        UINT16 nodeId, const char tagName [], UINT16 n, UINT64 set [],
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false);
+        UINT16 nodeId, const char tagName [], UINT16 n, const UINT64 set [],
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false);
 
     /**
     * Attaches a TagName-MultipleValue couple to a node, dimension of a node or positions 
@@ -546,11 +546,11 @@ class DRAL_SERVER_CLASS
     * @param persistent Tells if this command should be remembered when the dral server is turned off.
     */
     inline void SetNodeTag(
-        UINT16 nodeId, const char tagName [], UINT16 n, INT64 set [],
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 nodeId, const char tagName [], UINT16 n, const INT64 set [],
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         SetNodeTag(
-            nodeId,tagName,n,reinterpret_cast<UINT64 *>(set),
+            nodeId,tagName,n,reinterpret_cast<const UINT64 *>(set),
             level,lst,persistent);
     }
 
@@ -573,8 +573,8 @@ class DRAL_SERVER_CLASS
     * @param persistent Tells if this command should be remembered when the dral server is turned off.
     */
     inline void SetNodeTag(
-        UINT16 nodeId, const char tagName [], UINT16 n, UINT32 set [],
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 nodeId, const char tagName [], UINT16 n, const UINT32 set [],
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         DRAL_ASSERT(tagName!=NULL,"No tag name provided");
         UINT16 tag_name_len = strlen(tagName);
@@ -609,11 +609,11 @@ class DRAL_SERVER_CLASS
     * @param persistent Tells if this command should be remembered when the dral server is turned off.
     */
     inline void SetNodeTag(
-        UINT16 nodeId, const char tagName [], UINT16 n, INT32 set [],
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 nodeId, const char tagName [], UINT16 n, const INT32 set [],
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         SetNodeTag(
-            nodeId,tagName,n,reinterpret_cast<UINT64 *>(set),
+            nodeId,tagName,n,reinterpret_cast<const UINT64 *>(set),
             level,lst,persistent);
     }
 
@@ -636,7 +636,7 @@ class DRAL_SERVER_CLASS
     */
     void SetNodeTag(
         UINT16 nodeId, const char tagName [], const char str [],
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false);
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false);
 
     /**
     * Attaches a TagName-Value couple to a node, dimension of a node or positions 
@@ -656,7 +656,7 @@ class DRAL_SERVER_CLASS
     */
     inline void SetNodeTag(
         UINT16 nodeId, const char tagName [], char c,
-        UINT16 level = 0, UINT32 lst [] = NULL, bool persistent=false)
+        UINT16 level = 0, const UINT32 lst [] = NULL, bool persistent=false)
     {
         char temp [2];
         temp[0]=c;

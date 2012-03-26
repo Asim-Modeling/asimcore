@@ -44,19 +44,19 @@ class DRAL_SERVER_IMPLEMENTATION_CLASS
         UINT32 bandwidth, UINT32 latency, const char name[], UINT16 name_len)=0;
 
     virtual void SetNodeLayout(
-        UINT16 node_id,  UINT16 dimensions, UINT32 capacity [])=0;
+        UINT16 node_id,  UINT16 dimensions, const UINT32 capacity [])=0;
 
     virtual void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        UINT64 value, UINT16 level, UINT32 lst [])=0;
+        UINT64 value, UINT16 level, const UINT32 lst [])=0;
 
     virtual void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len, UINT16 n,
-        UINT64 set [], UINT16 level, UINT32 lst [])=0;
+        const UINT64 set [], UINT16 level, const UINT32 lst [])=0;
 
     virtual void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        const char str [], UINT16 str_len, UINT16 level, UINT32 lst [])=0;
+        const char str [], UINT16 str_len, UINT16 level, const UINT32 lst [])=0;
 
     virtual void Cycle (UINT64 n)=0;
 

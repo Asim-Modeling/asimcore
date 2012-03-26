@@ -42,7 +42,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::
  */
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Fill_values (
-    ostringstream * value_list,UINT32 nval, UINT64 value[])
+    ostringstream * value_list,UINT32 nval, const UINT64 value[])
 {
     *value_list << value[0];
     for (UINT32 i=1;i<nval;i++)
@@ -53,7 +53,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Fill_values (
 
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Fill_values_and_positions (
-    ostringstream * value_list,UINT32 nval, UINT32 value[], UINT32 position [])
+    ostringstream * value_list,UINT32 nval, const UINT32 value[], const UINT32 position [])
 {
     if (position == NULL)
     {
@@ -75,7 +75,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Fill_values_and_positions (
 
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Write_single_position_list (
-    ostringstream * sout,UINT16 dim, UINT32 positions [])
+    ostringstream * sout,UINT16 dim, const UINT32 positions [])
 {
     for (UINT16 i=0; i<dim; ++i)
     {
@@ -97,7 +97,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Write_single_position_list (
 
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Write_multiple_list (
-    ostringstream * sout,UINT16 dim, UINT32 positions [])
+    ostringstream * sout,UINT16 dim, const UINT32 positions [])
 {
     for (UINT16 i=0; i<dim; ++i)
     {
@@ -270,7 +270,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::NewEdge (
 
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeLayout (
-    UINT16 node_id,  UINT16 dimensions, UINT32 capacity [])
+    UINT16 node_id,  UINT16 dimensions, const UINT32 capacity [])
 {
     ostringstream sout;
     sout << "setnodelayout node " << node_id << " cap " << capacity[0];
@@ -318,7 +318,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Version (void)
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeTag(
     UINT16 node_id, const char tag_name [], UINT16 , UINT64 val,
-    UINT16 levels, UINT32 list [])
+    UINT16 levels, const UINT32 list [])
 {
     ostringstream sout;
     sout << "setNodeTag " << node_id << " " << tag_name << " = "
@@ -332,7 +332,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeTag(
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeTag(
     UINT16 node_id, const char tag_name [], UINT16 ,
-    const char str [], UINT16, UINT16 levels, UINT32 list [])
+    const char str [], UINT16, UINT16 levels, const UINT32 list [])
 {
     ostringstream sout;
     sout << "setNodeTagString " << node_id << " " << tag_name << " = "
@@ -346,7 +346,7 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeTag(
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeTag(
     UINT16 node_id, const char tag_name [], UINT16 , UINT16 nval,
-    UINT64 set [], UINT16 levels, UINT32 list [])
+    const UINT64 set [], UINT16 levels, const UINT32 list [])
 {
     ostringstream sout;
     sout << "setNodeTagSet " << node_id << " " << tag_name << " = {";

@@ -241,7 +241,7 @@ DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::NewEdge(
 
 void
 DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeLayout (
-    UINT16 node_id, UINT16 dimensions, UINT32 capacity [])
+    UINT16 node_id, UINT16 dimensions, const UINT32 capacity [])
 {
     struct setNodeLayoutFormat
     {
@@ -1365,7 +1365,7 @@ DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetItemTag (
 
 void
 DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeTag(
-    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, UINT64 val, UINT16 levels, UINT32 list [])
+    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, UINT64 val, UINT16 levels, const UINT32 list [])
 {
     STATS
     (
@@ -1565,7 +1565,7 @@ DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeTag(
 
 void
 DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeTag(
-    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, const char str [], UINT16 str_len, UINT16 levels, UINT32 list [])
+    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, const char str [], UINT16 str_len, UINT16 levels, const UINT32 list [])
 {
     STATS
     (
@@ -1631,7 +1631,7 @@ DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeTag(
 
 void
 DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS::SetNodeTag(
-    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, UINT16 n, UINT64 set [], UINT16 levels, UINT32 list [])
+    UINT16 node_id, const char tag_name [], UINT16 tag_name_len, UINT16 n, const UINT64 set [], UINT16 levels, const UINT32 list [])
 {
     STATS
     (

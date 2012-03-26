@@ -48,19 +48,19 @@ class DRAL_SERVER_BINARY_IMPLEMENTATION_CLASS : public DRAL_SERVER_IMPLEMENTATIO
         UINT16 edge_id, UINT16 source_node, UINT16 destination_node,
         UINT32 bandwidth, UINT32 latency, const char name[], UINT16 name_len);
 
-    void SetNodeLayout(UINT16 node_id, UINT16 dimensions, UINT32 capacity []);
+    void SetNodeLayout(UINT16 node_id, UINT16 dimensions, const UINT32 capacity []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        UINT64 value, UINT16 level, UINT32 list []);
+        UINT64 value, UINT16 level, const UINT32 list []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        UINT16 n, UINT64 set [], UINT16 level, UINT32 list []);
+        UINT16 n, const UINT64 set [], UINT16 level, const UINT32 list []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        const char str [], UINT16 str_len, UINT16 level, UINT32 list []);
+        const char str [], UINT16 str_len, UINT16 level, const UINT32 list []);
 
     void Cycle (UINT64 n);
 

@@ -49,19 +49,19 @@ class DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS
         UINT16 edge_id, UINT16 source_node, UINT16 destination_node,
         UINT32 bandwidth, UINT32 latency, const char name[], UINT16 name_len);
 
-    void SetNodeLayout(UINT16 node_id, UINT16 dimensions, UINT32 capacity []);
+    void SetNodeLayout(UINT16 node_id, UINT16 dimensions, const UINT32 capacity []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        UINT64 value, UINT16 level, UINT32 list []);
+        UINT64 value, UINT16 level, const UINT32 list []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        UINT16 n, UINT64 set [], UINT16 level, UINT32 list []);
+        UINT16 n, const UINT64 set [], UINT16 level, const UINT32 list []);
 
     void SetNodeTag(
         UINT16 node_id, const char tag_name [], UINT16 tag_name_len,
-        const char str [], UINT16 str_len, UINT16 level, UINT32 list []);
+        const char str [], UINT16 str_len, UINT16 level, const UINT32 list []);
 
     void Cycle (UINT64 n);
 
@@ -130,14 +130,14 @@ class DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS
      * Private methods used to convert an array of values
      * to a string with this values in ASCII format
      */
-    void Fill_values (ostringstream * value_list,UINT32 nval, UINT64 value[]);
+    void Fill_values (ostringstream * value_list,UINT32 nval, const UINT64 value[]);
     void Fill_values_and_positions (
         ostringstream * value_list,UINT32 nval,
-        UINT32 value[], UINT32 positions []);
+        const UINT32 value[], const UINT32 positions []);
     void Write_single_position_list (
-        ostringstream * sout,UINT16 dim, UINT32 positions []);
+        ostringstream * sout,UINT16 dim, const UINT32 positions []);
     void Write_multiple_list (
-        ostringstream * sout,UINT16 dim, UINT32 positions []);
+        ostringstream * sout,UINT16 dim, const UINT32 positions []);
 };
 typedef DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS *
     DRAL_SERVER_ASCII_IMPLEMENTATION;
