@@ -18,9 +18,9 @@
 #
 [Global]
 Description=Asim Base Library
-CSN=CSN-asimcore-361
+CSN=CSN-asimcore-362
 Name=asimcore
-Tag=v12.02
+Tag=v12.04
 Prerelease=1
 Lock=asim-asimcore
 Buildorder=1

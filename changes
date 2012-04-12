@@ -7536,3 +7536,18 @@ Log message:	CSN: CSN-simcore-3422
 
 - Fixes to make Dreams compile with latest build tools and on SLES 10,
 64 bit machines
+
+----------
+emer        Date: Thu Apr 12 13:40:21 EDT 2012  CSN: CSN-asimcore-362
+                  Thu Apr 12 17:40:21 UTC 2012
+
+
+Directory debian
+ control                   Locally Modified          361 
+ changelog                 Locally Modified          361 
+ rules                     Locally Modified          361 
+
+Directory admin/packages
+ asimcore                  Locally Modified          361 
+
+Prepare for v12.04 release.
