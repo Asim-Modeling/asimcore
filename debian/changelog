@@ -1,7 +1,7 @@
-asim-core (12.04~svn20120412r362+lucid) lucid; urgency=low
+asim-core (12.04+fixes~svn20120416r364+lucid) lucid; urgency=low
 
   [ Joel Emer ]
 
   *   For release v12.04. There was no releave v12.02
 
- -- Joel Emer <emer@csail.mit.edu>  Thu, 12 Apr 2012 12:20:01 -0400
+ -- Joel Emer <emer@csail.mit.edu>  Mon, 16 Apr 2012 11:36:51 -0400

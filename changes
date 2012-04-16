@@ -7551,3 +7551,16 @@ Directory admin/packages
  asimcore                  Locally Modified          361 
 
 Prepare for v12.04 release.
+
+----------
+emer        Date: Mon Apr 16 11:39:15 EDT 2012  CSN: CSN-asimcore-364
+                  Mon Apr 16 15:39:15 UTC 2012
+
+
+Directory debian
+ changelog                 Locally Modified          363 
+
+Directory admin/packages
+ asimcore                  Locally Modified          363 
+
+Release v12.04.
