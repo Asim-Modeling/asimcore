@@ -229,7 +229,7 @@ ParseVariables(INT32 argc, char **argv)
     {
         extern char *StatsFileName;
 
-        StatsFileName = new char[strlen(argv[incr+1]+1)];  
+        StatsFileName = new char[strlen(argv[incr+1])+1];  
         strcpy(StatsFileName, argv[incr+1]); 
         ++incr;
     }

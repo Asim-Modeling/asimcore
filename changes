@@ -7551,3 +7551,14 @@ Directory admin/packages
  asimcore                  Locally Modified          361 
 
 Prepare for v12.04 release.
+
+----------
+mgambhir    Date: Mon May  7 14:06:03 EDT 2012  CSN: CSN-asimcore-365
+                  Mon May  7 18:06:03 UTC 2012
+
+
+Directory modules/controller/minimal
+ args_mini.cpp             Locally Modified          364 
+
+- Fixed a bug in parsing stats file name passed on the command line that resulted in buffer overflow
+
