@@ -7701,3 +7701,14 @@ Directory .
 - Intermediate port of asimcore to QT4. 
   - Changes are required mostly in libdraldb and libagt. 
   - draldb builds. libagt build is currently disabled. 
+
+----------
+mgambhir    Date: Fri Nov  9 11:28:45 EST 2012  CSN: CSN-asimcore-367
+                  Fri Nov  9 16:28:46 UTC 2012
+
+
+Directory .
+ configure                 Locally Modified          366 
+ configure.in              Locally Modified          366 
+
+- Added another searchpath for Qt4 libraries for i386 build of ubuntu
