@@ -68,7 +68,7 @@ TagVecItemIdx::compressYourSelf(INT32 cycle, bool last)
             if (valvec[i].used)
             {
                 ++cnt;
-                maxValue = QMAX(maxValue,valvec[i].value);
+                maxValue = qMax(maxValue,valvec[i].value);
             }
         }
         //printf ("TagVecItemIdx::compressYourSelf cycle=%d,cnt=%d,max=%d, last=%d\n",cycle,cnt,maxValue,(int)last);

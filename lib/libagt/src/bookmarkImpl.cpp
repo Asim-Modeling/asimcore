@@ -26,10 +26,10 @@
 #include <qapplication.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
-#include <qframe.h>
-#include <qlistbox.h>
+#include <q3frame.h>
+#include <q3listbox.h>
 #include <qregexp.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 #include "bookmarkImpl.h"
 
@@ -49,14 +49,14 @@ BookContentsClass::~BookContentsClass()
 void
 BookContentsClass::save(QFile* file)
 {
-    QTextStream ostream(file);
+    Q3TextStream ostream(file);
     ostream << repSpaces(desc) << "\n" << x << "\n" << y << "\n" << sx << "\n" << sy << "\n";
 }
 
 void
 BookContentsClass::load(QFile* file)
 {
-    QTextStream istream(file);
+    Q3TextStream istream(file);
     istream >> desc >> x >> y >> sx >> sy;
     desc.replace(QRegExp("_")," ");
 }
@@ -75,7 +75,7 @@ BookContentsClass::repSpaces(QString str)
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-bookmarkImpl::bookmarkImpl(QStringList *mBookmarks, QWidget* parent,  const char* name, bool modal, WFlags fl )
+bookmarkImpl::bookmarkImpl(QStringList *mBookmarks, QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
     : BookMarkForm( parent, name, modal, fl )
 {
     booklist=mBookmarks;
@@ -116,7 +116,7 @@ bookmarkImpl::UpButton_clicked()
         return;
     }
 
-    QListBoxItem* lastSelected = BookMarkList->item(pos);
+    Q3ListBoxItem* lastSelected = BookMarkList->item(pos);
     if (lastSelected!=NULL)
     {
         if (pos>0)
@@ -145,7 +145,7 @@ bookmarkImpl::DownButton_clicked()
         return;
     }
 
-    QListBoxItem* lastSelected = BookMarkList->item(pos);
+    Q3ListBoxItem* lastSelected = BookMarkList->item(pos);
     if (lastSelected!=NULL)
     {
         int pos = BookMarkList->currentItem();
@@ -179,7 +179,7 @@ void
 bookmarkImpl::CloseButton_clicked()
 {
     // change the string list according to the elements on BookMarkList
-    QListBoxItem *current = BookMarkList->firstItem();
+    Q3ListBoxItem *current = BookMarkList->firstItem();
     booklist->clear();
     while (current!=NULL)
     {

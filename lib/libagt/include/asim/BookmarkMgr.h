@@ -30,7 +30,7 @@
 #include <qmap.h>
 #include <qdir.h>
 #include <qwidget.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qinputdialog.h>
 
 #include "agt_syntax.h"
@@ -59,7 +59,7 @@ class BookmarkMgr : public QObject
           */
         BookmarkMgr (
                         QWidget* parent,          ///< Parent widget
-                        QPopupMenu* pmenu,        ///< Reference to the popup menu where to add bookmark entries
+                        Q3PopupMenu* pmenu,        ///< Reference to the popup menu where to add bookmark entries
                         AScrollView* asv = NULL
                      );
 
@@ -132,7 +132,7 @@ class BookmarkMgr : public QObject
     private:
 
         QWidget* myParentWidget;
-        QPopupMenu* myMenu;
+        Q3PopupMenu* myMenu;
         AScrollView* myAsv;
 
         QStringList bookmarks;

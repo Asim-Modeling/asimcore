@@ -24,16 +24,18 @@
 #ifndef HELPWINDOW_H
 #define HELPWINDOW_H
 
-#include <qmainwindow.h>
-#include <qtextbrowser.h>
+#include <q3mainwindow.h>
+#include <q3textbrowser.h>
 #include <qstringlist.h>
 #include <qmap.h>
 #include <qdir.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 #include "agt_syntax.h"
 
 class QComboBox;
-class QPopupMenu;
+class Q3PopupMenu;
 
 /**
   * This is a small HTML-based help viewer with basic navigation functionality.
@@ -45,7 +47,7 @@ class QPopupMenu;
   * @date started at 2002-04-01
   * @author Federico Ardanaz
   */
-class HelpWindow : public QMainWindow
+class HelpWindow : public Q3MainWindow
 {
     Q_OBJECT
 public:
@@ -65,7 +67,7 @@ public:
     ~HelpWindow();
 
 public:
-    inline QTextBrowser* getTextBrowser() { return browser; }
+    inline Q3TextBrowser* getTextBrowser() { return browser; }
 
 private slots:
 
@@ -154,13 +156,13 @@ private:
     readBookmarks();
 
 private:
-    QTextBrowser* browser;
+    Q3TextBrowser* browser;
     QComboBox *pathCombo;
     int backwardId, forwardId;
     QString selectedURL;
     QStringList history, bookmarks;
     QMap<int, QString> mHistory, mBookmarks;
-    QPopupMenu *hist, *bookm;
+    Q3PopupMenu *hist, *bookm;
     QWidget* myParent;
 
 };

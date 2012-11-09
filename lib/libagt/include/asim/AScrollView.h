@@ -31,7 +31,7 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qdrawutil.h>
-#include <qscrollview.h>
+#include <q3scrollview.h>
 #include <qlayout.h>
 #include <qpixmap.h>
 #include <qtimer.h>
@@ -40,13 +40,16 @@
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qcombobox.h>
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qstyle.h>
 #include <qfont.h>
 #include <qcursor.h>
-#include <qprogressbar.h>
-#include <qtoolbar.h>
+#include <q3progressbar.h>
+#include <q3toolbar.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <QMouseEvent>
 
 #include "agt_syntax.h"
 #include "UpdColorInterface.h"
@@ -90,13 +93,13 @@ class AGTTipLabel : public QLabel
     Q_OBJECT
 public:
     AGTTipLabel( QWidget* parent, const QString& text) : QLabel( parent, "AGTtoolTipTip",
-	     WStyle_StaysOnTop | WStyle_Customize | WStyle_NoBorder | WStyle_Tool | WX11BypassWM )
+	     Qt::WStyle_StaysOnTop | Qt::WStyle_Customize | Qt::WStyle_NoBorder | Qt::WStyle_Tool | Qt::WX11BypassWM )
     {
 	setMargin(1);
 	setAutoMask( FALSE );
-	setFrameStyle( QFrame::Plain | QFrame::Box );
+	setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
 	setLineWidth( 1 );
-	setAlignment( AlignAuto | AlignTop );
+	setAlignment( Qt::AlignLeft | Qt::AlignTop );
 	setIndent(0);
 	polish();
 	setText(text);
@@ -146,7 +149,7 @@ protected:
   * @date started at 2002-04-01
   * @author Federico Ardanaz
   */
-class AScrollView :  public QScrollView, public UpdColorIterface
+class AScrollView :  public Q3ScrollView, public UpdColorIterface
 {
     Q_OBJECT
 public:
@@ -1128,7 +1131,7 @@ protected:
     ColumnShadows* cshadows;
 
     QPixmap offscr;
-    QWMatrix preScaleWorldMatrix;
+    QMatrix preScaleWorldMatrix;
 
     QColor  bgColor;
     double scf_x;

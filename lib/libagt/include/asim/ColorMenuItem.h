@@ -28,6 +28,7 @@
 #include <qpainter.h>
 #include <qstyle.h>
 #include <qmenudata.h>
+#include <q3action.h>
 
 #include "agt_syntax.h"
 
@@ -41,7 +42,7 @@
   * @date started at 2002-04-01
   * @author Federico Ardanaz
   */
-class ColorMenuItem : public QCustomMenuItem
+class ColorMenuItem : public Q3Action
 {
     public:
 
@@ -49,7 +50,8 @@ class ColorMenuItem : public QCustomMenuItem
       * Constructor
       */
         ColorMenuItem (
-                      QColor                ///< Initial color
+                        QObject *,
+                        QColor                ///< Initial color
                       );
 
     /**

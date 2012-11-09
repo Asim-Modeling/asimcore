@@ -25,10 +25,12 @@
 #ifndef _MDIWINDOW_H
 #define _MDIWINDOW_H
 
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
+//Added by qt3to4:
+#include <QCloseEvent>
 #include "AScrollView.h"
 
-class MDIWindow: public QMainWindow
+class MDIWindow: public Q3MainWindow
 {
     Q_OBJECT
 public:

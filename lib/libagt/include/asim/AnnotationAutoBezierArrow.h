@@ -29,6 +29,8 @@
 
 #include "agt_syntax.h"
 #include "AnnotationItem.h"
+//Added by qt3to4:
+#include <Q3PointArray>
 
 /**
   * Line annotation tool class.
@@ -214,7 +216,7 @@ class AnnotationAutoBezierArrow : public AnnotationItem
 
     protected:
         double x1,x2,y1,y2;
-        QPointArray parray;
+        Q3PointArray parray;
         double arrx0,arrx1,arry0,arry1;
         static BYTE flipping;
 };

@@ -122,7 +122,7 @@ DralDB::openDRLFile(QString filename)
     eventFile = new QFile(filename);
     Q_ASSERT(eventFile!=NULL);
     // Checks for errors.
-    if ( !eventFile->open( IO_ReadOnly ) )
+    if ( !eventFile->open( QIODevice::ReadOnly ) )
     {
         QString err = "IO Error, unable to read "+filename;
         if (logMgr!=NULL)
@@ -250,7 +250,7 @@ DralDB::dumpGraphDescription()
 {
 	// just for debugging
 	QString str = dbGraph->getGraphDescription();
-	printf("%s\n",str.latin1());
+	printf("%s\n",str.toLatin1().constData());
 }
 
 /**

@@ -23,8 +23,10 @@
 
 #include "AnnotationCtrl.h"
 #include "AScrollView.h"
+//Added by qt3to4:
+#include <QMouseEvent>
 
-AnnotationCtrl::AnnotationCtrl(QScrollView* view, double gridS, bool snap)
+AnnotationCtrl::AnnotationCtrl(Q3ScrollView* view, double gridS, bool snap)
 {
     Q_ASSERT(view!=NULL);
 
@@ -57,7 +59,7 @@ void
 AnnotationCtrl::clone(AnnotationCtrl* parent)
 {
     annDB->reset();
-    QPtrDictIterator<AnnotationItem> it = parent->annDB->getIterator();
+    Q3PtrDictIterator<AnnotationItem> it = parent->annDB->getIterator();
     AnnotationItem* item;
     while (it.current())
     {
@@ -94,8 +96,8 @@ AnnotationCtrl::movingSelectionUpdate(int x, int y, AnnotationItem* item, double
     {
         //printf ("\n\nclone on movingSelectionUpdate\n");fflush(stdout);
         draggingAnnItem = item->clone();
-        draggingAnnItem->setPen(QPen(QColor(0,0,0),1,DotLine));
-        draggingAnnItem->setBrush(NoBrush);
+        draggingAnnItem->setPen(QPen(QColor(0,0,0),1,Qt::DotLine));
+        draggingAnnItem->setBrush(Qt::NoBrush);
         //printf("AnnotationCtrl::movingSelectionUpdate calling add..\n");
         annDB->add(draggingAnnItem);
     }
@@ -295,8 +297,8 @@ AnnotationCtrl::drawRubber(int x, int y, AnnotationItem* item)
     QPainter p;
     p.begin( myViewport );
     p.setRasterOp( NotROP );
-    p.setPen( QPen( color0, 1 ) );
-    p.setBrush( NoBrush);
+    p.setPen( QPen( Qt::color0, 1 ) );
+    p.setBrush( Qt::NoBrush);
 
     item->drawRubber(pressed_x_snapped,pressed_y_snapped,x,y,&p);
 
@@ -311,7 +313,7 @@ AnnotationCtrl::drawArea(QPainter* painter, double ncx, double ncy, double ncw, 
 
     ////printf ("drawAnnTools called\n");
 
-    QPtrDictIterator<AnnotationItem> it = annDB->getIterator();
+    Q3PtrDictIterator<AnnotationItem> it = annDB->getIterator();
     for( ; it.current(); ++it )
     {
         AnnotationItem* item = (AnnotationItem*) it.currentKey();
@@ -327,7 +329,7 @@ AnnotationItem* AnnotationCtrl::lookAnnItemAt(double x, double y,double scf_x,do
     // review clipping techniques !
     double bx,by,bw,bh;
     bool fnd = false;
-    QPtrDictIterator<AnnotationItem> it = annDB->getIterator();
+    Q3PtrDictIterator<AnnotationItem> it = annDB->getIterator();
     AnnotationItem* item;
     AnnotationItem* prevItem=NULL;
 
@@ -357,7 +359,7 @@ AnnotationItem* AnnotationCtrl::lookAnnItemNodeAt(double x, double y,double scf_
     // right now this is a complete linear search against the hash table,
     // review clipping techniques !
     bool fnd = false;
-    QPtrDictIterator<AnnotationItem> it = annDB->getIterator();
+    Q3PtrDictIterator<AnnotationItem> it = annDB->getIterator();
     AnnotationItem* item;
     AnnotationItem* prevItem=NULL;
 
@@ -419,8 +421,8 @@ void AnnotationCtrl::modifingSelectionUpdate(int x,int y,AnnotationItem* item, d
     {
         //printf ("\n\nclone on modifingSelectionUpdate\n");fflush(stdout);
         draggingAnnItem = item->clone();
-        draggingAnnItem->setPen(QPen(QColor(0,0,0),1,DotLine));
-        draggingAnnItem->setBrush(NoBrush);
+        draggingAnnItem->setPen(QPen(QColor(0,0,0),1,Qt::DotLine));
+        draggingAnnItem->setBrush(Qt::NoBrush);
         printf("AnnotationCtrl::modifingSelectionUpdate calling add..\n");
         annDB->add(draggingAnnItem);
     }
@@ -495,7 +497,7 @@ AnnotationItem*
 AnnotationCtrl::lookForItemWithBBox(double x, double y, double w, double h)
 {
     double cx,cy,cw,ch;
-    QPtrDictIterator<AnnotationItem> it = annDB->getIterator();
+    Q3PtrDictIterator<AnnotationItem> it = annDB->getIterator();
     AnnotationItem* item;
     AnnotationItem* prevItem=NULL;
     bool fnd=false;

@@ -22,6 +22,8 @@
 
 #include "asim/TagDescVector.h"
 #include "asim/PrimeList.h"
+//Added by qt3to4:
+#include <Q3StrList>
 
 /**
  * The instance is NULL at the beginning.
@@ -99,10 +101,10 @@ TagDescVector::init(INT32 sz)
     primeSize = PrimeList::nearPrime(sz);
 
     // Creates the hashes.
-    strhash =  new QDict<INT32>(primeSize);
-    idxhash =  new QIntDict<QString>(primeSize);
-    deschash = new QIntDict<tagDescriptor>(primeSize);
-    longHash = new QDict<QString>(primeSize);
+    strhash =  new Q3Dict<INT32>(primeSize);
+    idxhash =  new Q3IntDict<QString>(primeSize);
+    deschash = new Q3IntDict<tagDescriptor>(primeSize);
+    longHash = new Q3Dict<QString>(primeSize);
     Q_ASSERT(strhash!=NULL);
     Q_ASSERT(idxhash!=NULL);
     Q_ASSERT(deschash!=NULL);
@@ -205,14 +207,14 @@ TagDescVector::reset()
  *
  * @return a list with the known tags.
  */
-QStrList
+Q3StrList
 TagDescVector::getKnownTags()
 {
-    QStrList strlist(false);
-    QDictIterator<INT32> it( *strhash );
+    Q3StrList strlist(false);
+    Q3DictIterator<INT32> it( *strhash );
     for( ; it.current(); ++it )
     {
-        strlist.append(it.currentKey().latin1());
+        strlist.append(it.currentKey().toLatin1().constData());
     }
     return strlist;
 }

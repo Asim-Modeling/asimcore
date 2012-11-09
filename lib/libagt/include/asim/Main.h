@@ -26,11 +26,11 @@
 
 #include <stdio.h>
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qtoolbutton.h>
-#include <qpopupmenu.h>
-#include <qmainwindow.h>
-#include <qintdict.h>
+#include <q3popupmenu.h>
+#include <q3mainwindow.h>
+#include <q3intdict.h>
 #include <qdatetime.h>
 #include <qstatusbar.h>
 #include <qmessagebox.h>
@@ -40,20 +40,22 @@
 #include <qprinter.h>
 #include <qlabel.h>
 #include <qimage.h>
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include <qstylefactory.h>
 #include <qaction.h>
 #include <qsignalmapper.h>
-#include <qdict.h>
+#include <q3dict.h>
 #include <qfileinfo.h>
 #include <qfile.h>
-#include <qfiledialog.h>
-#include <qtextbrowser.h>
-#include <qdockwindow.h>
-#include <qlistview.h>
+#include <q3filedialog.h>
+#include <q3textbrowser.h>
+#include <q3dockwindow.h>
+#include <q3listview.h>
 #include <qerrormessage.h>
 #include <qworkspace.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 #include "HelpWindow.h"
 #include "BookmarkMgr.h"
@@ -97,7 +99,7 @@
 
 #endif
 
-typedef QPtrList<MDIWindow> MDIList;
+typedef Q3PtrList<MDIWindow> MDIList;
 
 /**
   * This class create the fundamental application objects to launch
@@ -108,7 +110,7 @@ typedef QPtrList<MDIWindow> MDIList;
   * @date started at 2002-04-01
   * @author Federico Ardanaz
   */
-class Main : public QMainWindow
+class Main : public Q3MainWindow
 {
     Q_OBJECT
 
@@ -120,7 +122,7 @@ public:
     Main (
          QWidget* parent=0,          ///< Parent Widget
          const char* name=0,         ///< Internal use string name
-         WFlags f=0                  ///< QT Widget flags (stay on top, etc)
+         Qt::WFlags f=0                  ///< QT Widget flags (stay on top, etc)
          );
 
     /**
@@ -665,14 +667,14 @@ protected:
     addHelpMenu();
 
     virtual void
-    addZoomDialog(QToolBar* parent);
+    addZoomDialog(Q3ToolBar* parent);
         
 private:
     void create_aboutAgt();
     
 protected:
     AScrollView* asv;
-    QVBox* vb;
+    Q3VBox* vb;
     QWorkspace* ws;
     MDIList*   mdiList;
 
@@ -680,26 +682,26 @@ protected:    // misc menu and toolbars objects
     QMessageBox* about;
     QStatusBar* myStatusBar;
     QMenuBar* menu;
-    QPopupMenu* file;
-    QPopupMenu* edit;
-    QPopupMenu* window;
-    QPopupMenu* window_toolbar;
-    QPopupMenu* options;
-    QPopupMenu* view;
-    QPopupMenu* zfixed;
-    QPopupMenu* zoneaxe;
-    QPopupMenu* tools;
-    QPopupMenu* pointers;
-    QPopupMenu* annotation;
-    QPopupMenu* style;
-    QPopupMenu* bookmark;
+    Q3PopupMenu* file;
+    Q3PopupMenu* edit;
+    Q3PopupMenu* window;
+    Q3PopupMenu* window_toolbar;
+    Q3PopupMenu* options;
+    Q3PopupMenu* view;
+    Q3PopupMenu* zfixed;
+    Q3PopupMenu* zoneaxe;
+    Q3PopupMenu* tools;
+    Q3PopupMenu* pointers;
+    Q3PopupMenu* annotation;
+    Q3PopupMenu* style;
+    Q3PopupMenu* bookmark;
 
-    QToolBar* annotationsTools;
-    QToolBar* viewTools;
-    QToolBar* pointerTools;
-    QToolBar* fileTools;
-    QToolBar* colorTools;
-    QToolBar* mdiTools;
+    Q3ToolBar* annotationsTools;
+    Q3ToolBar* viewTools;
+    Q3ToolBar* pointerTools;
+    Q3ToolBar* fileTools;
+    Q3ToolBar* colorTools;
+    Q3ToolBar* mdiTools;
 
     int win_annotations_bar_id;
     int win_view_bar_id;
@@ -820,7 +822,7 @@ protected: // buttons
     QToolButton* annotationLockBtn;
     
 protected:    // for the status bar...
-    QProgressBar *progressBar;
+    Q3ProgressBar *progressBar;
     QLabel* currentCycleLbl;
     QLabel* currentRowLbl;
     QComboBox* myZoomCombo;

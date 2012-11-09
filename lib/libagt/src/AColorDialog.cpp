@@ -25,6 +25,9 @@
 
 // icons
 #include "xpm/pdown.xpm"
+//Added by qt3to4:
+#include <QtGui/QPixmap>
+#include <Q3PopupMenu>
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -48,7 +51,7 @@ AColorRect::drawContents ( QPainter * p )
     }
     else
     {
-        p->setBrush(NoBrush);
+        p->setBrush(Qt::NoBrush);
         p->setPen(QPen(QColor(150,150,150),1));
     }
     p->drawRect(1,0,19,5);
@@ -64,30 +67,30 @@ AColorRect::drawContents ( QPainter * p )
 QColor
 AColorDialog::stdColors[] =
 {
-        black,
-        white,
-        darkGray,
-        gray,
-        lightGray,
-        red,
-        green,
-        blue,
-        cyan,
-        magenta,
-        yellow,
-        darkRed,
-        darkGreen,
-        darkBlue,
-        darkCyan,
-        darkMagenta,
-        darkYellow
+        Qt::black,
+        Qt::white,
+        Qt::darkGray,
+        Qt::gray,
+        Qt::lightGray,
+        Qt::red,
+        Qt::green,
+        Qt::blue,
+        Qt::cyan,
+        Qt::magenta,
+        Qt::yellow,
+        Qt::darkRed,
+        Qt::darkGreen,
+        Qt::darkBlue,
+        Qt::darkCyan,
+        Qt::darkMagenta,
+        Qt::darkYellow
 };
 
 int 
 AColorDialog::static_id=0;
 
 AColorDialog::AColorDialog (QColor defColor, QWidget *parent, const char *name, QPixmap* icon) :
-QHBox( parent, name )
+Q3HBox( parent, name )
 {
     myId = static_id;
     static_id++;
@@ -105,12 +108,12 @@ QHBox( parent, name )
     int i;
     for (i=0;i<NUM_STD_COLORS;i++)
     {
-        stdColorItems[i] = new ColorMenuItem(stdColors[i]);
+        stdColorItems[i] = new ColorMenuItem(this, stdColors[i]);
         Q_ASSERT(stdColorItems[i]!=NULL);
     }
 
     // create the buttom for color apply
-    QVBox* vbox = new QVBox(this,"color_v_box");
+    Q3VBox* vbox = new Q3VBox(this,"color_v_box");
     Q_ASSERT(vbox!=NULL);
     vbox->setMargin(0);
     vbox->setSpacing(0);
@@ -136,7 +139,7 @@ QHBox( parent, name )
     connect(bt_pop,SIGNAL( pressed() ), this, SLOT( popupShow() ) );
 
     // and the popup menu
-    pop = new QPopupMenu(parent,"qt_color_menu");Q_ASSERT(pop!=NULL);
+    pop = new Q3PopupMenu(parent,"qt_color_menu");Q_ASSERT(pop!=NULL);
     connect(pop,SIGNAL(activated(int)),this, SLOT( popMenuActivated(int) ) );
 
     // now put in all the "standard" colors
@@ -144,8 +147,8 @@ QHBox( parent, name )
 
     for (i=0;i<NUM_STD_COLORS;i++)
     {
-        int id = pop->insertItem(stdColorItems[i]);
-        pop->connectItem(id,this,SLOT(stdColorActivated()));
+        pop->addAction((QAction*)stdColorItems[i]);
+        pop->connect(stdColorItems[i], SIGNAL(triggered), this, SLOT(stdColorActivated()));
     }
 
     moreColorsId = pop->insertItem("More colors...");

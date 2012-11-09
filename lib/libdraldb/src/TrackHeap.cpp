@@ -78,9 +78,9 @@ TrackHeap::TrackHeap()
     nextTrackID = 0;
     cycleTagTrackID = -1;
     // Creates the the tracking dictionaries.
-    trackedEnterNodes = new QDict<INT32>(997);
-    trackedExitNodes  = new QDict<INT32>(997);
-    trackedNodes = new QDict<INT32>(997);
+    trackedEnterNodes = new Q3Dict<INT32>(997);
+    trackedExitNodes  = new Q3Dict<INT32>(997);
+    trackedNodes = new Q3Dict<INT32>(997);
     Q_ASSERT(trackedEnterNodes!=NULL);
     Q_ASSERT(trackedExitNodes!=NULL);
     Q_ASSERT(trackedNodes!=NULL);

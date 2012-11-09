@@ -27,13 +27,16 @@
 #include "bookmark.h"
 
 #include <qvariant.h>
-#include <qframe.h>
-#include <qgroupbox.h>
-#include <qlistbox.h>
+#include <q3frame.h>
+#include <q3groupbox.h>
+#include <q3listbox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
 
 /* 
  *  Constructs a BookMarkForm which is a child of 'parent', with the 
@@ -42,34 +45,34 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-BookMarkForm::BookMarkForm( QWidget* parent,  const char* name, bool modal, WFlags fl )
+BookMarkForm::BookMarkForm( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
     if ( !name )
 	setName( "BookMarkForm" );
     resize( 576, 333 ); 
     setCaption( trUtf8( "Bookmark Manager" ) );
-    BookMarkFormLayout = new QGridLayout( this, 1, 1, 11, 6, "BookMarkFormLayout"); 
+    BookMarkFormLayout = new Q3GridLayout( this, 1, 1, 11, 6, "BookMarkFormLayout"); 
 
-    BookMarkList = new QListBox( this, "BookMarkList" );
+    BookMarkList = new Q3ListBox( this, "BookMarkList" );
     BookMarkList->setMinimumSize( QSize( 0, 0 ) );
 
     BookMarkFormLayout->addWidget( BookMarkList, 0, 0 );
 
-    GroupBox1 = new QGroupBox( this, "GroupBox1" );
-    GroupBox1->setFrameShadow( QGroupBox::Sunken );
+    GroupBox1 = new Q3GroupBox( this, "GroupBox1" );
+    GroupBox1->setFrameShadow( Q3GroupBox::Sunken );
     GroupBox1->setTitle( trUtf8( "Operations:" ) );
     GroupBox1->setColumnLayout(0, Qt::Vertical );
     GroupBox1->layout()->setSpacing( 6 );
     GroupBox1->layout()->setMargin( 11 );
-    GroupBox1Layout = new QVBoxLayout( GroupBox1->layout() );
+    GroupBox1Layout = new Q3VBoxLayout( GroupBox1->layout() );
     GroupBox1Layout->setAlignment( Qt::AlignTop );
     QSpacerItem* spacer = new QSpacerItem( 0, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
     GroupBox1Layout->addItem( spacer );
 
-    Layout8 = new QVBoxLayout( 0, 0, 6, "Layout8"); 
+    Layout8 = new Q3VBoxLayout( 0, 0, 6, "Layout8"); 
 
-    Layout2 = new QVBoxLayout( 0, 0, 6, "Layout2"); 
+    Layout2 = new Q3VBoxLayout( 0, 0, 6, "Layout2"); 
 
     UpButton = new QPushButton( GroupBox1, "UpButton" );
     UpButton->setText( trUtf8( "&Up" ) );
@@ -101,10 +104,10 @@ BookMarkForm::BookMarkForm( QWidget* parent,  const char* name, bool modal, WFla
 
     BookMarkFormLayout->addWidget( GroupBox1, 0, 2 );
 
-    Line1 = new QFrame( this, "Line1" );
-    Line1->setFrameShape( QFrame::VLine );
-    Line1->setFrameShadow( QFrame::Sunken );
-    Line1->setFrameShape( QFrame::VLine );
+    Line1 = new Q3Frame( this, "Line1" );
+    Line1->setFrameShape( Q3Frame::VLine );
+    Line1->setFrameShadow( Q3Frame::Sunken );
+    Line1->setFrameShape( Q3Frame::VLine );
 
     BookMarkFormLayout->addWidget( Line1, 0, 1 );
 }

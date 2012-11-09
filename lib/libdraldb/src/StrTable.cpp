@@ -111,8 +111,8 @@ StrTable::init(INT32 sz)
     primeSize = PrimeList::nearPrime(sz);
 
     // Creates the 2 hashes used.
-    strhash = new QDict<INT32>(primeSize);
-    idxhash = new QIntDict<QString>(primeSize);
+    strhash = new Q3Dict<INT32>(primeSize);
+    idxhash = new Q3IntDict<QString>(primeSize);
     Q_ASSERT(strhash!=NULL);
     Q_ASSERT(idxhash!=NULL);
     // When the hashes are deleted their objects too.
@@ -164,7 +164,7 @@ StrTable::getObjSize() const
     result += strhash->count()*2*sizeof(void*);
     result += idxhash->count()*2*sizeof(void*);
 
-    QIntDictIterator<QString> it( *idxhash );
+    Q3IntDictIterator<QString> it( *idxhash );
     for ( ; it.current(); ++it )
     {
         QString* current = it.current();

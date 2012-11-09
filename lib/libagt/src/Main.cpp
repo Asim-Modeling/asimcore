@@ -57,12 +57,18 @@
 #include "xpm/fileopen.xpm"
 #include "xpm/filesave.xpm"
 #include "xpm/fileprint.xpm"
+//Added by qt3to4:
+#include <QLabel>
+#include <QPixmap>
+#include <Q3Frame>
+#include <Q3PopupMenu>
+#include <Q3ActionGroup>
 
 // -----------------------------------------------------------------------------
 // -- The Main Constructor
 // -----------------------------------------------------------------------------
-Main::Main(QWidget* parent, const char* name, WFlags f) :
-QMainWindow(parent,name,f)
+Main::Main(QWidget* parent, const char* name, Qt::WFlags f) :
+Q3MainWindow(parent,name,f)
 {
     annotationToolsEnabled=false;
     genericOpenEnabled=true;
@@ -161,8 +167,8 @@ Main::initApplication()
     }
     else
     {
-        vb = new QVBox( this );
-        vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+        vb = new Q3VBox( this );
+        vb->setFrameStyle( Q3Frame::StyledPanel | Q3Frame::Sunken );
         ws = new QWorkspace( vb );
         ws->setScrollBarsEnabled( TRUE );
         setCentralWidget( vb );
@@ -235,7 +241,7 @@ Main::initStatusBar()
     //value->setSizeGripEnabled (false);
 
     // progress bar for redrawing
-    progressBar = new QProgressBar(0,myStatusBar);
+    progressBar = new Q3ProgressBar(0,myStatusBar);
     Q_ASSERT(progressBar!=NULL);
     progressBar->setPercentageVisible(false);
     progressBar->hide();
@@ -250,7 +256,7 @@ Main::initStatusBar()
 void
 Main::addPointerToolBar()
 {
-    pointerTools = new QToolBar( this, "tools" );Q_ASSERT(pointerTools!=NULL);
+    pointerTools = new Q3ToolBar( this, "tools" );Q_ASSERT(pointerTools!=NULL);
     pointerTools->setLabel( "Tools" );
 
     selectToolIcon = QPixmap( selectTool );
@@ -281,7 +287,7 @@ Main::addPointerToolBar()
 
     connect( pointerTools, SIGNAL(visibilityChanged(bool)), SLOT(toolsBarVisibilityChanged(bool)) );
 
-    moveDockWindow(pointerTools,DockLeft);
+    moveDockWindow(pointerTools,Qt::DockLeft);
 }
 
 // --------------------------------------------------------------------
@@ -290,7 +296,7 @@ Main::addPointerToolBar()
 void
 Main::addFileToolBar()
 {
-    fileTools = new QToolBar( this, "file" );Q_ASSERT(fileTools!=NULL);
+    fileTools = new Q3ToolBar( this, "file" );Q_ASSERT(fileTools!=NULL);
     fileTools->setLabel( "File" );
 
     if (genericOpenEnabled)
@@ -312,7 +318,7 @@ Main::addFileToolBar()
                    this, SLOT(do_genericPrint()), fileTools, "Print" );Q_ASSERT(printBtn!=NULL);
     }
     connect( fileTools, SIGNAL(visibilityChanged(bool)), SLOT(fileBarVisibilityChanged(bool)) );
-    moveDockWindow(fileTools,DockTop);
+    moveDockWindow(fileTools,Qt::DockTop);
 }
 
 // --------------------------------------------------------------------
@@ -321,7 +327,7 @@ Main::addFileToolBar()
 void 
 Main::addViewToolBar()
 {
-    viewTools = new QToolBar( this, "view" );Q_ASSERT(viewTools!=NULL);
+    viewTools = new Q3ToolBar( this, "view" );Q_ASSERT(viewTools!=NULL);
     viewTools->setLabel( "View" );
 
     QToolButton* openZInBtn = new QToolButton( IconFactory::getInstance()->image8, "Zoom In", QString::null,
@@ -352,7 +358,7 @@ Main::addViewToolBar()
 
     connect( viewTools, SIGNAL(visibilityChanged(bool)), SLOT(viewBarVisibilityChanged(bool)) );
 
-    moveDockWindow( viewTools,DockTop);
+    moveDockWindow( viewTools,Qt::DockTop);
 }
 
 // --------------------------------------------------------------------
@@ -361,7 +367,7 @@ Main::addViewToolBar()
 void
 Main::addAnnotationToolBar()
 {
-    annotationsTools = new QToolBar( this, "annotation" );Q_ASSERT(annotationsTools!=NULL);
+    annotationsTools = new Q3ToolBar( this, "annotation" );Q_ASSERT(annotationsTools!=NULL);
     annotationsTools->setLabel( "Annotation" );
 
     annLineIcon = QPixmap( annLine );
@@ -382,7 +388,7 @@ Main::addAnnotationToolBar()
 
     connect( annotationsTools, SIGNAL(visibilityChanged(bool)), SLOT(annotationsBarVisibilityChanged(bool)) );
 
-    moveDockWindow( annotationsTools,DockLeft);
+    moveDockWindow( annotationsTools,Qt::DockLeft);
 
     if (!annotationToolsEnabled) annotationsTools->hide();
 }
@@ -395,28 +401,28 @@ Main::addColorToolBar()
 {
     int chId;
 
-    colorTools = new QToolBar( this, "colors" );Q_ASSERT(colorTools!=NULL);
+    colorTools = new Q3ToolBar( this, "colors" );Q_ASSERT(colorTools!=NULL);
     colorTools->setLabel( "Colors" );
 
     penColorIcon = QPixmap(penColor);
-    penColorDlg = new AColorDialog(black, colorTools, "Pen Color", &penColorIcon);Q_ASSERT(penColorDlg!=NULL);
+    penColorDlg = new AColorDialog(Qt::black, colorTools, "Pen Color", &penColorIcon);Q_ASSERT(penColorDlg!=NULL);
     chId = penColorDlg->registerApplyMethod(asv);
     if (asv!=NULL) asv->setPenColorChgId(chId);
     colorTools->addSeparator();
 
     fillColorIcon = QPixmap( fillColor );
-    brushColorDlg = new AColorDialog(blue, colorTools, "Brush Color", &fillColorIcon);Q_ASSERT(brushColorDlg!=NULL);
+    brushColorDlg = new AColorDialog(Qt::blue, colorTools, "Brush Color", &fillColorIcon);Q_ASSERT(brushColorDlg!=NULL);
     chId = brushColorDlg->registerApplyMethod(asv);
     if (asv!=NULL) asv->setBrushColorChgId(chId);
     colorTools->addSeparator();
 
     textColorIcon = QPixmap( textColor );
-    fontColorDlg = new AColorDialog(black, colorTools, "Font Color", &textColorIcon);Q_ASSERT(fontColorDlg!=NULL);
+    fontColorDlg = new AColorDialog(Qt::black, colorTools, "Font Color", &textColorIcon);Q_ASSERT(fontColorDlg!=NULL);
     chId = fontColorDlg->registerApplyMethod(asv);
     if (asv!=NULL) asv->setTextColorChgId(chId);
 
     connect( colorTools, SIGNAL(visibilityChanged(bool)), SLOT(colorsBarVisibilityChanged(bool)) );
-    moveDockWindow(colorTools,DockTop);
+    moveDockWindow(colorTools,Qt::DockTop);
     if (!annotationToolsEnabled) colorTools->hide();
 }
 
@@ -437,7 +443,7 @@ Main::addMDIToolBar()
     annotationLockedIcon = QPixmap(selectLocked);
     annotationUnlockedIcon = QPixmap(selectUnlocked);
     
-    mdiTools = new QToolBar( this, "mdi" );
+    mdiTools = new Q3ToolBar( this, "mdi" );
     Q_ASSERT(mdiTools!=NULL);
     mdiTools->setLabel( "MDI" );
 
@@ -579,13 +585,13 @@ Main::do_lockUnlockHighlight()
 void
 Main::addFileMenu()
 {
-    file = new QPopupMenu( menu );Q_ASSERT(file!=NULL);
-    if (genericOpenEnabled) { file->insertItem("&Open", this, SLOT(do_genericOpen()), CTRL+Key_O); }
-    if (genericSaveEnabled) { file->insertItem("&Save", this, SLOT(do_genericSave()), CTRL+Key_S); }
-    if (genericCloseEnabled) { close_id = file->insertItem("&Close", this, SLOT(do_genericClose()), CTRL+Key_W); }
-    if (genericPrintEnabled) { file->insertItem("&Print", this, SLOT(do_genericPrint()), CTRL+Key_P); }
+    file = new Q3PopupMenu( menu );Q_ASSERT(file!=NULL);
+    if (genericOpenEnabled) { file->insertItem("&Open", this, SLOT(do_genericOpen()), Qt::CTRL+Qt::Key_O); }
+    if (genericSaveEnabled) { file->insertItem("&Save", this, SLOT(do_genericSave()), Qt::CTRL+Qt::Key_S); }
+    if (genericCloseEnabled) { close_id = file->insertItem("&Close", this, SLOT(do_genericClose()), Qt::CTRL+Qt::Key_W); }
+    if (genericPrintEnabled) { file->insertItem("&Print", this, SLOT(do_genericPrint()), Qt::CTRL+Qt::Key_P); }
     file->insertSeparator();
-    file->insertItem("E&xit", this, SLOT(quit()), CTRL+Key_Q);
+    file->insertItem("E&xit", this, SLOT(quit()), Qt::CTRL+Qt::Key_Q);
     menu->insertItem("&File", file);
 }
 
@@ -595,18 +601,18 @@ Main::addFileMenu()
 void
 Main::addEditMenu()
 {
-    edit = new QPopupMenu( menu );Q_ASSERT(edit!=NULL);
+    edit = new Q3PopupMenu( menu );Q_ASSERT(edit!=NULL);
 
-    copy_id = edit->insertItem("&Copy", this, SLOT(do_copy()), CTRL+Key_C);
+    copy_id = edit->insertItem("&Copy", this, SLOT(do_copy()), Qt::CTRL+Qt::Key_C);
     edit->setItemEnabled(copy_id,annotationToolsEnabled);
 
-    paste_id = edit->insertItem("&Paste", this, SLOT(do_paste()), CTRL+Key_V);
+    paste_id = edit->insertItem("&Paste", this, SLOT(do_paste()), Qt::CTRL+Qt::Key_V);
     edit->setItemEnabled(paste_id,annotationToolsEnabled);
 
-    cut_id = edit->insertItem("Cu&t", this, SLOT(do_cut()), CTRL+Key_X);
+    cut_id = edit->insertItem("Cu&t", this, SLOT(do_cut()), Qt::CTRL+Qt::Key_X);
     edit->setItemEnabled(cut_id,annotationToolsEnabled);
 
-    remove_id = edit->insertItem("&Remove", this, SLOT(do_remove()),Key_Delete );
+    remove_id = edit->insertItem("&Remove", this, SLOT(do_remove()),Qt::Key_Delete );
     edit->setItemEnabled(remove_id,annotationToolsEnabled);
 
     edit->insertSeparator();
@@ -619,54 +625,54 @@ Main::addEditMenu()
 void
 Main::addViewMenu()
 {
-    view = new QPopupMenu( menu );Q_ASSERT(view!=NULL);
+    view = new Q3PopupMenu( menu );Q_ASSERT(view!=NULL);
     view->insertSeparator();
 
     //QAction ( const QString & text, const QIconSet & icon, const QString & menuText, QKeySequence accel, QObject * parent, const char * name = 0, bool toggle = FALSE )
 
-    actionZoomIn = new Q2DMAction ("zoomin",IconFactory::getInstance()->image8,"Zoom &In",CTRL+Key_Plus,this,"zoomin");
+    actionZoomIn = new Q2DMAction ("zoomin",IconFactory::getInstance()->image8,"Zoom &In",Qt::CTRL+Qt::Key_Plus,this,"zoomin");
     actionZoomIn->addTo(view);
 	zoomin_id = actionZoomIn->getMenuId();
     connect(actionZoomIn, SIGNAL(activated()), this, SLOT( do_zoomIn()));
 
-    actionZoomOut = new Q2DMAction ("zoomout",IconFactory::getInstance()->image9,"Zoom &Out",CTRL+Key_Minus,this,"zoomout");
+    actionZoomOut = new Q2DMAction ("zoomout",IconFactory::getInstance()->image9,"Zoom &Out",Qt::CTRL+Qt::Key_Minus,this,"zoomout");
     actionZoomOut->addTo(view);
 	zoomout_id = actionZoomOut->getMenuId();
     connect(actionZoomOut, SIGNAL(activated()), this, SLOT( do_zoomOut()));
     view->insertSeparator();
 
-    zoneaxe = new QPopupMenu( view );Q_ASSERT(zoneaxe!=NULL);
+    zoneaxe = new Q3PopupMenu( view );Q_ASSERT(zoneaxe!=NULL);
 
-    actionZoomInH = new Q2DMAction ("zoominh",zhpIcon,"Zoom In Horizontal",CTRL+ALT+Key_Plus,this,"zoominh");
+    actionZoomInH = new Q2DMAction ("zoominh",zhpIcon,"Zoom In Horizontal",Qt::CTRL+Qt::ALT+Qt::Key_Plus,this,"zoominh");
     actionZoomInH->addTo(zoneaxe);
 	zoominh_id = actionZoomInH->getMenuId();
     connect(actionZoomInH, SIGNAL(activated()), this, SLOT( do_zoomInH()));
 
-    actionZoomInV = new Q2DMAction ("zoominv",zvpIcon,"Zoom In Vertical",CTRL+SHIFT+Key_Plus,this,"zoominv");
+    actionZoomInV = new Q2DMAction ("zoominv",zvpIcon,"Zoom In Vertical",Qt::CTRL+Qt::SHIFT+Qt::Key_Plus,this,"zoominv");
     actionZoomInV->addTo(zoneaxe);
 	zoominv_id = actionZoomInV->getMenuId();
     connect(actionZoomInV, SIGNAL(activated()), this, SLOT( do_zoomInV()));
 
-    actionZoomOutH = new Q2DMAction ("zoomOutH",zhmIcon,"Zoom Out Horizontal",CTRL+ALT+Key_Minus,this,"zoomOutH");
+    actionZoomOutH = new Q2DMAction ("zoomOutH",zhmIcon,"Zoom Out Horizontal",Qt::CTRL+Qt::ALT+Qt::Key_Minus,this,"zoomOutH");
     actionZoomOutH->addTo(zoneaxe);
 	zoomouth_id = actionZoomOutH->getMenuId();
     connect(actionZoomOutH, SIGNAL(activated()), this, SLOT( do_zoomOutH()));
 
-    actionZoomOutV = new Q2DMAction ("zoomOutV",zvmIcon,"Zoom Out Vertical",CTRL+SHIFT+Key_Minus,this,"zoomOutV");
+    actionZoomOutV = new Q2DMAction ("zoomOutV",zvmIcon,"Zoom Out Vertical",Qt::CTRL+Qt::SHIFT+Qt::Key_Minus,this,"zoomOutV");
     actionZoomOutV->addTo(zoneaxe);
 	zoomoutv_id = actionZoomOutV->getMenuId();
     connect(actionZoomOutV, SIGNAL(activated()), this, SLOT( do_zoomOutV()));
 
     zoomaxes_id = view->insertItem("Zoom Axes ...", zoneaxe);
 
-    actionResetARatio = new Q2DMAction ("resetAspectRatio",resetartoIcon,"&Reset Aspect Ratio",CTRL+Key_R,this,"resetAspectRatio");
+    actionResetARatio = new Q2DMAction ("resetAspectRatio",resetartoIcon,"&Reset Aspect Ratio",Qt::CTRL+Qt::Key_R,this,"resetAspectRatio");
     actionResetARatio->addTo(view);
 	rstartio_id = actionResetARatio->getMenuId();
     connect(actionResetARatio, SIGNAL(activated()), this, SLOT( do_resetAspectRatio()));
 
     view->insertSeparator();
 
-    zfixed = new QPopupMenu (view);Q_ASSERT(zfixed!=NULL);
+    zfixed = new Q3PopupMenu (view);Q_ASSERT(zfixed!=NULL);
     z200_id = zfixed->insertItem("&200%", this, SLOT(do_z200()));
     z100_id = zfixed->insertItem("&100%", this, SLOT(do_z100()));
     z50_id = zfixed->insertItem("&50%", this, SLOT(do_z50()));
@@ -687,35 +693,35 @@ Main::addViewMenu()
 void
 Main::addToolsMenu()
 {
-    tools = new QPopupMenu(menu);Q_ASSERT(tools!=NULL);
+    tools = new Q3PopupMenu(menu);Q_ASSERT(tools!=NULL);
 
-    pointers = new QPopupMenu(tools);Q_ASSERT(pointers!=NULL);
+    pointers = new Q3PopupMenu(tools);Q_ASSERT(pointers!=NULL);
 
-    actionSelectPointer = new Q2DMAction ("selectToolEnabled",selectToolIcon,"&Select Pointer",CTRL+Key_1,this,"selectToolEnabled");
+    actionSelectPointer = new Q2DMAction ("selectToolEnabled",selectToolIcon,"&Select Pointer",Qt::CTRL+Qt::Key_1,this,"selectToolEnabled");
     actionSelectPointer->addTo(pointers);
     connect(actionSelectPointer, SIGNAL(activated()), this, SLOT( do_selectToolEnabled()));
 
-    actionMWandPointer = new Q2DMAction ("mwandToolEnabled",IconFactory::getInstance()->image19,"&Magic Wand Pointer",CTRL+Key_2,this,"mwandToolEnabled");
+    actionMWandPointer = new Q2DMAction ("mwandToolEnabled",IconFactory::getInstance()->image19,"&Magic Wand Pointer",Qt::CTRL+Qt::Key_2,this,"mwandToolEnabled");
     actionMWandPointer->addTo(pointers);
     connect(actionMWandPointer, SIGNAL(activated()), this, SLOT( do_mwandToolEnabled()));
 
-    actionPanningPointer = new Q2DMAction ("paddingToolEnabled",paddingToolIcon,"&Panning Pointer",CTRL+Key_3,this,"paddingToolEnabled");
+    actionPanningPointer = new Q2DMAction ("paddingToolEnabled",paddingToolIcon,"&Panning Pointer",Qt::CTRL+Qt::Key_3,this,"paddingToolEnabled");
     actionPanningPointer->addTo(pointers);
     connect(actionPanningPointer, SIGNAL(activated()), this, SLOT( do_paddingToolEnabled()));
 
-    actionZoomingPointer = new Q2DMAction ("zoomingToolEnabled",IconFactory::getInstance()->image11,"&Zooming Pointer",CTRL+Key_4,this,"zoomingToolEnabled");
+    actionZoomingPointer = new Q2DMAction ("zoomingToolEnabled",IconFactory::getInstance()->image11,"&Zooming Pointer",Qt::CTRL+Qt::Key_4,this,"zoomingToolEnabled");
     actionZoomingPointer->addTo(pointers);
     connect(actionZoomingPointer, SIGNAL(activated()), this, SLOT( do_zoomingToolEnabled()));
 
-    actionZoomingWPointer = new Q2DMAction ("zoomingWToolEnabled",IconFactory::getInstance()->image40,"&Zooming on Window Pointer",CTRL+Key_5,this,"zoomingWToolEnabled");
+    actionZoomingWPointer = new Q2DMAction ("zoomingWToolEnabled",IconFactory::getInstance()->image40,"&Zooming on Window Pointer",Qt::CTRL+Qt::Key_5,this,"zoomingWToolEnabled");
     actionZoomingWPointer->addTo(pointers);
     connect(actionZoomingWPointer, SIGNAL(activated()), this, SLOT( do_zoomingToolEnabled()));
 
-    actionDistancePointer = new Q2DMAction ("distanceToolEnabled",distanceToolIcon,"&Distance Pointer",CTRL+Key_6,this,"distanceToolEnabled");
+    actionDistancePointer = new Q2DMAction ("distanceToolEnabled",distanceToolIcon,"&Distance Pointer",Qt::CTRL+Qt::Key_6,this,"distanceToolEnabled");
     actionDistancePointer->addTo(pointers);
     connect(actionDistancePointer, SIGNAL(activated()), this, SLOT( do_distanceToolEnabled()));
 
-    actionShadingPointer = new Q2DMAction ("shadingToolEnabled",IconFactory::getInstance()->image5,"S&hading Pointer",CTRL+Key_7,this,"shadingToolEnabled");
+    actionShadingPointer = new Q2DMAction ("shadingToolEnabled",IconFactory::getInstance()->image5,"S&hading Pointer",Qt::CTRL+Qt::Key_7,this,"shadingToolEnabled");
     actionShadingPointer->addTo(pointers);
     connect(actionShadingPointer, SIGNAL(activated()), this, SLOT( do_shadingToolEnabled()));
 
@@ -735,7 +741,7 @@ Main::addToolsMenu()
 void
 Main::addAnnotationMenu()
 {
-    annotation = new QPopupMenu(tools);Q_ASSERT(annotation!=NULL);
+    annotation = new Q3PopupMenu(tools);Q_ASSERT(annotation!=NULL);
     annotation->insertItem(annLineIcon,"Draw &Line", this, SLOT(do_annToolLineEnabled()));
     annotation->insertItem(annRectIcon,"Draw &Rectangle", this, SLOT(do_annToolRectEnabled()));
     annotation->insertItem(annCircleIcon,"Draw &Circle", this, SLOT(do_annToolCircleEnabled()));
@@ -749,8 +755,8 @@ Main::addAnnotationMenu()
 void
 Main::addBookmarkMenu()
 {
-    bookmark = new QPopupMenu(menu);Q_ASSERT(bookmark!=NULL);
-    actionAddBM = new Q2DMAction ("addBookmark",IconFactory::getInstance()->image14,"&Add Bookmark Here",CTRL+Key_B,this,"addBookmark");
+    bookmark = new Q3PopupMenu(menu);Q_ASSERT(bookmark!=NULL);
+    actionAddBM = new Q2DMAction ("addBookmark",IconFactory::getInstance()->image14,"&Add Bookmark Here",Qt::CTRL+Qt::Key_B,this,"addBookmark");
     actionAddBM->addTo(bookmark);
 	addbookmrk_id = actionAddBM->getMenuId();  
     connect(actionAddBM, SIGNAL(activated()), this, SLOT( do_addBookmark()));
@@ -772,7 +778,7 @@ Main::addBookmarkMenu()
 void
 Main::addOptionsMenu()
 {
-    options = new QPopupMenu( menu );Q_ASSERT(options!=NULL);
+    options = new Q3PopupMenu( menu );Q_ASSERT(options!=NULL);
     options->insertItem("&Grid Lines...", this, SLOT(do_snapDialog()));
     options_id = menu->insertItem("&Options",options);
 }
@@ -783,12 +789,12 @@ Main::addOptionsMenu()
 void
 Main::addWindowMenu()
 {
-    window = new QPopupMenu(menu);Q_ASSERT(window!=NULL);
+    window = new Q3PopupMenu(menu);Q_ASSERT(window!=NULL);
 
     // -------------------------------------------------------
     // toolbars stuff
     // -------------------------------------------------------
-    window_toolbar = new QPopupMenu(window);Q_ASSERT(window_toolbar!=NULL);
+    window_toolbar = new Q3PopupMenu(window);Q_ASSERT(window_toolbar!=NULL);
 
     win_tool_bar_id = window_toolbar->insertItem("&Tools", this, SLOT(do_switchToolsBar()));
     window_toolbar->setItemChecked(win_tool_bar_id,true);
@@ -821,18 +827,18 @@ Main::addWindowMenu()
 void 
 Main::addStylesMenu()
 {
-    style = new QPopupMenu(menu);Q_ASSERT(style!=NULL);
+    style = new Q3PopupMenu(menu);Q_ASSERT(style!=NULL);
     style->setCheckable( TRUE );
     options->insertItem("&Style",style);
     style->setCheckable( TRUE );
 
-    QActionGroup *ag = new QActionGroup( menu, 0 );Q_ASSERT(ag!=NULL);
+    Q3ActionGroup *ag = new Q3ActionGroup( menu, 0 );Q_ASSERT(ag!=NULL);
     ag->setExclusive(TRUE);
     QSignalMapper *styleMapper = new QSignalMapper( this );Q_ASSERT(styleMapper!=NULL);
     connect( styleMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( do_makeStyle(const QString&)));
     QStringList list = QStyleFactory::keys();
     list.sort();
-    QDict<int> stylesDict( 17, FALSE );
+    Q3Dict<int> stylesDict( 17, FALSE );
 
     for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
     {
@@ -856,7 +862,7 @@ Main::addStylesMenu()
             styleAccel = "&"+styleAccel;
         }
 
-        QAction *a = new QAction( styleStr, QIconSet(), styleAccel, 0, ag, 0, ag->isExclusive() );Q_ASSERT(a!=NULL);
+        QAction *a = new QAction( styleStr, QIcon(), styleAccel, 0, ag, 0, ag->isExclusive() );Q_ASSERT(a!=NULL);
         connect( a, SIGNAL( activated() ), styleMapper, SLOT(map()) );
         styleMapper->setMapping( a, a->text() );
     }
@@ -870,10 +876,10 @@ void
 Main::addHelpMenu()
 {
     menu->insertSeparator();
-    QPopupMenu* help = new QPopupMenu( menu );Q_ASSERT(help!=NULL);
+    Q3PopupMenu* help = new Q3PopupMenu( menu );Q_ASSERT(help!=NULL);
     help->insertItem("About &QT", this, SLOT(do_about_qt()));
     help->insertItem("About &AGT", this, SLOT(do_about_agt()));
-    help->insertItem(IconFactory::getInstance()->image18,"&Contents", this, SLOT(do_help()), Key_F1);
+    help->insertItem(IconFactory::getInstance()->image18,"&Contents", this, SLOT(do_help()), Qt::Key_F1);
     menu->insertItem("&Help",help);
 }
 
@@ -1646,7 +1652,7 @@ Main::status_msg_changed(QString msg)
 }
 
 void
-Main::addZoomDialog(QToolBar* parent)
+Main::addZoomDialog(Q3ToolBar* parent)
 {
     parent->addSeparator();
 

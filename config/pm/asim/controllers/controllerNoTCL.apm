@@ -36,21 +36,17 @@ model=Asim controller without TCL
 
 [workbench without TCL]
 File=modules/controller/workbench/no-tcl/wb-notcl.awb
-Packagehint=asimcore
+Packagehint=awb
 
 [AWB without TCL]
 File=modules/controller/classic/awb-notcl.awb
-Packagehint=asimcore
+Packagehint=awb
 
 [Asim controller without TCL/Requires]
 workbench=workbench without TCL
 awb_stub=AWB without TCL
-controller_alg=Asim classic controller
 
 [Asim controller without TCL]
 File=modules/controller/classic/controller-notcl.awb
-Packagehint=asimcore
+Packagehint=awb
 
-[Asim classic controller]
-File=modules/controller/classic/controller_classic_alg.awb
-Packagehint=asimcore

@@ -154,8 +154,8 @@ TrackIDNode::getTagValue(UINT16 tagId,INT32 cycle, SOVList** value, UINT32* atcy
 bool
 TrackIDNode::addTagValue(UINT16 tagId,INT32 cycle, UINT64 value)
 {
-    minTgId = QMIN(minTgId,tagId);
-    maxTgId = QMAX(maxTgId,tagId);
+    minTgId = qMin(minTgId,(INT32)tagId);
+    maxTgId = qMax(maxTgId,(INT32)tagId);
     checkTgId(tagId);
     return tgIdVector[tagId].addTagValue(cycle,value);
 }
@@ -168,8 +168,8 @@ TrackIDNode::addTagValue(UINT16 tagId,INT32 cycle, UINT64 value)
 bool
 TrackIDNode::addTagValue(UINT16 tagId,INT32 cycle, QString value)
 {
-    minTgId = QMIN(minTgId,tagId);
-    maxTgId = QMAX(maxTgId,tagId);
+    minTgId = qMin(minTgId,(INT32)tagId);
+    maxTgId = qMax(maxTgId,(INT32)tagId);
     checkTgId(tagId);
     return tgIdVector[tagId].addTagValue(cycle,value);
 }
@@ -182,8 +182,8 @@ TrackIDNode::addTagValue(UINT16 tagId,INT32 cycle, QString value)
 bool
 TrackIDNode::addTagValue(UINT16 tagId,INT32 cycle, SOVList* value)
 {
-    minTgId = QMIN(minTgId,tagId);
-    maxTgId = QMAX(maxTgId,tagId);
+    minTgId = qMin(minTgId,(INT32)tagId);
+    maxTgId = qMax(maxTgId,(INT32)tagId);
     checkTgId(tagId);
     return tgIdVector[tagId].addTagValue(cycle,value);
 }

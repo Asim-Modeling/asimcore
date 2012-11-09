@@ -163,8 +163,8 @@ template<class T, int SEGMENTSIZE, int MAXSEGMENTS> class AEVector
             {
                 allocateSegment(segment);
             }
-            maxUsedIdx = QMAX(maxUsedIdx,idx);
-            minUsedIdx = QMIN(minUsedIdx,idx);
+            maxUsedIdx = qMax(maxUsedIdx,idx);
+            minUsedIdx = qMin(minUsedIdx,idx);
             return (segvector[segment]->array[(idx &  posMask)]);
         }
 
@@ -226,8 +226,8 @@ template<class T, int SEGMENTSIZE, int MAXSEGMENTS> class AEVector
                 allocateSegment(segment);
             }
             segvector[segment]->array[(idx & posMask)] = value;
-            maxUsedIdx = QMAX(maxUsedIdx,idx);
-            minUsedIdx = QMIN(minUsedIdx,idx);
+            maxUsedIdx = qMax(maxUsedIdx,idx);
+            minUsedIdx = qMin(minUsedIdx,idx);
         }
 
         /**

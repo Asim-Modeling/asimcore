@@ -25,7 +25,7 @@
 
 // Qt library
 #include <qstring.h>
-#include <qintdict.h>
+#include <q3intdict.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/DBGraphNode.h"
@@ -82,7 +82,7 @@ class DBGraphEdge
   * @brief
   * This struct is a dictionary of edges indexed by integers.
   */
-typedef QIntDict<DBGraphEdge> DBGEList;
+typedef Q3IntDict<DBGraphEdge> DBGEList;
 
 /**
  * Returns the source node of the edge.

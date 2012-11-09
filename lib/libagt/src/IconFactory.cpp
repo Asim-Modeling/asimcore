@@ -22,6 +22,8 @@
 
 #include "IconFactory.h"
 #include "icons.cpp"
+//Added by qt3to4:
+#include <QPixmap>
 
 IconFactory* IconFactory::_myInstance = NULL;
 

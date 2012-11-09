@@ -24,7 +24,7 @@
 #ifndef _DRALDB_TRACKHEAP_H
 #define _DRALDB_TRACKHEAP_H
 
-#include <qdict.h>
+#include <q3dict.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/AMemObj.h"
@@ -121,15 +121,15 @@ class TrackHeap : public AMemObj, public StatObj, public ZipObject
         TrackHeap();
         virtual ~TrackHeap();
 
-        inline INT32 resolveTrackIdFor(UINT16 node_id,UINT16 level, const UINT32 list [], QDict<INT32>* hash);
+        inline INT32 resolveTrackIdFor(UINT16 node_id,UINT16 level, const UINT32 list [], Q3Dict<INT32>* hash);
         
     private:
         TrackIDVector trackIDVector; // Vector with all the tracking.
         INT32 nextTrackID; // Position of the next track.
-        QDict<INT32>* trackedNodes; // To keep track of tracking on nodes.
+        Q3Dict<INT32>* trackedNodes; // To keep track of tracking on nodes.
         INT32 cycleTagTrackID; // The track id for cycle tags.
-        QDict<INT32>* trackedEnterNodes; // To keep track of tracking on enter nodes.
-        QDict<INT32>* trackedExitNodes; // To keep track of tracking on exit nodes
+        Q3Dict<INT32>* trackedEnterNodes; // To keep track of tracking on enter nodes.
+        Q3Dict<INT32>* trackedExitNodes; // To keep track of tracking on exit nodes
         TagDescVector* tagdescvec; // Pointer to the tag description pointer.
         INT32 edgeTrackTbl[65536]; // Translation between node id and track id.
         INT32 tgItemIdxID; // Tag index used with items.
@@ -285,7 +285,7 @@ TrackHeap::resolveTrackIdForExitNode(UINT16 node_id,UINT16 level, const UINT32 l
  * @return the trackid.
  */
 INT32
-TrackHeap::resolveTrackIdFor(UINT16 node_id, UINT16 level, const UINT32 list [], QDict<INT32>* hash)
+TrackHeap::resolveTrackIdFor(UINT16 node_id, UINT16 level, const UINT32 list [], Q3Dict<INT32>* hash)
 {
     // Checks if the node exists.
     DBGraphNode* node = dbgraph->getNode(node_id);

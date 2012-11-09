@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 #include "agt_syntax.h"
 #include "AnnotationItem.h"
@@ -226,7 +226,7 @@ class AnnotationContainer : public AnnotationItem
         void reset();
                    
     protected:
-        QPtrList<AnnotationItem> children;
+        Q3PtrList<AnnotationItem> children;
         QRect setbbox;
 };
 

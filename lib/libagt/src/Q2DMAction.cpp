@@ -22,18 +22,20 @@
   */
 
 #include "Q2DMAction.h"
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 Q2DMAction::Q2DMAction ( QObject * parent, const char * name , bool toggle) : 
-			QAction (parent,name,toggle) {menuidx=-1;mymenu=NULL;}
+			Q3Action (parent,name,toggle) {menuidx=-1;mymenu=NULL;}
 			
-Q2DMAction::Q2DMAction ( const QString & text, const QIconSet & icon, 
+Q2DMAction::Q2DMAction ( const QString & text, const QIcon & icon, 
 			const QString & menuText, QKeySequence accel, QObject * parent, 
 			const char * name, bool toggle) : 
-			QAction (text,icon,menuText,accel,parent,name,toggle) {menuidx=-1;mymenu=NULL;}
+			Q3Action (text,icon,menuText,accel,parent,name,toggle) {menuidx=-1;mymenu=NULL;}
 			
 Q2DMAction::Q2DMAction ( const QString & text, const QString & menuText, 
 			QKeySequence accel, QObject * parent, const char * name, bool toggle) :
-			QAction (text,menuText,accel,parent,name,toggle) {menuidx=-1;mymenu=NULL;}
+			Q3Action (text,menuText,accel,parent,name,toggle) {menuidx=-1;mymenu=NULL;}
 			
 Q2DMAction::~Q2DMAction () {}
 
@@ -51,7 +53,7 @@ Q2DMAction::getMenuId()
 }
 
 void 
-Q2DMAction::addedTo ( int index, QPopupMenu * menu )
+Q2DMAction::addedTo ( int index, Q3PopupMenu * menu )
 {
 	menuidx = index;
 	mymenu=menu;

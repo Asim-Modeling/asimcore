@@ -22,7 +22,7 @@
 
 #include "ColorMenuItem.h"
 
-ColorMenuItem::ColorMenuItem(QColor c): QCustomMenuItem()
+ColorMenuItem::ColorMenuItem(QObject* parent, QColor c): Q3Action(parent)
 {
     this->myColor = c; 
 }

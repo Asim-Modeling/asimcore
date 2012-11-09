@@ -24,12 +24,12 @@
 #define _DRALDB_DBLISTENER_H
 
 // QT Library
-#include <qintdict.h>
-#include <qptrlist.h>
+#include <q3intdict.h>
+#include <q3ptrlist.h>
 #include <qmessagebox.h>
 #include <qstring.h>
-#include <qvaluelist.h>
-#include <qvaluevector.h>
+#include <q3valuelist.h>
+#include <q3valuevector.h>
 
 // Dreams Library (client)
 #include <asim/dralListenerOld.h>
@@ -364,8 +364,8 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
 
         NewItemList*    itemList;
 
-        QIntDict<INT32>* trackWarnHash;
-        QIntDict<UINT32>* itemWarnHash;
+        Q3IntDict<INT32>* trackWarnHash;
+        Q3IntDict<UINT32>* itemWarnHash;
 
         LogMgr*         myLogMgr;
         TagDescVector*  tgdescvec;
@@ -377,13 +377,13 @@ class DBListener : public AMemObj, public StatObj, public DRAL_LISTENER_OLD_CLAS
 
         bool doTrackItemTags;
 
-        QPtrList<DRAL_LISTENER_OLD_CLASS>* externClients;
+        Q3PtrList<DRAL_LISTENER_OLD_CLASS>* externClients;
 
         INT32  numTrackedEdges;
 
         UINT8* lastUsedPosVector;
         UINT16 lastUsedPosVectorIndirection[65536];
-        QValueList<UINT16> trackededges;
+        Q3ValueList<UINT16> trackededges;
 
         INT32  edgeTrackIdVector[65536];
         INT32  _itemidxinid;
@@ -472,7 +472,7 @@ DBListener::tagDiscriminatorAdder(INT32 itemid, LSetTagListNode* node)
     if (node->isString)
     {
         INT32 stridx = strtbl->addString(node->str);
-        if (db_listener_debug_on) {printf("\t\t (string): %s; Index=%d\n",node->str.latin1(),stridx);fflush(stdout);}
+        if (db_listener_debug_on) {printf("\t\t (string): %s; Index=%d\n",node->str.toLatin1().constData(),stridx);fflush(stdout);}
         itHeap->newTag(itemid, node->tagid, (UINT64) stridx, node->cycle);
     }
     // Set of values

@@ -22,7 +22,7 @@
 
 #include "asim/DBGraph.h"
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qregexp.h>
 
 /**
@@ -150,7 +150,7 @@ DBGraphEdge*
 DBGraph::findEdgeByNameFromTo(QString name,QString fromstr,QString tostr)
 {
     bool fnd = false;
-    QIntDictIterator<DBGraphEdge> it(*dbgeList);
+    Q3IntDictIterator<DBGraphEdge> it(*dbgeList);
     DBGraphEdge* result = it.current();
 
     while (!fnd && (result!=NULL) )
@@ -256,7 +256,7 @@ QString
 DBGraph::normalizeNodeName(QString name)
 {
     QString result=name;
-    int pos = name.find(QChar('{'));
+    int pos = name.indexOf(QChar('{'));
     if (pos<0)
     {
         result += "{0}";
@@ -290,7 +290,7 @@ DBGraph::decodeNodeSlot(QString strnodeslot,QString* rnodename,NodeSlot* rnslot)
 
     QString nodename=QString::null;
     QString slotspec=QString::null;
-    int pos = strnodeslot.find(QChar(';'));
+    int pos = strnodeslot.indexOf(QChar(';'));
     if (pos<0)
     {
         nodename=strnodeslot;
@@ -313,12 +313,12 @@ DBGraph::decodeNodeSlot(QString strnodeslot,QString* rnodename,NodeSlot* rnslot)
 
     // decode the node slot from x,y,z,d to a NodeSlot struct
     QRegExp rx( "\\d+" );
-    QValueList<UINT32> tmplist;
+    Q3ValueList<UINT32> tmplist;
     int count = 0;
     pos = 0;
     while ( pos >= 0 )
     {
-        pos = rx.search( slotspec, pos );
+        pos = rx.indexIn( slotspec, pos );
         if (pos>=0)
         {
             QString dimspec = slotspec.mid(pos,rx.matchedLength());
@@ -340,7 +340,7 @@ DBGraph::decodeNodeSlot(QString strnodeslot,QString* rnodename,NodeSlot* rnslot)
     else
     {
         UINT32* vec = new UINT32[count];
-        QValueList<UINT32>::Iterator it = tmplist.begin();
+        Q3ValueList<UINT32>::Iterator it = tmplist.begin();
         int idx=0;
         while (it != tmplist.end())
         {
@@ -390,7 +390,7 @@ DBGraph::getGraphDescription()
 	result += " edges\n\n";
 
 	result += "Node List:\n\n";
-    QIntDictIterator<DBGraphNode> nodeit( *dbgnList );
+    Q3IntDictIterator<DBGraphNode> nodeit( *dbgnList );
     for ( ; nodeit.current(); ++nodeit )
     {
         DBGraphNode* node = nodeit.current();
@@ -401,7 +401,7 @@ DBGraph::getGraphDescription()
     }
 
 	result += "Edge List:\n\n";
-    QIntDictIterator<DBGraphEdge> edgeit( *dbgeList );
+    Q3IntDictIterator<DBGraphEdge> edgeit( *dbgeList );
     for ( ; edgeit.current(); ++edgeit )
     {
         DBGraphEdge* node = edgeit.current();

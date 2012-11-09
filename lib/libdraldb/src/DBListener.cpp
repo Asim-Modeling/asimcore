@@ -22,8 +22,10 @@
 
 #include "asim/DBListener.h"
 
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include <qapplication.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 #include "asim/PrimeList.h"
 #include "asim/DBItoa.h"
@@ -77,10 +79,10 @@ DBListener::DBListener()
     Q_ASSERT(itemList!=NULL);
     itemList->setAutoDelete(true);
 
-    trackWarnHash = new QIntDict<INT32>(PrimeList::nearPrime(MAX_TRACKID_WARNS));
+    trackWarnHash = new Q3IntDict<INT32>(PrimeList::nearPrime(MAX_TRACKID_WARNS));
     Q_ASSERT(trackWarnHash!=NULL);
 
-    itemWarnHash = new QIntDict<UINT32>(PrimeList::nearPrime(MAX_ITEMID_WARNS));
+    itemWarnHash = new Q3IntDict<UINT32>(PrimeList::nearPrime(MAX_ITEMID_WARNS));
     Q_ASSERT(itemWarnHash!=NULL);
 
     myLogMgr  = LogMgr::getInstance();
@@ -91,7 +93,7 @@ DBListener::DBListener()
     dbGraph   = DBGraph::getInstance();
     trHeap    = TrackHeap::getInstance();
 
-    externClients = new QPtrList<DRAL_LISTENER_OLD_CLASS>();
+    externClients = new Q3PtrList<DRAL_LISTENER_OLD_CLASS>();
     lastUsedPosVector = NULL;
 
     reset();
@@ -153,7 +155,7 @@ DBListener::Cycle (UINT64 n)
     if (conf->getIncrementalPurge() && (itemList->count()>2048) && (!(dcnt%256)))
     {
         // itarate throught the live guys:
-        QIntDictIterator<LNewItemListNode> it(*itemList);
+        Q3IntDictIterator<LNewItemListNode> it(*itemList);
         int cnt=0;
         UINT64 maxAge = (UINT64)(conf->getItemMaxAge());
         while(it.current())
@@ -243,7 +245,7 @@ DBListener::SetTagSingleValue (UINT32 item_id, const char* tag_name,UINT64 value
     LNewItemListNode* newItemNode = itemList->find((long)item_id);
     if (newItemNode!=NULL)
     {
-        tagid = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagIntegerValue);
+        tagid = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagIntegerValue);
         //printf("tagname=%s, tgid=%d\n",qtag_name.latin1(),tagid);
         Q_ASSERT(tagid>=0);
 
@@ -293,11 +295,11 @@ DBListener::SetTagString (UINT32 item_id, const char* tag_name, const char* str,
     LNewItemListNode* newItemNode = itemList->find((long)item_id);
     if (newItemNode!=NULL)
     {
-        tagid = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagStringValue);
+        tagid = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagStringValue);
         //printf("tagname=%s, tgid=%d\n",qtag_name.latin1(),tagid);
         Q_ASSERT(tagid>=0);
 
-        LSetTagListNode* node = new LSetTagListNode(currentCycle, tagid, qstr.stripWhiteSpace());
+        LSetTagListNode* node = new LSetTagListNode(currentCycle, tagid, qstr.trimmed());
         LSetTagListNode* matchingNode=NULL;
         Q_ASSERT(node!=NULL);
         mutant = hasTag(newItemNode->getMyTags(),tagid,currentCycle,&matchingNode);
@@ -341,7 +343,7 @@ DBListener::SetTagSet (UINT32 item_id, const char* tag_name, UINT32 nval,
     LNewItemListNode* newItemNode = itemList->find((long)item_id);
     if (newItemNode!=NULL)
     {
-        tagid = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagSetOfValues);
+        tagid = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagSetOfValues);
         //printf("tagname=%s, tgid=%d\n",qtag_name.latin1(),tagid);
         Q_ASSERT(tagid>=0);
 
@@ -512,16 +514,16 @@ DBListener::Do_EndSimulation()
         INT32 nitems = itemList->count();
         //printf ("nitems=%d\n",nitems);
 
-        QProgressDialog* progress = NULL;
+        Q3ProgressDialog* progress = NULL;
         if (conf->getGUIEnabled())
         {
             //printf ("DRALDB GUI ENABLED on ENDSIMULATION...\n");fflush(stdout);
-            progress = new QProgressDialog ("DralDB is commiting EOF Auto-Purged Items...", "&Abort", nitems ,NULL, "commitprogress",TRUE);
+            progress = new Q3ProgressDialog ("DralDB is commiting EOF Auto-Purged Items...", "&Abort", nitems ,NULL, "commitprogress",TRUE);
             progress->setMinimumDuration(250);
         }
 
         // itarate throught the live guys:
-        QIntDictIterator<LNewItemListNode> it(*itemList);
+        Q3IntDictIterator<LNewItemListNode> it(*itemList);
         //printf ("DBListener::purging EOF...\n");fflush(stdout);
         INT32 cnt=0;
         while (it.current()!=NULL)
@@ -578,7 +580,7 @@ DBListener::AddNode (UINT16 node_id, const char * node_name,UINT16 parent_id,UIN
 {
     QString qnodename(node_name);
     // errors already dumped into the log file by ConfigDB class
-    lastProcessedEventOk = dbGraph->addNode (qnodename.stripWhiteSpace(),
+    lastProcessedEventOk = dbGraph->addNode (qnodename.trimmed(),
                          node_id,parent_id,instance);
     DBLISTENER_DISPATCH_LISTENERS(listener->AddNode(node_id,node_name,parent_id,instance);)
 }
@@ -592,7 +594,7 @@ DBListener::AddEdge (UINT16 sourceNode, UINT16 destNode, UINT16 edge_id, UINT32 
     // errors already dumped into the log file by ConfigDB class
     lastProcessedEventOk = dbGraph->addEdge (sourceNode,
                          destNode,edge_id,bandwidth,latency,
-                         qname.stripWhiteSpace());
+                         qname.trimmed());
 
     DBLISTENER_DISPATCH_LISTENERS(listener->AddEdge(sourceNode,destNode,edge_id,bandwidth,latency,name);)
 }
@@ -753,7 +755,7 @@ DBListener::SetCycleTag(const char tag_name [], UINT64 value)
 
     // gt tag id
     QString qtag_name(tag_name);
-    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagIntegerValue);
+    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagIntegerValue);
     // put it
     bool ok = trHeap->addTagValue(trackId,tagId,currentCycle,value);
     lastProcessedEventOk = lastProcessedEventOk && ok;
@@ -773,7 +775,7 @@ DBListener::SetCycleTagString(const char tag_name [], const char str [])
 
     // gt tag id
     QString qtag_name(tag_name);
-    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagIntegerValue);
+    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagIntegerValue);
 
     // put it
     bool ok = trHeap->addTagValue(trackId,tagId,currentCycle,QString(str));
@@ -801,7 +803,7 @@ DBListener::SetNodeTag(UINT16 node_id, const char tag_name [], UINT64 value,UINT
     //printf("setnodetag on node=%d,trackid=%d\n",(int)node_id,(int)trackId);
     // gt tag id
     QString qtag_name(tag_name);
-    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagIntegerValue);
+    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagIntegerValue);
 
     // put it
     bool ok = trHeap->addTagValue(trackId, tagId,currentCycle,value);
@@ -823,7 +825,7 @@ DBListener::SetNodeTagString(UINT16 node_id, const char tag_name [], const char 
 
     // gt tag id
     QString qtag_name(tag_name);
-    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.stripWhiteSpace(),TagIntegerValue);
+    UINT16 tagId = tgdescvec->tryToAlloc(qtag_name.trimmed(),TagIntegerValue);
 
     // put it
     bool ok = trHeap->addTagValue(trackId, tagId,currentCycle,QString(str));
@@ -1139,7 +1141,7 @@ DBListener::forceMaxIfiPurge()
 	AuxItemList auxList;
 
     // itarate throught the live guys:
-    QIntDictIterator<LNewItemListNode> it(*itemList);
+    Q3IntDictIterator<LNewItemListNode> it(*itemList);
     for ( ; it.current(); ++it )
     { auxList.append(new AuxItemListNode(it.current()->cycle,it.current()->item_id)); }
 
@@ -1202,7 +1204,7 @@ DBListener::setTrackedEdges (INT32 value)
     {
         delete [] lastUsedPosVector;
     }
-    numTrackedEdges = QMAX(value,1);
+    numTrackedEdges = qMax(value,1);
     lastUsedPosVector = new UINT8[numTrackedEdges];
 
     // check coherence

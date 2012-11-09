@@ -59,7 +59,7 @@ ItemHandler::dumpItem()
         itemtagheap->skipToNextEntry(this);
         eol = itemtagheap->isLast(this);
         printf("TagId = %d (%s),Value="FMT64U", PostCycle=%d, SOV=%d, Mutable=%d, chunkIdx=%d, tagIdx=%d\n",
-               itemtagheap->getTagId(this),tagdescvec->getTagDescription(itemtagheap->getTagId(this)).latin1(),
+               itemtagheap->getTagId(this),tagdescvec->getTagDescription(itemtagheap->getTagId(this)).toLatin1().constData(),
                itemtagheap->getValue(this),
                itemtagheap->getCycle(this),(int)(itemtagheap->isSOV(this)),
                (int)(itemtagheap->isMutable(this)),

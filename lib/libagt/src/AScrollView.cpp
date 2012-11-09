@@ -21,6 +21,9 @@
   */
 #include <iostream>
 #include <string.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QMouseEvent>
 using namespace std;
 
 #include <qapplication.h>
@@ -36,7 +39,7 @@ using namespace std;
 #include "xpm/mwandCursor.xpm"
 
 AScrollView::AScrollView(QWidget* parent, int width, int height) :
-QScrollView(parent,"display", WStaticContents|WResizeNoErase|WRepaintNoErase)
+Q3ScrollView(parent,"display", Qt::WStaticContents|Qt::WResizeNoErase|Qt::WNoAutoErase)
 {
     /*
     printf ("starting asv constructor w=%d, h=%d...\n",width,height);
@@ -88,7 +91,7 @@ QScrollView(parent,"display", WStaticContents|WResizeNoErase|WRepaintNoErase)
     //printf ("resizing done\n");
 
     setResizePolicy(Manual);
-    viewport()->setBackgroundMode(FixedColor);
+    viewport()->setBackgroundMode(Qt::FixedColor);
     viewport()->setBackgroundColor(bgColor);
     offscr.setOptimization(QPixmap::BestOptim);
 
@@ -96,9 +99,9 @@ QScrollView(parent,"display", WStaticContents|WResizeNoErase|WRepaintNoErase)
     viewport()->setMouseTracking(true);
 
     // default colors
-    currentBrush        = QBrush(blue);
-    currentPen          = QPen(black,1);
-    currentTextColor    = black;
+    currentBrush        = QBrush(Qt::blue);
+    currentPen          = QPen(Qt::black,1);
+    currentTextColor    = Qt::black;
     penColorChId=-1;
     brushColorChId=-1;
     textColorChId=-1;
@@ -287,7 +290,7 @@ AScrollView::drawPseudoScalledText(QPainter *p, QString str,int flags, int x, in
     int efy=y;
     int efw=w;
     int efh=h;
-    QWMatrix mbkp = p->worldMatrix();
+    QMatrix mbkp = p->worldMatrix();
     int fsize = (int)floor(QMIN(scf_x,scf_y)*(double)w);
     fsize-=2; // margin
 
@@ -315,7 +318,7 @@ AScrollView::drawPseudoScalledText(QPainter *p, QString str,int flags, int x, in
 void
 AScrollView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 {
-    QHBox* qhb;
+    Q3HBox* qhb;
 
     if (redrawing)
     { return; }
@@ -457,8 +460,8 @@ AScrollView::drawVGridLines(QPainter* painter,double ncx, double ncy, double ncw
 {
     RasterOp bkpOp = painter->rasterOp();
 
-    painter->setPen(QPen(black,0,DotLine));
-    painter->setBrush(NoBrush);
+    painter->setPen(QPen(Qt::black,0,Qt::DotLine));
+    painter->setBrush(Qt::NoBrush);
     painter->setRasterOp(NotROP);
 
     int gridStep = (int)(getBaseElementSize()*gridSize);
@@ -489,8 +492,8 @@ AScrollView::drawHGridLines(QPainter* painter,double ncx, double ncy, double ncw
 {
     RasterOp bkpOp = painter->rasterOp();
 
-    painter->setPen(QPen(black,0,DotLine));
-    painter->setBrush(NoBrush);
+    painter->setPen(QPen(Qt::black,0,Qt::DotLine));
+    painter->setBrush(Qt::NoBrush);
     painter->setRasterOp(NotROP);
 
     int gridStep = (int)(getBaseElementSize()*gridSize);
@@ -710,8 +713,8 @@ AScrollView::mouseWorldReleaseEvent(QMouseEvent* e, double x, double y)
 void
 AScrollView::mouseWorldReleaseEvent_Select (QMouseEvent* e, double x, double y)
 {
-    bool adding  = e->state() & ControlButton;
-    bool shifted = e->state() & ShiftButton;
+    bool adding  = e->state() & Qt::ControlModifier;
+    bool shifted = e->state() & Qt::ShiftModifier;
 
     // check for selection/movement of annotiation items
     if (pressAnnItem!=NULL)
@@ -832,7 +835,7 @@ AScrollView::mouseWorldReleaseEvent_ZoomingNWinCallback (double fx,double fy,int
 void 
 AScrollView::mouseWorldReleaseEvent_Distance (QMouseEvent* e, double x, double y)
 {
-    bool shifted = e->state() & ShiftButton;
+    bool shifted = e->state() & Qt::ShiftModifier;
     
     // I need to remove the "last" rubber line
     drawDstRubber(lastDistance_x,lastDistance_y,lastDistance_mx);
@@ -857,7 +860,7 @@ AScrollView::mouseWorldReleaseEvent_Shading (QMouseEvent* e, double x, double y)
     shading=false;
 
     // if shift key  on
-    if ( (e->state() & ShiftButton) && (lastShaded_mx>=0) )
+    if ( (e->state() & Qt::ShiftModifier) && (lastShaded_mx>=0) )
     {
         if (lastShaded_mx==released_mx) return;
         
@@ -1126,12 +1129,12 @@ AScrollView::drawZoomRubber( int x, int y )
     QPainter p;
     p.begin( viewport() );
     p.setRasterOp( NotROP );
-    p.setPen( QPen( color0, 1 ) );
-    p.setBrush( NoBrush );
+    p.setPen( QPen( Qt::color0, 1 ) );
+    p.setBrush( Qt::NoBrush );
 
     style().drawPrimitive(QStyle::PE_FocusRect, &p,
               QRect( pressed_x, pressed_y,x-pressed_x+1,y-pressed_y+1),
-              colorGroup(), QStyle::Style_Default,
+              colorGroup(), QStyle::State_None,
               QStyleOption(colorGroup().base()));
     p.end();
 }
@@ -1142,8 +1145,8 @@ AScrollView::drawDstRubber(int x, int y, int mx)
     QPainter p;
     p.begin( viewport() );
     p.setRasterOp( NotROP );
-    p.setPen( QPen( color0, 1 ) );
-    p.setBrush( NoBrush);
+    p.setPen( QPen( Qt::color0, 1 ) );
+    p.setBrush( Qt::NoBrush);
     p.setFont(QFont("Helvetica"));
 
     //printf ("AScrollView::drawDstRubber called with x=%d,y=%d,mx=%d,pressed_snaped_x=%d,pressed_y=%d\n",x,y,mx,pressed_snaped_x,pressed_y);
@@ -1205,7 +1208,7 @@ AScrollView::drawDstRubber(int x, int y, int mx)
     py -= (vy*(double)tbr.width()*0.5);
 
     double rpx,rpy;
-    QWMatrix matx;
+    QMatrix matx;
     matx.rotate(-(atan2(a,b)*180.0/pi));
     matx.map(px,py,&rpx,&rpy);
 
@@ -1313,7 +1316,7 @@ AScrollView::updatePointerBitmap()
     switch (currentPointerType)
     {
         case POINTER_SELECT:
-        viewport()->setCursor(QCursor(ArrowCursor));
+        viewport()->setCursor(QCursor(Qt::ArrowCursor));
         break;
 
         case POINTER_MWAND:
@@ -1330,7 +1333,7 @@ AScrollView::updatePointerBitmap()
         break;
 
         case POINTER_DISTANCE:
-        viewport()->setCursor(QCursor(CrossCursor));
+        viewport()->setCursor(QCursor(Qt::CrossCursor));
         break;
 
         case POINTER_SHADING:
@@ -1339,7 +1342,7 @@ AScrollView::updatePointerBitmap()
 
         // all annotation tools:
         default:
-        viewport()->setCursor(QCursor(CrossCursor));
+        viewport()->setCursor(QCursor(Qt::CrossCursor));
     }
 }
 
@@ -1527,7 +1530,7 @@ AScrollView::viewportMousePressEvent(QMouseEvent* e)
 {
     int cx,cy;
 
-    if (e->button()!=LeftButton)
+    if (e->button()!=Qt::LeftButton)
     {
         // possible context menu
         rightClickPressEvent(e);
@@ -1551,7 +1554,7 @@ AScrollView::viewportMouseReleaseEvent(QMouseEvent* e)
 {
     int cx,cy;
 
-    if (e->button()!=LeftButton)
+    if (e->button()!=Qt::LeftButton)
     {
         // possible context menu
         rightClickReleaseEvent(e);
@@ -1802,13 +1805,13 @@ AScrollView::colorChanged (QColor color, bool nocolor, int chId)
     {
         if (nocolor)
         {
-            currentPen.setStyle(NoPen);
+            currentPen.setStyle(Qt::NoPen);
         }
         else
         {
-            if (currentPen.style()==NoPen) 
+            if (currentPen.style()==Qt::NoPen) 
             {
-                currentPen.setStyle(SolidLine);
+                currentPen.setStyle(Qt::SolidLine);
             }    
             currentPen.setColor(color);
         }
@@ -1817,13 +1820,13 @@ AScrollView::colorChanged (QColor color, bool nocolor, int chId)
     {
         if (nocolor)
         {
-            currentBrush.setStyle(NoBrush);
+            currentBrush.setStyle(Qt::NoBrush);
         }
         else
         {
-            if (currentBrush.style()==NoBrush) 
+            if (currentBrush.style()==Qt::NoBrush) 
             {
-                currentBrush.setStyle(SolidPattern);
+                currentBrush.setStyle(Qt::SolidPattern);
             }
             currentBrush.setColor(color);
         }
@@ -1900,7 +1903,7 @@ AScrollView::updateTip( QMouseEvent* e )
 {
     static int label_mx=-1;
     static int label_my=-1;
-    bool shifted = e->state() & ShiftButton;
+    bool shifted = e->state() & Qt::ShiftModifier;
     
     //printf ("updateTip called with measuring=%d,shading=%d,zooming=%d,shifted=%d\n",(int)measuring,(int)shading,(int)zooming,(int)shifted);    
     if(shading || zooming || shifted)

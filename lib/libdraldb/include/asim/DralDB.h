@@ -26,6 +26,8 @@
 // QT Library
 #include <qstring.h>
 #include <qregexp.h>
+//Added by qt3to4:
+#include <Q3StrList>
 
 // DRAL Library
 #include <asim/dralClient.h>
@@ -198,7 +200,7 @@ class DralDB
         inline INT32 scanTagName(QString);
         inline void  getFormatedTagValue(QString& buffer,INT32 tagId ,UINT64 value,INT32 pad=0);
         inline INT32 newTagDescriptor(QString tag_name, TagValueType type, INT16 base=10);
-        inline QStrList getKnownTags();
+        inline Q3StrList getKnownTags();
         inline QString getTagLongDesc(QString tgName);
         inline void    setTagLongDesc(QString tgName, QString ldesc); 
 
@@ -692,7 +694,7 @@ DralDB::newTagDescriptor(QString tag_name, TagValueType type, INT16 base)
  *
  * @return the list of tag names.
  */
-QStrList
+Q3StrList
 DralDB::getKnownTags()
 {
     return tagDescVector->getKnownTags();

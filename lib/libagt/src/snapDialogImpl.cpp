@@ -29,7 +29,7 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-snapDialogImpl::snapDialogImpl(QWidget* parent,  const char* name, bool modal, WFlags fl)
+snapDialogImpl::snapDialogImpl(QWidget* parent,  const char* name, bool modal, Qt::WFlags fl)
     : Form1( parent, name, modal, fl )
 {
     // defaults
@@ -107,7 +107,7 @@ snapDialogImpl::acceptClicked()
         // deny ...
         QMessageBox::warning (this,"The introduced text is not a valid",
         "Input error, valid range between 2 and 100",
-        QMessageBox::NoButton,QMessageBox::NoButton,QMessageBox::NoButton);
+        Qt::NoButton,Qt::NoButton,Qt::NoButton);
 
         return;
     }

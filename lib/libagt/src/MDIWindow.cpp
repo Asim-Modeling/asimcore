@@ -18,10 +18,12 @@
 
 
 #include "MDIWindow.h"
+//Added by qt3to4:
+#include <QCloseEvent>
 
 
 MDIWindow::MDIWindow( QWidget* parent, const char* name, int wflags )
-    : QMainWindow( parent, name, wflags )
+    : Q3MainWindow( parent, name, wflags )
 {
     asv = NULL;
 }

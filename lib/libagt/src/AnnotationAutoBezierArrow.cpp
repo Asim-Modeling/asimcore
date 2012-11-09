@@ -68,7 +68,7 @@ AnnotationAutoBezierArrow::AnnotationAutoBezierArrow(double vx1, double vy1, dou
     if ((vy1<vy2) || (isVertical && flipping) )
     {
         flipped = true;
-        QWMatrix rot180;
+        QMatrix rot180;
         rot180.rotate(180);
         double tmpx,tmpy;
         rot180.map(nvx,nvy,&tmpx,&tmpy);
@@ -106,14 +106,14 @@ AnnotationAutoBezierArrow::AnnotationAutoBezierArrow(double vx1, double vy1, dou
     }
     // 7) make translation to (0,0)
     double tspcx,tspcy;
-    QWMatrix mtrans;
+    QMatrix mtrans;
     mtrans.translate(-pcx,-pcy);
     mtrans.map(spcx,spcy,&tspcx,&tspcy);
 
     // 8) rotations
     double acx1,acx2,acy1,acy2;
-    QWMatrix matx1;
-    QWMatrix matx2;
+    QMatrix matx1;
+    QMatrix matx2;
     matx1.rotate(45);
     matx1.map(tspcx,tspcy,&acx1,&acy1);
     matx2.rotate(-45);

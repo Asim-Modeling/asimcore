@@ -24,9 +24,9 @@
 #define _DRALDB_ITEMTAGHEAP_H
 
 // Qt Library
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qregexp.h>
-#include <qintcache.h>
+#include <q3intcache.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/DralDBDefinitions.h"
@@ -176,7 +176,7 @@ class ItemTagHeap : public AMemObj, public StatObj
         UINT16 canonicalItemId;          // Value of tag id that represents an ITEMID tag.
         ItemHeapVector * itemVector;     // Vector of item entries.
         TagHeapVector * tagVector;       // Vector of tag chunks.
-        QIntCache<UINT32> * lookUpCache; // Cache to fasten up the item searches.
+        Q3IntCache<UINT32> * lookUpCache; // Cache to fasten up the item searches.
         TagDescVector * tdv;             // Pointer to the tag descriptor vector.
         Dict2064 * dict;                 // Pointer to a dictionary.
         DBConfig * conf;                 // Pointer to the database configuration state.

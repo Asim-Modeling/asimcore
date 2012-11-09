@@ -156,8 +156,8 @@ TagIdVecNode::addTagValue(INT32 cycle, UINT64 value)
     // ensure cycle ordered insertion
     //if (cycle<lastCycle) return false;
 
-    lastCycle = QMAX(cycle,lastCycle);
-    firstCycle = QMIN(firstCycle,cycle);
+    lastCycle = qMax(cycle,lastCycle);
+    firstCycle = qMin(firstCycle,cycle);
     INT32 cycleChunk = cycle >> CYCLE_OFFSET_BITS;
 
     //printf ("TagIdVecNode::addTagValue cycle=%d, chunk=%d\n",cycle,cycleChunk);
@@ -179,8 +179,8 @@ TagIdVecNode::addTagValue(INT32 cycle, QString  value)
     // ensure cycle ordered insertion
     //if (cycle<lastCycle) return false;
 
-    lastCycle = QMAX(cycle,lastCycle);
-    firstCycle = QMIN(firstCycle,cycle);
+    lastCycle = qMax(cycle,lastCycle);
+    firstCycle = qMin(firstCycle,cycle);
     INT32 cycleChunk = cycle >> CYCLE_OFFSET_BITS;
     UINT64 nvalue = (UINT64)(strtbl->addString(value));
     // check if there is a vector allocated for that...

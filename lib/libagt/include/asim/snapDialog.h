@@ -29,12 +29,17 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class Q3VBoxLayout; 
+class Q3HBoxLayout; 
+class Q3GridLayout; 
 class QCheckBox;
-class QGroupBox;
+class Q3GroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -45,10 +50,10 @@ class Form1 : public QDialog
     Q_OBJECT
 
 public:
-    Form1( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    Form1( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~Form1();
 
-    QGroupBox* GroupBox1;
+    Q3GroupBox* GroupBox1;
     QLabel* TextLabel3;
     QLabel* TextLabel1;
     QCheckBox* CheckBoxSnap;
@@ -62,15 +67,15 @@ public slots:
     virtual void Slider1_sliderMoved(int);
 
 protected:
-    QGridLayout* Form1Layout;
-    QVBoxLayout* Layout14;
-    QGridLayout* GroupBox1Layout;
-    QVBoxLayout* Layout13;
-    QHBoxLayout* Layout12;
-    QVBoxLayout* Layout8;
-    QVBoxLayout* Layout11;
-    QHBoxLayout* Layout10;
-    QHBoxLayout* Layout4;
+    Q3GridLayout* Form1Layout;
+    Q3VBoxLayout* Layout14;
+    Q3GridLayout* GroupBox1Layout;
+    Q3VBoxLayout* Layout13;
+    Q3HBoxLayout* Layout12;
+    Q3VBoxLayout* Layout8;
+    Q3VBoxLayout* Layout11;
+    Q3HBoxLayout* Layout10;
+    Q3HBoxLayout* Layout4;
 };
 
 #endif // FORM1_H

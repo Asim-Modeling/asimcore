@@ -21,6 +21,8 @@
   */
 
 #include "AnnotationContainer.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 AnnotationContainer::AnnotationContainer(AnnotationItem* _parent) : AnnotationItem(_parent)
 {
@@ -144,7 +146,7 @@ AnnotationItem* AnnotationContainer::clone()
     AnnotationContainer* nl = new AnnotationContainer(parent);
     Q_ASSERT(nl!=NULL);
     AnnotationItem* ann;
-    QPtrList<AnnotationItem> cpyList = QPtrList<AnnotationItem>(children); 
+    Q3PtrList<AnnotationItem> cpyList = Q3PtrList<AnnotationItem>(children); 
     for ( ann = cpyList.first(); ann; ann = cpyList.next() )
     {
         //printf("AnnotationContainer::clone clonning obj=0x%x\n",ann);fflush(stdout);
@@ -170,7 +172,7 @@ AnnotationContainer::cloneGeometry(AnnotationItem* item)
     AnnotationContainer* cont = (AnnotationContainer*)item;
     cont->reset();
     AnnotationItem* ann;
-    QPtrList<AnnotationItem> cpyList = QPtrList<AnnotationItem>(children); 
+    Q3PtrList<AnnotationItem> cpyList = Q3PtrList<AnnotationItem>(children); 
     for ( ann = cpyList.first(); ann; ann = cpyList.next() )
     {
         AnnotationItem* cann = ann->clone();

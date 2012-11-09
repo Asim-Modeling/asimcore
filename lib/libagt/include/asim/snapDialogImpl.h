@@ -26,14 +26,14 @@
 
 #include <qvariant.h>
 #include <qcheckbox.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qslider.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qmessagebox.h>
 
 #include "agt_syntax.h"
@@ -63,7 +63,7 @@ public:
                    QWidget* parent = 0,      ///< Widget parent
                    const char* name = 0,     ///< Internal name
                    bool modal = FALSE,       ///< modal dialog? (stay on top and block other windows)
-                   WFlags fl = 0             ///< QT Widget flags (stay on top, etc.)
+                   Qt::WFlags fl = 0             ///< QT Widget flags (stay on top, etc.)
                    );
 
     /**

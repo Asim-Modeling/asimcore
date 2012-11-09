@@ -26,7 +26,7 @@
 // QT Library
 #include <qstring.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qdatetime.h>
 
 /**
@@ -108,8 +108,8 @@ LogMgr::addLog(QString msg)
         return;
     }
 
-    QTextStream stream(fileObject);
-    stream.setEncoding(QTextStream::Latin1);
+    Q3TextStream stream(fileObject);
+    stream.setEncoding(Q3TextStream::Latin1);
 
     QTime now = QTime::currentTime();
     QString nowstr = now.toString ("hh:mm:ss");

@@ -24,7 +24,7 @@
 #ifndef _ANNOTATIONITEMDB__H
 #define _ANNOTATIONITEMDB__H
 
-#include <qptrdict.h>
+#include <q3ptrdict.h>
 
 #include "agt_syntax.h"
 #include "AnnotationItem.h"
@@ -74,13 +74,13 @@ class AnnotationItemDB
        /**
         * Function description
         */
-        QPtrDictIterator<AnnotationItem>
+        Q3PtrDictIterator<AnnotationItem>
         getIterator();
 
         // saveToFile(FILE* f)
 
     protected:
-        QPtrDict<AnnotationItem>* hash;
+        Q3PtrDict<AnnotationItem>* hash;
 };
 
 #endif

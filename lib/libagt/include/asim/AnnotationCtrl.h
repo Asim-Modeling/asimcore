@@ -29,7 +29,9 @@
 #include <qevent.h>
 #include <qpainter.h>
 #include <qwidget.h>
-#include <qscrollview.h>
+#include <q3scrollview.h>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 #include "agt_syntax.h"
 #include "AnnotationItem.h"
@@ -60,7 +62,7 @@ class AnnotationCtrl : public QObject
          * Function description
          */
         AnnotationCtrl (
-                       QScrollView* view,
+                       Q3ScrollView* view,
                        double gridS,
                        bool snap
                        );
@@ -215,7 +217,7 @@ class AnnotationCtrl : public QObject
         AnnotationItem* lookForItemWithBBox(double x, double y, double w, double h);
         void changePropagatedItem(AnnotationItem* newitem, AnnotationItem* olditem);
         
-        inline QPtrDictIterator<AnnotationItem> getIterator();
+        inline Q3PtrDictIterator<AnnotationItem> getIterator();
         
     signals:
         
@@ -301,7 +303,7 @@ class AnnotationCtrl : public QObject
 
         // viewport reference
         QWidget* myViewport;
-        QScrollView* myView;
+        Q3ScrollView* myView;
         double baseSize;
         double gridSize;
     
@@ -456,7 +458,7 @@ AnnotationCtrl::getSnapToGrid()
     return snapToGrid;
 }
 
-QPtrDictIterator<AnnotationItem>
+Q3PtrDictIterator<AnnotationItem>
 AnnotationCtrl::getIterator()
 {
     return annDB->getIterator();

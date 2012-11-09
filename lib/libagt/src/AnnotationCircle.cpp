@@ -74,7 +74,7 @@ AnnotationCircle::innerPoint(double x, double y,double scf_x,double scf_y)
     double py = cy + rad2*sin(ang);
     //printf (">>px=%f, py=%f\n",px,py);
 
-    if (myBrush.style()==NoBrush)
+    if (myBrush.style()==Qt::NoBrush)
     {
         // compute distance between px (intersec) and given point
         double vx = x-px;

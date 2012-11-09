@@ -24,7 +24,7 @@
 
 AnnotationItemDB::AnnotationItemDB()
 {
-    hash = new QPtrDict<AnnotationItem>(137);
+    hash = new Q3PtrDict<AnnotationItem>(137);
     Q_ASSERT(hash!=NULL);
 }
 
@@ -58,9 +58,9 @@ AnnotationItemDB::remove (AnnotationItem* item, bool destroy)
 }
 
 
-QPtrDictIterator<AnnotationItem>
+Q3PtrDictIterator<AnnotationItem>
     AnnotationItemDB::getIterator()
 {
-    return QPtrDictIterator<AnnotationItem>( *hash );
+    return Q3PtrDictIterator<AnnotationItem>( *hash );
 }
 

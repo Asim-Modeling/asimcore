@@ -25,9 +25,9 @@
 
 // Qt library
 #include <qstring.h>
-#include <qvaluelist.h>
-#include <qdict.h>
-#include <qintdict.h>
+#include <q3valuelist.h>
+#include <q3dict.h>
+#include <q3intdict.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/DralDBDefinitions.h"
@@ -84,14 +84,14 @@ class DBGraphNode
   * @brief
   * This struct is a dictionary of nodes indexed by integers.
   */
-typedef QIntDict<DBGraphNode> DBGNList;
+typedef Q3IntDict<DBGraphNode> DBGNList;
 
 /**
   * @typedef DGNListByName
   * @brief
   * This struct is a dictionary of nodes indexed by name (field name of this class).
   */
-typedef QDict<DBGraphNode> DBGNListByName;
+typedef Q3Dict<DBGraphNode> DBGNListByName;
 
 /**
  * Returns the name of the node. 

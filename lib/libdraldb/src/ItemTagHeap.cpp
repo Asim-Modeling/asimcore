@@ -82,7 +82,7 @@ ItemTagHeap::ItemTagHeap()
     conf = DBConfig::getInstance();
 
     // the lookup cache
-    lookUpCache = new QIntCache<UINT32>(CACHED_ITEMIDS,PrimeList::nearPrime(CACHED_ITEMIDS));
+    lookUpCache = new Q3IntCache<UINT32>(CACHED_ITEMIDS,PrimeList::nearPrime(CACHED_ITEMIDS));
     lookUpCache->setAutoDelete(true);
 
     reset();

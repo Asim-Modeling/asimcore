@@ -29,7 +29,7 @@
 
 // QT
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qcolor.h>
 #include <qmessagebox.h>
 

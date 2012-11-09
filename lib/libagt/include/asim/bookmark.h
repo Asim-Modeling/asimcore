@@ -29,13 +29,18 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
-class QFrame;
-class QGroupBox;
-class QListBox;
-class QListBoxItem;
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3Frame>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+class Q3VBoxLayout; 
+class Q3HBoxLayout; 
+class Q3GridLayout; 
+class Q3Frame;
+class Q3GroupBox;
+class Q3ListBox;
+class Q3ListBoxItem;
 class QPushButton;
 
 class BookMarkForm : public QDialog
@@ -43,23 +48,23 @@ class BookMarkForm : public QDialog
     Q_OBJECT
 
 public:
-    BookMarkForm( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    BookMarkForm( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~BookMarkForm();
 
-    QListBox* BookMarkList;
-    QGroupBox* GroupBox1;
+    Q3ListBox* BookMarkList;
+    Q3GroupBox* GroupBox1;
     QPushButton* UpButton;
     QPushButton* DownButton;
     QPushButton* RemoveButton;
     QPushButton* CloseButton;
-    QFrame* Line1;
+    Q3Frame* Line1;
 
 
 protected:
-    QGridLayout* BookMarkFormLayout;
-    QVBoxLayout* GroupBox1Layout;
-    QVBoxLayout* Layout8;
-    QVBoxLayout* Layout2;
+    Q3GridLayout* BookMarkFormLayout;
+    Q3VBoxLayout* GroupBox1Layout;
+    Q3VBoxLayout* Layout8;
+    Q3VBoxLayout* Layout2;
 };
 
 #endif // BOOKMARKFORM_H

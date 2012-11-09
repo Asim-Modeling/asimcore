@@ -25,8 +25,8 @@
 
 // QT library
 #include <qstring.h>
-#include <qiconset.h>
-#include <qiconview.h>
+#include <qicon.h>
+#include <q3iconview.h>
 #include <qpixmap.h>
 
 /**

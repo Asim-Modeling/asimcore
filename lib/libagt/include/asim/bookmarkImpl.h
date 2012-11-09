@@ -97,7 +97,7 @@ class bookmarkImpl : public BookMarkForm
                      QWidget* parent = 0,   ///< Parent widget
                      const char* name = 0,  ///< Internal name
                      bool modal = FALSE,    ///< Modal if TRUE (block other windows)
-                     WFlags fl = 0          ///< QT Flags (stay on top, etc.)
+                     Qt::WFlags fl = 0          ///< QT Flags (stay on top, etc.)
                      );
     
         /**

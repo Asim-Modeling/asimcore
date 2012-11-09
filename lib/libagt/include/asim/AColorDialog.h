@@ -25,9 +25,9 @@
 
 #include <qwidget.h>
 #include <qtoolbutton.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qpopupmenu.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
+#include <q3popupmenu.h>
 #include <qstring.h>
 #include <qcolordialog.h>
 #include <qpixmap.h>
@@ -40,27 +40,31 @@
   * @enum StdColors
   * Predefined QT colors for Color Dialog
   */
-typedef enum
+/*typedef enum
 {
-    black,
-    white,
-    darkGray,
-    gray,
-    lightGray,
-    red,
-    green,
-    blue,
-    cyan,
-    magenta,
-    yellow,
-    darkRed,
-    darkGreen,
-    darkBlue,
-    darkCyan,
-    darkMagenta,
-    darkYellow,
+
+    Qt::black,
+    Qt::white,
+    Qt::darkGray,
+    Qt::gray,
+    Qt::lightGray,
+    Qt::red,
+    Qt::green,
+    Qt::blue,
+    Qt::cyan,
+    Qt::magenta,
+    Qt::yellow,
+    Qt::darkRed,
+    Qt::darkGreen,
+    Qt::darkBlue,
+    Qt::darkCyan,
+    Qt::darkMagenta,
+    Qt::darkYellow,
     NUM_STD_COLORS
 } StdColors;
+*/
+
+#define NUM_STD_COLORS 18
 
 /**
   * Helper class to keep the current (Color Dialog) color rectangle.
@@ -152,7 +156,7 @@ class AToolButton : public QToolButton
   *
   * @see UpdColorInterface
   */
-class AColorDialog : public QHBox
+class AColorDialog : public Q3HBox
 {
     Q_OBJECT
 
@@ -161,7 +165,7 @@ public:
      * Function description
      */
     AColorDialog (
-                 QColor defColor = black,
+                 QColor defColor = Qt::black,
                  QWidget *parent = 0,
                  const char *name = 0,
                  QPixmap* icon=NULL
@@ -235,7 +239,7 @@ private:
 protected:
     AToolButton    *bt_app;
     AToolButton    *bt_pop;
-    QPopupMenu    *pop;
+    Q3PopupMenu    *pop;
 
 private:
     ColorMenuItem* stdColorItems[NUM_STD_COLORS];

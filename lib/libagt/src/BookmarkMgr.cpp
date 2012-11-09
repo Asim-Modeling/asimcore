@@ -22,9 +22,12 @@
 #include "BookmarkMgr.h"
 
 #include <qmessagebox.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
+//Added by qt3to4:
+#include <Q3TextStream>
+#include <Q3PopupMenu>
 
-BookmarkMgr::BookmarkMgr(QWidget* parent,QPopupMenu* pmenu,AScrollView* asv)
+BookmarkMgr::BookmarkMgr(QWidget* parent,Q3PopupMenu* pmenu,AScrollView* asv)
 {
     myMenu = pmenu;
     myParentWidget = parent;
@@ -76,7 +79,7 @@ BookmarkMgr::addBookmark(double sx,double sy, int x, int y, QString text)
     {
         QMessageBox::critical (NULL,"Bookmark Error",
         "Repeated descriptor not allowed.",
-        QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
+        QMessageBox::Ok,Qt::NoButton,Qt::NoButton);
         return;
     }
 
@@ -161,19 +164,19 @@ void
 BookmarkMgr::importBookmarks()
 {
     // open file dialog
-    QString fileName = QFileDialog::getOpenFileName(QString::null,"AGT Bookmarks (*.abk)");
+    QString fileName = Q3FileDialog::getOpenFileName(QString::null,"AGT Bookmarks (*.abk)");
     if (fileName == QString::null)
     {
         return;
     }
 
     QFile* file = new QFile(fileName);
-    bool ok = file->open(IO_ReadOnly);
+    bool ok = file->open(QIODevice::ReadOnly);
     if (!ok)
     {
         QMessageBox::critical (NULL,"Import Error",
         "IO Error reading "+fileName,
-        QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
+        QMessageBox::Ok,Qt::NoButton,Qt::NoButton);
         return;
     }
     importBookmarks(file);
@@ -189,7 +192,7 @@ BookmarkMgr::importBookmarks(QFile* file)
     int cnt;
     unsigned mgc;
     {
-    QTextStream istream (file);
+    Q3TextStream istream (file);
     istream >> mgc;
     istream >> cnt;
     }
@@ -198,7 +201,7 @@ BookmarkMgr::importBookmarks(QFile* file)
     {
         QMessageBox::critical (NULL,"Bookmark Error",
         "Unrecognized format.",
-        QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
+        QMessageBox::Ok,Qt::NoButton,Qt::NoButton);
         return;
     }
 
@@ -215,19 +218,19 @@ void
 BookmarkMgr::exportBookmarks()
 {
     // save file dialog
-    QString fileName = QFileDialog::getSaveFileName(QString::null,"AGT Bookmarks (*.abk)");
+    QString fileName = Q3FileDialog::getSaveFileName(QString::null,"AGT Bookmarks (*.abk)");
     if (fileName == QString::null)
     {
         return;
     }
 
     QFile* file = new QFile(fileName);
-    bool ok = file->open(IO_WriteOnly);
+    bool ok = file->open(QIODevice::WriteOnly);
     if (!ok)
     {
         QMessageBox::critical (NULL,"Export Error",
         "IO Error writing "+fileName,
-        QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
+        QMessageBox::Ok,Qt::NoButton,Qt::NoButton);
         return;
     }
     exportBookmarks(file);
@@ -250,7 +253,7 @@ BookmarkMgr::exportBookmarks(QFile* file)
     */
     unsigned mgc = BKM_MAGIC_NUMBER;
     {
-    QTextStream ostream (file);
+    Q3TextStream ostream (file);
     ostream << mgc << "\n";
     ostream << cnt << "\n";
     }

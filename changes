@@ -7562,3 +7562,142 @@ Directory modules/controller/minimal
 
 - Fixed a bug in parsing stats file name passed on the command line that resulted in buffer overflow
 
+
+----------
+mgambhir    Date: Fri Nov  9 11:15:21 EST 2012  CSN: CSN-asimcore-366
+                  Fri Nov  9 16:15:21 UTC 2012
+
+
+Directory .
+ configure.in              Locally Modified          365 
+
+Directory tools/dreams
+ Makefile.in               Locally Modified          365 
+
+Directory tools/dreams/dbtest
+ Makefile.in               Locally Modified          365 
+
+Directory tools/dreams/dbtest/src
+ Makefile.in               Locally Modified          365 
+
+Directory config/pm/asim/controllers
+ controllerNoTCL.apm       Locally Modified          365 
+
+Directory lib/libagt/src
+ snapDialog.ui             Locally Modified          365 
+ AGT.cpr                   Locally Modified          365 
+ AnnotationContainer.cpp   Locally Modified          365 
+ AnnotationAutoBezierArrow.cpp Locally Modified          365 
+ IconFactory.cpp           Locally Modified          365 
+ HelpWindow.cpp            Locally Modified          365 
+ snapDialog.cpp            Locally Modified          365 
+ ColorMenuItem.cpp         Locally Modified          365 
+ Main.cpp                  Locally Modified          365 
+ ColumnShadows.cpp         Locally Modified          365 
+ bookmarkImpl.cpp          Locally Modified          365 
+ AnnotationRect.cpp        Locally Modified          365 
+ AScrollView.cpp           Locally Modified          365 
+ AnnotationCircle.cpp      Locally Modified          365 
+ AnnotationItemDB.cpp      Locally Modified          365 
+ AnnotationCtrl.cpp        Locally Modified          365 
+ AColorDialog.cpp          Locally Modified          365 
+ bookmark.ui               Locally Modified          365 
+ MDIWindow.cpp             Locally Modified          365 
+ Q2DMAction.cpp            Locally Modified          365 
+ snapDialogImpl.cpp        Locally Modified          365 
+ bookmark.cpp              Locally Modified          365 
+ BookmarkMgr.cpp           Locally Modified          365 
+
+Directory lib/libagt
+ Makefile.am               Locally Modified          365 
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libagt/include
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libagt/include/asim
+ BookmarkMgr.h             Locally Modified          365 
+ AnnotationContainer.h     Locally Modified          365 
+ AnnotationAutoBezierArrow.h Locally Modified          365 
+ HelpWindow.h              Locally Modified          365 
+ IconFactory.h             Locally Modified          365 
+ snapDialog.h              Locally Modified          365 
+ ColorMenuItem.h           Locally Modified          365 
+ Main.h                    Locally Modified          365 
+ ColumnShadows.h           Locally Modified          365 
+ bookmarkImpl.h            Locally Modified          365 
+ AScrollView.h             Locally Modified          365 
+ AnnotationItemDB.h        Locally Modified          365 
+ AnnotationCtrl.h          Locally Modified          365 
+ AColorDialog.h            Locally Modified          365 
+ MDIWindow.h               Locally Modified          365 
+ Q2DMAction.h              Locally Modified          365 
+ snapDialogImpl.h          Locally Modified          365 
+ bookmark.h                Locally Modified          365 
+
+Directory lib
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libdral
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libdral/include
+ Makefile.in               Locally Modified          365 
+
+Directory lib
+ Makefile.am               Locally Modified          365 
+
+Directory lib/libnullptlib
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libnullptlib/include
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libdraldb
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libdraldb/include
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libdraldb/include/asim
+ AEVector.h                Locally Modified          365 
+ DBListenerDef.h           Locally Modified          365 
+ StrTable.h                Locally Modified          365 
+ TagIdVec.h                Locally Modified          365 
+ DralDB.h                  Locally Modified          365 
+ DBListener.h              Locally Modified          365 
+ DBGraphEdge.h             Locally Modified          365 
+ TrackHeap.h               Locally Modified          365 
+ TrackVec.h                Locally Modified          365 
+ DBGraphNode.h             Locally Modified          365 
+ LogMgr.h                  Locally Modified          365 
+ ItemTagHeap.h             Locally Modified          365 
+ TagDescVector.h           Locally Modified          365 
+
+Directory lib/libdraldb/src
+ ItemHandler.cpp           Locally Modified          365 
+ TagDescVector.cpp         Locally Modified          365 
+ TagVecItemIdx.cpp         Locally Modified          365 
+ TrackVec.cpp              Locally Modified          365 
+ TrackHeap.cpp             Locally Modified          365 
+ DBGraph.cpp               Locally Modified          365 
+ StrTable.cpp              Locally Modified          365 
+ LogMgr.cpp                Locally Modified          365 
+ ItemTagHeap.cpp           Locally Modified          365 
+ DralDB.cpp                Locally Modified          365 
+ DBListener.cpp            Locally Modified          365 
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          365 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          365 
+
+Directory .
+ aclocal.m4                Locally Modified          365 
+ configure                 Locally Modified          365 
+ Makefile.in               Locally Modified          365 
+
+- Intermediate port of asimcore to QT4. 
+  - Changes are required mostly in libdraldb and libagt. 
+  - draldb builds. libagt build is currently disabled. 

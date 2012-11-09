@@ -22,6 +22,8 @@
   */
 
 #include "ColumnShadows.h"
+//Added by qt3to4:
+#include <Q3TextStream>
 
 ColumnShadows::ColumnShadows (int numColumns)
 {
@@ -96,7 +98,7 @@ ColumnShadows::saveShadows(QFile* file)
 {
     int i;
     int cnt = countShadowedColumns();
-    QTextStream ostream (file);
+    Q3TextStream ostream (file);
 
     unsigned mgc = SHD_MAGIC_NUMBER;
     ostream << mgc << "\n";
@@ -117,7 +119,7 @@ ColumnShadows::loadShadows(QFile* file)
     int i,cnt;
     unsigned mgc;
     {
-        QTextStream istream (file);
+        Q3TextStream istream (file);
         istream >> mgc;
         istream >> cnt;
     }
@@ -126,11 +128,11 @@ ColumnShadows::loadShadows(QFile* file)
     {
         QMessageBox::critical (NULL,"Shadows Error",
         "Unrecognized format.",
-        QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
+        QMessageBox::Ok,Qt::NoButton,Qt::NoButton);
         return;
     }
 
-    QTextStream istream (file);
+    Q3TextStream istream (file);
     int pos;
     for (int i=0;i<cnt;i++)
     {

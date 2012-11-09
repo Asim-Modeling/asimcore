@@ -26,9 +26,9 @@
 #include <stdio.h>
 
 // Qt library
-#include <qstrlist.h>
-#include <qdict.h>
-#include <qintdict.h>
+#include <q3strlist.h>
+#include <q3dict.h>
+#include <q3intdict.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/AMemObj.h"
@@ -86,7 +86,7 @@ class TagDescVector : public AMemObj, public StatObj
         inline void    setTagLongDesc(QString tgName, QString ldesc); 
 
         void reset();
-        QStrList getKnownTags();
+        Q3StrList getKnownTags();
         void resize(INT32 sz);
 
         inline QString getFormatedTagValue(UINT16 tagId, UINT64 value);
@@ -98,13 +98,13 @@ class TagDescVector : public AMemObj, public StatObj
         INT32   addTagDescription (QString desc, TagValueType t, INT16 base=10);
 
     private:
-        QDict<INT32>*      strhash; // Hash used to know the index indexing with a tag.
-        QIntDict<QString>* idxhash; // Hash used to know the tag indexing with an index.
-        QIntDict<tagDescriptor>* deschash; // Contains the type and base of the tag description.
+        Q3Dict<INT32>*      strhash; // Hash used to know the index indexing with a tag.
+        Q3IntDict<QString>* idxhash; // Hash used to know the tag indexing with an index.
+        Q3IntDict<tagDescriptor>* deschash; // Contains the type and base of the tag description.
         INT32 nextIdx; // Next index entry.
         INT32 primeSize; // Primer near to the requested size.
         StrTable* strtbl; // Instance of the string table.
-        QDict<QString>* longHash; // Holds the long description of the tag.
+        Q3Dict<QString>* longHash; // Holds the long description of the tag.
 
     private:
         static TagDescVector* _myInstance; // Pointer to the instance of the class.

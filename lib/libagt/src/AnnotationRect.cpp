@@ -50,7 +50,7 @@ AnnotationRect::innerPoint(double x, double y,double scf_x,double scf_y)
     bottomY = y1<y2 ? y2 : y1;
 
     // ease case, if the rect is filled => check bounds
-    if (myBrush.style()!=NoBrush)
+    if (myBrush.style()!=Qt::NoBrush)
     {
         bool c1 = (x>=leftX) && (x<=rightX);
         bool c2 = (y>=upperY) && (y<=bottomY);

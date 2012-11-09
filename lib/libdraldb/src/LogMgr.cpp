@@ -83,14 +83,14 @@ LogMgr::LogMgr(QString filename)
     fileName= filename;
     fileObject = new QFile(filename);
     Q_ASSERT(fileObject!=NULL);
-    ok = fileObject->open(IO_WriteOnly|IO_Append);
+    ok = fileObject->open(QIODevice::WriteOnly|QIODevice::Append);
     if (!ok)
     {
-        qWarning("Error trying to create log file: %s",filename.latin1());
+        qWarning("Error trying to create log file: %s",filename.toLatin1().constData());
     }
     else
     {
-        fileObject->putch (13);
+        fileObject->putChar (13);
         fileObject->flush();
     }
     lastTimestamp = QTime::currentTime();
@@ -127,11 +127,11 @@ LogMgr::changeFileName(QString newfilename)
     fileObject->close();
     delete fileObject;
     fileObject = new QFile(fileName);
-    ok = fileObject->open(IO_WriteOnly|IO_Append);
+    ok = fileObject->open(QIODevice::WriteOnly|QIODevice::Append);
     lastTimestamp = QTime::currentTime();
     if (ok)
     {
-        fileObject->putch (13);
+        fileObject->putChar (13);
         fileObject->flush();
     }
 
@@ -150,10 +150,10 @@ LogMgr::clearLogFile()
 
     fileObject->close();
     fileObject->remove();
-    ok = fileObject->open(IO_WriteOnly|IO_Append);
+    ok = fileObject->open(QIODevice::WriteOnly|QIODevice::Append);
     if (!ok)
     {
-        qWarning("Error trying to create log file: %s",fileName.latin1());
+        qWarning("Error trying to create log file: %s",fileName.toLatin1().constData());
     }
     lastTimestamp = QTime::currentTime();
 }

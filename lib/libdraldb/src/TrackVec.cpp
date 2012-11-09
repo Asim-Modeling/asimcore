@@ -206,7 +206,7 @@ TrackIDNode::dumpTrackId_NodeTag()
     TagDescVector* tgdescvector = TagDescVector::getInstance();
     for (int i=mintgid;i<=maxtgid;i++)
     {
-        printf("Dumping info for TagId=%d => %s: ",i,tgdescvector->getTagDescription(i).latin1());
+        printf("Dumping info for TagId=%d => %s: ",i,tgdescvector->getTagDescription(i).toLatin1().constData());
         tgIdVector[i].dumpTagIdVector();
     }
 }
@@ -272,7 +272,7 @@ TrackIDNode::dumpTrackId_CycleTag()
     TagDescVector* tgdescvector = TagDescVector::getInstance();
     for (int i=mintgid;i<=maxtgid;i++)
     {
-        printf("Dumping info for TagId=%d => %s: ",i,tgdescvector->getTagDescription(i).latin1());
+        printf("Dumping info for TagId=%d => %s: ",i,tgdescvector->getTagDescription(i).toLatin1().constData());
         tgIdVector[i].dumpTagIdVector();
     }
 }

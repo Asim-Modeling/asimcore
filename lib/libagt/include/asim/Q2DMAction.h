@@ -26,26 +26,26 @@
 #define _Q2DMACTION_H
 
 // QT Library
-#include <qaction.h>
-#include <qpopupmenu.h>
+#include <q3action.h>
+#include <q3popupmenu.h>
 
-class Q2DMAction : public QAction
+class Q2DMAction : public Q3Action
 {
 	Q_OBJECT
 	public:
 		Q2DMAction ( QObject * parent, const char * name = 0, bool toggle = FALSE );
-		Q2DMAction ( const QString & text, const QIconSet & icon, const QString & menuText, QKeySequence accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
+		Q2DMAction ( const QString & text, const QIcon & icon, const QString & menuText, QKeySequence accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
 		Q2DMAction ( const QString & text, const QString & menuText, QKeySequence accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
 		~Q2DMAction ();
 
 		int getMenuId();
 		
 	protected:
-		virtual void addedTo ( int index, QPopupMenu * menu );
+		virtual void addedTo ( int index, Q3PopupMenu * menu );
 
 	private:
 		int menuidx;
-		QPopupMenu* mymenu;
+		Q3PopupMenu* mymenu;
 };
 
 #endif

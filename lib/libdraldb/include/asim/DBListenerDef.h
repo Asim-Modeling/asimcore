@@ -25,9 +25,11 @@
 
 // QT Library
 #include <qstring.h>
-#include <qptrlist.h>
-#include <qvaluevector.h>
-#include <qintdict.h>
+#include <q3ptrlist.h>
+#include <q3valuevector.h>
+#include <q3intdict.h>
+//Added by qt3to4:
+#include <Q3PtrCollection>
 
 // local
 #include "asim/draldb_syntax.h"
@@ -449,7 +451,7 @@ class LNewItemListNode
   * @brief
   * A list of items.
   */
-typedef QIntDict<LNewItemListNode> NewItemList;
+typedef Q3IntDict<LNewItemListNode> NewItemList;
 
 class AuxItemListNode
 {
@@ -466,18 +468,18 @@ class AuxItemListNode
        UINT32   cycle;
 };
 
-class AuxItemList : public QPtrList<AuxItemListNode>
+class AuxItemList : public Q3PtrList<AuxItemListNode>
 {
    public:
-        AuxItemList() : QPtrList<AuxItemListNode>()
+        AuxItemList() : Q3PtrList<AuxItemListNode>()
         {setAutoDelete(true);}
 
     protected:
-        inline int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
+        inline int compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 );
 };
 
 int
-AuxItemList::compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 )
+AuxItemList::compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 )
 {
     AuxItemListNode* node1 = (AuxItemListNode*)item1;
     AuxItemListNode* node2 = (AuxItemListNode*)item2;

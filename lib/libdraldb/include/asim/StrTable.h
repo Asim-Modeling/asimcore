@@ -29,8 +29,8 @@
 
 // QT library
 #include <qstring.h>
-#include <qdict.h>
-#include <qintdict.h>
+#include <q3dict.h>
+#include <q3intdict.h>
 
 #include "asim/draldb_syntax.h"
 #include "asim/AMemObj.h"
@@ -83,8 +83,8 @@ class StrTable : public AMemObj, public StatObj
         inline INT32 lookForStr(QString);
 
     private:
-        QDict<INT32>*      strhash; // Hash from string to int.
-        QIntDict<QString>* idxhash; // Hash from int to string.
+        Q3Dict<INT32>*      strhash; // Hash from string to int.
+        Q3IntDict<QString>* idxhash; // Hash from int to string.
 
         INT32 nextIdx;
         INT32 primeSize;

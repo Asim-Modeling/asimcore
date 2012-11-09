@@ -75,7 +75,7 @@
                                         <cstring>Spacer1</cstring>
                                     </property>
                                     <property name="orientation">
-                                        <enum>Vertical</enum>
+                                        <enum>Qt::Vertical</enum>
                                     </property>
                                     <property name="sizeType">
                                         <enum>Expanding</enum>
@@ -132,7 +132,7 @@
                                                 <cstring>Spacer3</cstring>
                                             </property>
                                             <property name="orientation">
-                                                <enum>Horizontal</enum>
+                                                <enum>Qt::Horizontal</enum>
                                             </property>
                                             <property name="sizeType">
                                                 <enum>Expanding</enum>
@@ -158,16 +158,16 @@
                                                     </property>
                                                     <property name="paletteForegroundColor">
                                                         <color>
-                                                            <red>0</red>
-                                                            <green>0</green>
-                                                            <blue>0</blue>
+                                                            <Qt::red>0</Qt::red>
+                                                            <Qt::green>0</Qt::green>
+                                                            <Qt::blue>0</Qt::blue>
                                                         </color>
                                                     </property>
                                                     <property name="paletteBackgroundColor">
                                                         <color>
-                                                            <red>192</red>
-                                                            <green>192</green>
-                                                            <blue>192</blue>
+                                                            <Qt::red>192</Qt::red>
+                                                            <Qt::green>192</Qt::green>
+                                                            <Qt::blue>192</Qt::blue>
                                                         </color>
                                                     </property>
                                                     <property name="font">
@@ -176,7 +176,7 @@
                                                         </font>
                                                     </property>
                                                     <property name="focusPolicy">
-                                                        <enum>NoFocus</enum>
+                                                        <enum>Qt::NoFocus</enum>
                                                     </property>
                                                     <property name="text">
                                                         <string>.</string>
@@ -215,7 +215,7 @@
                                                                 </size>
                                                             </property>
                                                             <property name="frameShape">
-                                                                <enum>LineEditPanel</enum>
+                                                                <enum>QFrame::StyledPanel</enum>
                                                             </property>
                                                             <property name="frameShadow">
                                                                 <enum>Sunken</enum>
@@ -235,7 +235,7 @@
                                                                 <number>10</number>
                                                             </property>
                                                             <property name="orientation">
-                                                                <enum>Horizontal</enum>
+                                                                <enum>Qt::Horizontal</enum>
                                                             </property>
                                                             <property name="tickmarks">
                                                                 <enum>NoMarks</enum>
@@ -286,7 +286,7 @@
                                 <cstring>Spacer2</cstring>
                             </property>
                             <property name="orientation">
-                                <enum>Horizontal</enum>
+                                <enum>Qt::Horizontal</enum>
                             </property>
                             <property name="sizeType">
                                 <enum>Expanding</enum>

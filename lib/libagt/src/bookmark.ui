@@ -61,7 +61,7 @@
                         <cstring>Spacer2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Qt::Vertical</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -124,7 +124,7 @@
                                 <cstring>Spacer1</cstring>
                             </property>
                             <property name="orientation">
-                                <enum>Vertical</enum>
+                                <enum>Qt::Vertical</enum>
                             </property>
                             <property name="sizeType">
                                 <enum>Fixed</enum>
@@ -151,7 +151,7 @@
                         <cstring>Spacer2_2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Qt::Vertical</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -168,7 +168,7 @@
                         <cstring>Spacer2_2_2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Qt::Vertical</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -185,7 +185,7 @@
                         <cstring>Spacer3_2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Qt::Vertical</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -202,7 +202,7 @@
                         <cstring>Spacer3</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Qt::Vertical</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -235,7 +235,7 @@
                 <enum>Sunken</enum>
             </property>
             <property name="orientation">
-                <enum>Vertical</enum>
+                <enum>Qt::Vertical</enum>
             </property>
         </widget>
     </grid>
