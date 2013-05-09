@@ -7712,3 +7712,13 @@ Directory .
  configure.in              Locally Modified          366 
 
 - Added another searchpath for Qt4 libraries for i386 build of ubuntu
+
+----------
+mgambhir    Date: Thu May  9 11:47:55 EDT 2013  CSN: CSN-asimcore-368
+                  Thu May  9 15:47:55 UTC 2013
+
+
+Directory lib/libasim/include/asim
+ mesg.h                    Locally Modified          367 
+
+- Bug fix [AWB - Bug #112] VERIFY implementation is unportable
