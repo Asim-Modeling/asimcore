@@ -16,13 +16,13 @@ Description: Asim core libraries
 Package: asim-core
 Section: libs
 Architecture: all
-Depends: ${misc:Depends}, asim-core-12.04
+Depends: ${misc:Depends}, asim-core-13.06
 Recommends: asim-core-12.01
 Description: Dependency package for asim core libraries
  Dependency package for asim core libraries
 
 
-Package: asim-core-12.04
+Package: asim-core-13.06
 Section: libs
 Architecture: any
 Depends: ${misc:Depends}, asim-core-bin

@@ -7722,3 +7722,18 @@ Directory lib/libasim/include/asim
  mesg.h                    Locally Modified          367 
 
 - Bug fix [AWB - Bug #112] VERIFY implementation is unportable
+
+----------
+mgambhir    Date: Fri Jun 14 17:31:25 EDT 2013  CSN: CSN-asimcore-369
+                  Fri Jun 14 21:31:25 UTC 2013
+
+
+Directory debian
+ control                   Locally Modified          368 
+ changelog                 Locally Modified          368 
+ rules                     Locally Modified          368 
+
+Directory admin/packages
+ asimcore                  Locally Modified          368 
+
+- Creating a 13.06 release for asimcore
