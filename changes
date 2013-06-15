@@ -7750,3 +7750,14 @@ Directory admin/packages
  asimcore                  Locally Modified          370 
 
 - 13.06 release of asimcore
+
+----------
+emer        Date: Sat Jun 15 14:23:30 EDT 2013  CSN: CSN-asimcore-373
+                  Sat Jun 15 18:23:30 UTC 2013
+
+
+Directory debian
+ control                   Locally Modified          372 
+
+Have apt recommend the .deb file asimcore-12.04, which has been 
+manually built and installed for the new LTS release - precise.
