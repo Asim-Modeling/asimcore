@@ -7737,3 +7737,13 @@ Directory admin/packages
  asimcore                  Locally Modified          368 
 
 - Creating a 13.06 release for asimcore
+
+----------
+emer        Date: Sat Jun 15 14:19:14 EDT 2013  CSN: CSN-asimcore-372
+                  Sat Jun 15 18:19:14 UTC 2013
+
+
+Directory debian
+ control                   Locally Modified          371 
+
+Depend on asimcore-12.04 package.
