@@ -7747,3 +7747,14 @@ Directory debian
  control                   Locally Modified          371 
 
 Depend on asimcore-12.04 package.
+
+----------
+mgambhir    Date: Mon Oct 21 18:23:39 EDT 2013  CSN: CSN-asimcore-374
+                  Mon Oct 21 22:23:39 UTC 2013
+
+
+Directory .
+ configure                 Locally Modified          373 
+ configure.in              Locally Modified          373 
+
+- Bug fix in the configure script which was preventing the build with qt3

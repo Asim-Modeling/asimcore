@@ -131,22 +131,35 @@ AC_DEFUN([FIND_QT_INCLUDES],[
     if test "$asim_cv_enable_qt4" = "yes"
     then
         AC_MSG_CHECKING("for Qt 4.x.x include files")
+        for dir in $1
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/QtCore/QtCore
+                then
+                 QTINCDIR=$try
+                 AC_MSG_RESULT("found in $QTINCDIR")
+                 break 2
+	             fi
+	        done
+        done
     else
         AC_MSG_CHECKING("for Qt 3.x.x include files")
+        for dir in $1
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/qt.h
+                then
+                 QTINCDIR=$try
+                 AC_MSG_RESULT("found in $QTINCDIR")
+                 break 2
+	             fi
+	        done
+        done
+
     fi
-    for dir in $1
-    do
-        for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
-	    do
-          if test -f $try/QtCore/QtCore
-          then
-              QTINCDIR=$try
-              AC_MSG_RESULT("found in $QTINCDIR")
-              break 2
-	      fi
-	    done
-    done
-    
+        
 ])AC_DEFUN([FIND_QT], [
     qt_available=1;
 

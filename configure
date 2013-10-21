@@ -3272,7 +3272,7 @@ else
 fi
 
 
-if test $asim_cv_enable_qt4 = "no" -a -x /usr/bin/lsb_release -a $(lsb_release -s -i) = "Ubuntu" -a $(lsb_release -s -r | sed 's/\.//') -ge 1110
+if test [$asim_cv_enable_qt4 = "no" -a -x /usr/bin/lsb_release -a $(lsb_release -s -i) = "Ubuntu" -a $(lsb_release -s -r | sed 's/\.//') -ge 1110]
 then
     asim_cv_enable_qt4="yes"
 fi
@@ -5728,23 +5728,37 @@ $as_echo "\"found lib$i in $QTLIBDIR\"" >&6; }
     then
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking \"for Qt 4.x.x include files\"" >&5
 $as_echo_n "checking \"for Qt 4.x.x include files\"... " >&6; }
+        for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt4 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt4 /usr/local/include /usr/X11R6/include/qt4
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/QtCore/QtCore
+                then
+                 QTINCDIR=$try
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
+$as_echo "\"found in $QTINCDIR\"" >&6; }
+                 break 2
+	             fi
+	        done
+        done
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking \"for Qt 3.x.x include files\"" >&5
 $as_echo_n "checking \"for Qt 3.x.x include files\"... " >&6; }
-    fi
-    for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt4 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt4 /usr/local/include /usr/X11R6/include/qt4
-    do
-        for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
-	    do
-          if test -f $try/QtCore/QtCore
-          then
-              QTINCDIR=$try
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
+        for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt4 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt4 /usr/local/include /usr/X11R6/include/qt4
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/qt.h
+                then
+                 QTINCDIR=$try
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
 $as_echo "\"found in $QTINCDIR\"" >&6; }
-              break 2
-	      fi
-	    done
-    done
+                 break 2
+	             fi
+	        done
+        done
+
+    fi
 
 
     else
@@ -5753,23 +5767,37 @@ $as_echo "\"found in $QTINCDIR\"" >&6; }
     then
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking \"for Qt 4.x.x include files\"" >&5
 $as_echo_n "checking \"for Qt 4.x.x include files\"... " >&6; }
+        for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt3 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt3 /usr/local/include /usr/X11R6/include/qt3
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/QtCore/QtCore
+                then
+                 QTINCDIR=$try
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
+$as_echo "\"found in $QTINCDIR\"" >&6; }
+                 break 2
+	             fi
+	        done
+        done
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking \"for Qt 3.x.x include files\"" >&5
 $as_echo_n "checking \"for Qt 3.x.x include files\"... " >&6; }
-    fi
-    for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt3 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt3 /usr/local/include /usr/X11R6/include/qt3
-    do
-        for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
-	    do
-          if test -f $try/QtCore/QtCore
-          then
-              QTINCDIR=$try
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
+        for dir in $with_qt_includes $with_qt_dir $QTDIR ${prefix}/lib/qt /usr/lib/qt3 /usr/local/qt /usr/lib/qt /usr/include /usr/include/qt /usr/include/qt3 /usr/local/include /usr/X11R6/include/qt3
+        do
+            for try in $dir/qt/include $dir/include/qt $dir/include $dir/qt $dir $dir/qt3/include $dir/include/qt3 $dir/qt3 $dir/Qt
+	        do
+                if test -f $try/qt.h
+                then
+                 QTINCDIR=$try
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTINCDIR\"" >&5
 $as_echo "\"found in $QTINCDIR\"" >&6; }
-              break 2
-	      fi
-	    done
-    done
+                 break 2
+	             fi
+	        done
+        done
+
+    fi
 
 
     fi
