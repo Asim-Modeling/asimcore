@@ -7776,3 +7776,23 @@ Directory .
 
 - Minor fix in the configure script to work on SUSE LINUX machines where lsb_release returns two words
 - Removed libdraldb from the build till Dreams get ported to Qt4
+
+----------
+mgambhir    Date: Wed Oct 23 13:50:25 EDT 2013  CSN: CSN-asimcore-376
+                  Wed Oct 23 17:50:25 UTC 2013
+
+
+Directory lib/libasim/include/asim
+ smp.h                     Locally Modified          375 
+
+Directory lib/libasim/src
+ smp.cpp                   Locally Modified          375 
+
+- Sync with Intel rev-3396 
+
+Author:	cjbeckma
+Last modification:	Rev 3396 - 2011-10-06 18:03:53
+Log message:	CSN: CSN-simcore-3396
+
+- fixed a libasim.a link error by moving some SMP class methods into the header
+file as inlined functions.

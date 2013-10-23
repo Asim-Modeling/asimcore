@@ -121,6 +121,10 @@ class ASIM_SMP_CLASS
         void *arg,
         ASIM_SMP_THREAD_HANDLE threadHandle);
 
+    // create a "dormant" thread, that shares a pthread with other active threads
+    static void CreateThread(
+        ASIM_SMP_THREAD_HANDLE threadHandle);
+
     static ASIM_SMP_THREAD_HANDLE GetThreadHandle(void);
 
     //
@@ -166,5 +170,43 @@ class ASIM_SMP_CLASS
     static UINT32 maxThreads;
     static ATOMIC32_CLASS activeThreads;
 };
+
+
+//// CJB 10/6/11: inlined these and moved here from smp.cpp to avoid a strange linker error...
+
+inline void
+ASIM_SMP_CLASS::CreateThread(
+    pthread_t *thread,
+    pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg,
+    ASIM_SMP_THREAD_HANDLE threadHandle)
+{
+    threadHandle->start_routine = start_routine;
+    threadHandle->threadCreateArg = arg;
+    threadHandle->threadNumber = activeThreads++;
+
+    VERIFY(UINT32(threadHandle->threadNumber) < ASIM_SMP_CLASS::GetMaxThreads(),
+           "Thread limit exceeded (" << ASIM_SMP_CLASS::GetMaxThreads() << ")");
+
+    VERIFYX(0 == pthread_create(thread, attr, &ThreadEntry, threadHandle));
+}
+
+
+//
+// create a "dormant" thread.
+// Do not allocate a pthread here, but still give it an active thread ID.
+//
+inline void
+ASIM_SMP_CLASS::CreateThread(
+    ASIM_SMP_THREAD_HANDLE threadHandle)
+{
+    threadHandle->start_routine   = NULL;
+    threadHandle->threadCreateArg = NULL;
+    threadHandle->threadNumber    = activeThreads++;
+
+    VERIFY(UINT32(threadHandle->threadNumber) < ASIM_SMP_CLASS::GetMaxThreads(),
+           "Thread limit exceeded (" << ASIM_SMP_CLASS::GetMaxThreads() << ")");
+}
 
 #endif

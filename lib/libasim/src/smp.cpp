@@ -90,26 +90,6 @@ ASIM_SMP_CLASS::Init(
     VERIFYX(GetRunningThreadNumber() == 0);
 }
 
-
-void
-ASIM_SMP_CLASS::CreateThread(
-    pthread_t *thread,
-    pthread_attr_t *attr,
-    void *(*start_routine)(void *),
-    void *arg,
-    ASIM_SMP_THREAD_HANDLE threadHandle)
-{
-    threadHandle->start_routine = start_routine;
-    threadHandle->threadCreateArg = arg;
-    threadHandle->threadNumber = activeThreads++;
-
-    VERIFY(UINT32(threadHandle->threadNumber) < ASIM_SMP_CLASS::GetMaxThreads(),
-           "Thread limit exceeded (" << ASIM_SMP_CLASS::GetMaxThreads() << ")");
-
-    VERIFYX(0 == pthread_create(thread, attr, &ThreadEntry, threadHandle));
-}
-
-
 void *
 ASIM_SMP_CLASS::ThreadEntry(void *arg)
 {
