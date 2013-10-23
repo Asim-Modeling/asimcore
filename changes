@@ -7809,3 +7809,26 @@ Directory lib/libasim/src
  smp.cpp                   Locally Modified          376 
 
 - Reverted previous commit
+
+----------
+mgambhir    Date: Wed Oct 23 14:11:38 EDT 2013  CSN: CSN-asimcore-378
+                  Wed Oct 23 18:11:38 UTC 2013
+
+
+Directory lib/libasim/include/asim
+ freelist.h                Locally Modified          377 
+ mm.h                      Locally Modified          377 
+
+Directory lib/libdral/include/asim
+ dralDesc.h                Locally Modified          377 
+
+Directory lib/libdral/src
+ dralDesc.cpp              Locally Modified          377 
+
+- Sync with Intel rev - 3401
+
+Author:	mgambhir
+Last modification:	Rev 3401 - 2011-10-22 15:46:57
+Log message:	CSN: CSN-simcore-3401
+
+- Patch by Timur Safin to build Vippy warning free with gcc 4.3.2

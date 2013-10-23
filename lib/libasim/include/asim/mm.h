@@ -145,7 +145,7 @@ extern bool debugOn;
  *   For performance reasons, many of the debugging features are not
  *   compiled in for non-debug compilation.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 class ASIM_MM_CLASS : public ASIM_FREE_LIST_ELEMENT_CLASS<MM_TYPE>
 {
   private:
@@ -305,7 +305,7 @@ class ASIM_MM_CLASS : public ASIM_FREE_LIST_ELEMENT_CLASS<MM_TYPE>
 /**
  * Create a new 'factory' object of this object type
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 ASIM_MM_CLASS<MM_TYPE>::DATA::DATA (
     UINT32 max,   ///< max number of objects of this type
     string name,  ///< name of this MM object type
@@ -330,7 +330,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::DATA (
 /**
  * Delete this object type
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 ASIM_MM_CLASS<MM_TYPE>::DATA::~DATA()
 {
     if (debugOn)
@@ -369,7 +369,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::~DATA()
  * When the life of this MM class comes to an end, make sure we dispose
  * properly of all objects that are under our supervison.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::DATA::FinalObjectCleanup(MM_TYPE * obj)
 { 
@@ -394,7 +394,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::FinalObjectCleanup(MM_TYPE * obj)
 /**
  * Dump all objects of this MM type.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::DATA::ObjDump(void)
 {
@@ -431,7 +431,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::ObjDump(void)
 /**
  * Add new MM object to list for ObjDump() debugging.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::DATA::AddToObjDumpList(MM_TYPE *newMmObj)
 {
@@ -460,7 +460,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::AddToObjDumpList(MM_TYPE *newMmObj)
  * been put back on the free list (by a previous DecrRef(), this call
  * is trying to illegaly revive it - flag this error.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 inline INT32
 ASIM_MM_CLASS<MM_TYPE>::IncrRef (void)
 {
@@ -490,7 +490,7 @@ ASIM_MM_CLASS<MM_TYPE>::IncrRef (void)
  * small enough to be inlinable, and the most frequent path through it
  * does not call LastRefDropped() at all.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 inline INT32
 ASIM_MM_CLASS<MM_TYPE>::DecrRef (void)
 {
@@ -531,7 +531,7 @@ ASIM_MM_CLASS<MM_TYPE>::DecrRef (void)
  * have been shown to run us out of stack space and thus crash the
  * application. @see also @ref lazy_delete "Lazy Delete".
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::LastRefDropped (void)
 {
@@ -576,7 +576,7 @@ ASIM_MM_CLASS<MM_TYPE>::LastRefDropped (void)
  * Pre-allocate all memory for this MM pool of objects
  *
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::DATA::PreAllocateMemory (void)
 {
@@ -629,7 +629,7 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::PreAllocateMemory (void)
  * @note The mmUid and mmMagicKey are only provided when debugging is
  * enabled.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 ASIM_MM_CLASS<MM_TYPE>::ASIM_MM_CLASS (
     MM_UID_TYPE uid,   ///< unique ID for this object
     UINT32 initCount)  ///< initial ref count for this object
@@ -647,7 +647,7 @@ ASIM_MM_CLASS<MM_TYPE>::ASIM_MM_CLASS (
  * derived classes to define their own destructor, which should
  * get called instead of this one.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 ASIM_MM_CLASS<MM_TYPE>::~ASIM_MM_CLASS ()
 {
     // nada
@@ -658,7 +658,7 @@ ASIM_MM_CLASS<MM_TYPE>::~ASIM_MM_CLASS ()
  * object from 'mmFreeList', or malloc a new one if 'mmFreeList' is
  * empty.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void *
 ASIM_MM_CLASS<MM_TYPE>::operator new (
     size_t size)
@@ -672,7 +672,7 @@ ASIM_MM_CLASS<MM_TYPE>::operator new (
 #endif
 
     MM_TYPE * newMmObj;
-    if ( newMmObj = data.mmFreeList.Pop() )
+    if (( newMmObj = data.mmFreeList.Pop() ))
     {
         ASSERT(newMmObj->mmCnt == MMCNT_ON_FREELIST_AND_DELETED,
             "MM Object type " << data.className
@@ -724,7 +724,7 @@ ASIM_MM_CLASS<MM_TYPE>::operator new (
  * In this operator delete we merely check if the call to delete
  * happens at a legal place, ie. the current ref count has to be < 0.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::operator delete (
     void * ptr,  ///< pointer to object memory
@@ -760,7 +760,7 @@ ASIM_MM_CLASS<MM_TYPE>::operator delete (
 /**
  * Reset the maximum number of allowed objects to a new value.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::SetMaxObjs (
     UINT32 max) ///< new max
@@ -786,7 +786,7 @@ ASIM_MM_CLASS<MM_TYPE>::SetMaxObjs (
 /**
  * Dump internal MM data to cout
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::Dump (
     int seqNo)  ///< sequence number to print before object data
@@ -806,7 +806,7 @@ const
  * Check if this object is legal to access, i.e. if there are known
  * references to it. If not, an error is raised.
  */
-template <class MM_TYPE>
+template <typename MM_TYPE>
 void
 ASIM_MM_CLASS<MM_TYPE>::MmCheckRefCnt (
     UINT32 line, ///< line number where this check is performed

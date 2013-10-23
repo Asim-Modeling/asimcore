@@ -154,7 +154,7 @@ DRAL_EVENT_DESC_CLASS::DRAL_EVENT_DESC_CLASS(
     const char *d, 
     UINT32 p, 
     UINT32 o, 
-    char k[64])
+    const char k[64])
   : name(n),
     desc(d),
     letter(l),

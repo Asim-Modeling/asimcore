@@ -29,7 +29,7 @@
 #include "asim/atomic.h"
 
 
-template <class L_TYPE>
+template <typename L_TYPE>
 class ASIM_FREE_LIST_ELEMENT_CLASS
 {
   private:
@@ -43,7 +43,7 @@ class ASIM_FREE_LIST_ELEMENT_CLASS
 };
     
 
-template <class L_TYPE>
+template <typename L_TYPE>
 class ASIM_FREE_LIST_CLASS
 {
   private:
@@ -84,7 +84,7 @@ class ASIM_FREE_LIST_CLASS
 };
 
 
-template <class L_TYPE>
+template <typename L_TYPE>
 ASIM_FREE_LIST_CLASS<L_TYPE>::ASIM_FREE_LIST_CLASS()
     : size(0)
 {
@@ -98,14 +98,14 @@ ASIM_FREE_LIST_CLASS<L_TYPE>::ASIM_FREE_LIST_CLASS()
 };
 
 
-template <class L_TYPE>
+template <typename L_TYPE>
 ASIM_FREE_LIST_CLASS<L_TYPE>::~ASIM_FREE_LIST_CLASS()
 {
     ASSERTX(head.list == NULL);
 };
 
 
-template <class L_TYPE>
+template <typename L_TYPE>
 void ASIM_FREE_LIST_CLASS<L_TYPE>::Push(
     L_TYPE *obj)
 {
@@ -126,7 +126,7 @@ void ASIM_FREE_LIST_CLASS<L_TYPE>::Push(
 };
 
 
-template <class L_TYPE>
+template <typename L_TYPE>
 L_TYPE *ASIM_FREE_LIST_CLASS<L_TYPE>::Pop()
 {
     HEAD oldHead, newHead;

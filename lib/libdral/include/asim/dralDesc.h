@@ -358,7 +358,7 @@ class DRAL_EVENT_DESC_CLASS
     // more details.
     DRAL_EVENT_DESC_CLASS(const char *name, UINT32 letter, DRAL_COLOR_T color, 
                            const char *desc, UINT32 pdl = 0xff, 
-                           UINT32 options = 0, char knob[64] = "");
+                           UINT32 options = 0, const char knob[64] = "");
 
     ~DRAL_EVENT_DESC_CLASS();
 
