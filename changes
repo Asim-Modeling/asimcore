@@ -7832,3 +7832,26 @@ Last modification:	Rev 3401 - 2011-10-22 15:46:57
 Log message:	CSN: CSN-simcore-3401
 
 - Patch by Timur Safin to build Vippy warning free with gcc 4.3.2
+
+----------
+mgambhir    Date: Wed Oct 23 14:48:32 EDT 2013  CSN: CSN-asimcore-379
+                  Wed Oct 23 18:48:32 UTC 2013
+
+
+Directory lib/libdraldb/include/asim
+ TagVecDenseShortItemIdx.h Locally Modified          378 
+ TagVecDictionary.h        Locally Modified          378 
+ TagVecDenseDictionaryNF.h Locally Modified          378 
+ TagVecDenseItemIdx.h      Locally Modified          378 
+ TagVecDictionaryNF.h      Locally Modified          378 
+
+Directory lib/libasim/src
+ regexobj.cpp              Locally Modified          378 
+
+Sync with Intel rev-3413
+
+Author:	mgambhir
+Last modification:	Rev 3413 - 2011-11-15 18:57:32
+Log message:	CSN: CSN-simcore-3413
+
+- Patch by Baida, Yuriy V to fix warnings when built with gcc 4.6

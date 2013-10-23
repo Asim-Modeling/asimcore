@@ -220,7 +220,9 @@ Regex::error(int status)
 {
     char errorBuf[REGEX_ERRORBUF_SIZE];
     regerror(status, &regexPattern, errorBuf, REGEX_ERRORBUF_SIZE);
-    cerr << "REGEX ERROR: " << errorBuf << endl;
+    if (errorBuf) {
+        cerr << "REGEX ERROR: " << errorBuf << endl;
+    }
 }
 
 void
