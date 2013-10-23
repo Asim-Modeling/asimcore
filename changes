@@ -7872,3 +7872,20 @@ Directory modules/controller/classic
 Second sync with Intel rev 3401, 3413
 - In the previous sync, missed some changes to files that have different directories in the two
 repositories
+
+----------
+mgambhir    Date: Wed Oct 23 19:45:45 EDT 2013  CSN: CSN-asimcore-381
+                  Wed Oct 23 23:45:45 UTC 2013
+
+
+Directory modules/controller/minimal
+ args_mini.cpp             Locally Modified          380 
+
+Sync with Intel simcore rev 3465
+
+Author:	mgambhir
+Last modification:	Rev 3465 - 2013-07-31 01:51:29
+Log message:	CSN: CSN-simcore-3465
+
+- models usign mini-controller can now start and stop event data collection
+using -esc and -eec flags or through AWB GUI

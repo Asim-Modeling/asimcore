@@ -58,6 +58,10 @@ char **origArgv, **awbArgv, **sysArgv, **fdArgv;
 // Events control variable
 extern bool stripsOn; 
 
+UINT64 eventStartCycle = 0;
+UINT64 eventEndCycle = UINT64_MAX;
+
+        //ASIM_CLOCKABLE_CLASS::GetClockServer()->DralTurnOn();
 
 // Partition arguments into awb's, system's and feeder's.
     void
@@ -157,6 +161,18 @@ ParseVariables(INT32 argc, char **argv)
         DRALEVENT(TurnOn());
         DRALEVENT(StartActivity(ASIM_CLOCKABLE_CLASS::GetClockServer()->getFirstDomainCycle()));
         ASIM_CLOCKABLE_CLASS::GetClockServer()->DralTurnOn();
+    }
+    else if (strcmp(argv[0], "-esc") == 0) 
+    {
+        ASSERT(runWithEventsOn,"You are trying to generate events in a "
+              "model not compiled with events. Build the model with EVENTS=1");
+        eventStartCycle = atoi_general_unsigned(argv[++incr]);
+    }
+    else if (strcmp(argv[0], "-eec") == 0) 
+    {
+        ASSERT(runWithEventsOn,"You are trying to generate events in a "
+              "model not compiled with events. Build the model with EVENTS=1");
+        eventEndCycle = atoi_general_unsigned(argv[++incr]);
     }
     else if (strcmp(argv[0], "-strip") == 0) 
     {
