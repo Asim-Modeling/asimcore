@@ -7796,3 +7796,16 @@ Log message:	CSN: CSN-simcore-3396
 
 - fixed a libasim.a link error by moving some SMP class methods into the header
 file as inlined functions.
+
+----------
+mgambhir    Date: Wed Oct 23 13:58:27 EDT 2013  CSN: CSN-asimcore-377
+                  Wed Oct 23 17:58:27 UTC 2013
+
+
+Directory lib/libasim/include/asim
+ smp.h                     Locally Modified          376 
+
+Directory lib/libasim/src
+ smp.cpp                   Locally Modified          376 
+
+- Reverted previous commit
