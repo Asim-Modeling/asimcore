@@ -228,8 +228,8 @@ tooldir = @tooldir@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-DIST_SUBDIRS = libasim libdral libnullptlib @NO_GUI@ libdraldb
-SUBDIRS = libasim libdral libnullptlib  @NO_GUI@ libdraldb
+DIST_SUBDIRS = libasim libdral libnullptlib @NO_GUI@
+SUBDIRS = libasim libdral libnullptlib  @NO_GUI@
 all: all-recursive
 
 .SUFFIXES:

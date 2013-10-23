@@ -3272,7 +3272,7 @@ else
 fi
 
 
-if test [$asim_cv_enable_qt4 = "no" -a -x /usr/bin/lsb_release -a $(lsb_release -s -i) = "Ubuntu" -a $(lsb_release -s -r | sed 's/\.//') -ge 1110]
+if test $asim_cv_enable_qt4 = "no" -a -x /usr/bin/lsb_release -a "$(lsb_release -s -i)" = "Ubuntu" -a $(lsb_release -s -r | sed 's/\.//') -ge 1110
 then
     asim_cv_enable_qt4="yes"
 fi

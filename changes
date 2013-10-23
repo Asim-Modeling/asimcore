@@ -7758,3 +7758,21 @@ Directory .
  configure.in              Locally Modified          373 
 
 - Bug fix in the configure script which was preventing the build with qt3
+
+----------
+mgambhir    Date: Wed Oct 23 12:16:50 EDT 2013  CSN: CSN-asimcore-375
+                  Wed Oct 23 16:16:50 UTC 2013
+
+
+Directory .
+ configure.in              Locally Modified          374 
+
+Directory lib
+ Makefile.in               Locally Modified          374 
+ Makefile.am               Locally Modified          374 
+
+Directory .
+ configure                 Locally Modified          374 
+
+- Minor fix in the configure script to work on SUSE LINUX machines where lsb_release returns two words
+- Removed libdraldb from the build till Dreams get ported to Qt4
