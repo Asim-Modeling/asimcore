@@ -7855,3 +7855,20 @@ Last modification:	Rev 3413 - 2011-11-15 18:57:32
 Log message:	CSN: CSN-simcore-3413
 
 - Patch by Baida, Yuriy V to fix warnings when built with gcc 4.6
+
+----------
+mgambhir    Date: Wed Oct 23 16:26:59 EDT 2013  CSN: CSN-asimcore-380
+                  Wed Oct 23 20:26:59 UTC 2013
+
+
+Directory lib/libdraldb/include/asim
+ TagVecDenseDictionary.h   Locally Modified          379 
+
+Directory modules/controller/classic
+ awb.cpp                   Locally Modified          379 
+ awb-notcl.cpp             Locally Modified          379 
+ args.cpp                  Locally Modified          379 
+
+Second sync with Intel rev 3401, 3413
+- In the previous sync, missed some changes to files that have different directories in the two
+repositories

@@ -187,7 +187,8 @@ CONTROLLER_CLASS::PartitionOneArg (INT32 argc, char *argv[], INT32 &i)
                     
                     for (int cnt = repeatCount; cnt > 0; cnt--)
                     {
-                        fdArgv[fdArgc++] = fdArgv[fdArgc-1];
+                        fdArgv[fdArgc] = fdArgv[fdArgc-1];
+                        fdArgc++;
                     }
                 }
                 else

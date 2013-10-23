@@ -71,7 +71,6 @@ using namespace std;
 
 #define SUCCESS 1
 #define FAILURE 0
-
 #define EMSG(x) \
 ({\
     cerr << __FILE__ << ":" << __LINE__ << ": " << x << endl; \
@@ -946,7 +945,7 @@ PmScheduleProgress(string& type,
     // type = inst or cycle
     // period = clear or period
 
-    CMD_ACTIONTRIGGER action;
+    CMD_ACTIONTRIGGER action = ACTION_NANOSECOND_ONCE; // FIXME - what is default?
     if ( type == "inst")
     {
         action = ACTION_INST_PERIOD;

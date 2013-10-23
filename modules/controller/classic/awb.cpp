@@ -264,14 +264,14 @@ AwbStartInterpreter (void)
     //
     // Register the commands we provide to awb
     
-    Tcl_CreateCommand(awbInterp, "PmState", PmStateCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmEvent", PmEventCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmStrip", PmStripCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmTrace", PmTraceCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmMarker", PmMarkerCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmSymbol", PmSymbolCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmSchedule", PmScheduleCmd, NULL, NULL);
-    Tcl_CreateCommand(awbInterp, "PmControl", PmControlCmd, NULL, NULL);
+    Tcl_CreateCommand(awbInterp, "PmState", PmStateCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmEvent", PmEventCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmStrip", PmStripCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmTrace", PmTraceCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmMarker", PmMarkerCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmSymbol", PmSymbolCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmSchedule", PmScheduleCmd, (ClientData)0, NULL);
+    Tcl_CreateCommand(awbInterp, "PmControl", PmControlCmd, (ClientData)0, NULL);
     
     //
     // Load script for the default workbench configured for this
