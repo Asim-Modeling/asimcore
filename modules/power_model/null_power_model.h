@@ -24,7 +24,9 @@
 
 // added for power ports
 #include "asim/port.h"
-
+#include "asim/module.h"
+#include "asim/syntax.h"
+#include "asim/stateout.h"
 
 #define POWER_MODEL_ENABLED 0
 #define THERMAL_MODEL_ENABLED 0
@@ -39,6 +41,22 @@ enum CACHE_ARRAY_TYPE {
   CACHE_BOTH,
   CACHE_OTHER
 };
+
+enum FUNC_UNIT_TYPE {
+  ADDER_PMACRO = 0,
+  ALU_PMACRO,
+  DECODER_PMACRO,
+  MUX_PMACRO,
+  DEMUX_PMACRO
+};
+
+enum MUX_NON_SEL_TYPE {
+  HOLD_SEL = 0,
+  RESET_SEL,
+  SET_SEL,
+  NONE_SEL //if none of these are specified or used by the ctrl_map
+};
+
 
 class POWER_MODEL_CLASS
 {
@@ -92,6 +110,7 @@ class BASE_CTRL_POWER_MACRO_CLASS : public BASE_POWER_MACRO_CLASS
   BASE_CTRL_POWER_MACRO_CLASS(ASIM_MODULE parent,
 			      const char * const name,
 			      const char * const tname,
+			      UINT32 sel_size,
 			      bool enable) :
     BASE_POWER_MACRO_CLASS(parent, name, tname, enable) {};
 
@@ -194,7 +213,7 @@ class MUX_POWER_MACRO_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
 			const char * const name,
 			const char * const tname="",
 			bool enable = true) :
-    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, enable) {};
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, 1, enable) {};
 
     // Destructor
   ~MUX_POWER_MACRO_CLASS(){};
@@ -214,7 +233,7 @@ class GENERAL_POWER_MACRO_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
 			    const char * const name,
 			    const char * const tname="",
 			    bool enable = true) :
-    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, enable) {};
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, 1, enable) {};
 
   // Destructor
   ~GENERAL_POWER_MACRO_CLASS(){};
@@ -243,7 +262,7 @@ class DECODER_POWER_MACRO_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
 			    const char * const name,
 			    const char * const tname="",
 			    bool enable = true) :
-    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, enable) {};
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, 1, enable) {};
 
     // Destructor
   ~DECODER_POWER_MACRO_CLASS(){};
@@ -264,11 +283,152 @@ class BUS_POWER_MACRO_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
 			const char * const name,
 			const char * const tname="",
 			bool enable = true) :
-    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, enable) {};
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, 1, enable) {};
 
     // Destructor
   ~BUS_POWER_MACRO_CLASS(){};
 };
+
+
+template <class T>
+class BUS_POWER_MACRO_DATA_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
+{
+ public:
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       UINT32 bw) {};
+
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       const char * const aname,
+		       UINT32 bw) {};
+
+  void Access(T data, UINT64 offset=0){};
+
+  // Constructor
+  BUS_POWER_MACRO_DATA_CLASS(ASIM_MODULE parent,
+			     const char * const name,
+			     const char * const tname="",
+			     bool enable = true) :
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, 1, enable) {};
+
+    // Destructor
+  ~BUS_POWER_MACRO_DATA_CLASS(){};
+};
+
+
+class FUNC_UNIT_POWER_MACRO_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
+{
+
+ public:
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       UINT32 in_bw,
+		       UINT32 out_bw,
+		       UINT32 ctrl_bw,
+		       UINT32 num_in,
+		       UINT32 num_out,
+		       UINT32 num_ctrl,
+		       FUNC_UNIT_TYPE function);
+
+  // Constructor
+  FUNC_UNIT_POWER_MACRO_CLASS(ASIM_MODULE parent,
+			      const char * const name,
+			      const char * const tname = "",
+			      UINT32 sel_size = 1,
+			      bool enable = true) :
+    BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, sel_size, enable) {};
+
+    // Destructor
+   ~FUNC_UNIT_POWER_MACRO_CLASS(){};
+  
+};
+
+
+template <class T, class U, class C, int TN = 1, int UN = 0, int CN = 0>
+  class FUNC_UNIT_POWER_MACRO_DATA_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
+{
+  public:
+  
+  void Access(vector<T> new_data_in, vector<U> new_data_out, vector<C> new_ctrl, UINT64 offset=0){  };
+  
+  void Access(vector<T> new_data_in, vector<U> new_data_out, UINT64 offset=0){  };
+  
+  void Access(vector<T> new_data_in, UINT64 offset=0){  };
+  
+  void Access(T data, UINT64 pos = 0, UINT64 offset=0){  };
+  
+  void Access(UINT64 offset=0){  };
+  
+  // Constructor
+  FUNC_UNIT_POWER_MACRO_DATA_CLASS(ASIM_MODULE parent,
+				   const char * const name,
+				   const char * const tname = "",
+				   UINT32 sel_size = 1,
+				   bool enable = true) :
+  BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, sel_size, enable) {};
+  
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       UINT32 in_bw,
+		       UINT32 out_bw,
+		       UINT32 ctrl_bw,
+		       FUNC_UNIT_TYPE function){};
+  
+
+  // Destructor
+  ~FUNC_UNIT_POWER_MACRO_DATA_CLASS(){};
+  
+};
+   
+
+// Using for MUXES and DEMUXES to track individual selections and only track out data not both in and out
+template <class T, class U, class C, int TN = 1, int UN = 1>
+class FUNC_UNIT_POWER_MACRO_DATA_SELECT_CLASS : public BASE_CTRL_POWER_MACRO_CLASS
+{
+ public:
+ 
+ void GAccess(vector<T> new_data_in, vector<U> new_data_out, C new_ctrl, UINT64 offset=0){  };
+ void Access(vector<T> new_data_in, vector<U> new_data_out, C new_ctrl, UINT64 offset=0, bool glitch=false){  };
+ 
+ void GAccess(vector<T> new_data_in, C new_ctrl, UINT64 offset=0){  };
+ void Access(vector<T> new_data_in, C new_ctrl, UINT64 offset=0, bool glitch=false){  };
+
+ void GAccess(UINT64 offset=0){  };
+ void Access(UINT64 offset=0,bool glitch=false){  };
+ 
+ C GetCurCtrl(C cur_ctrl){return cur_ctrl;};
+
+  // Constructor
+  FUNC_UNIT_POWER_MACRO_DATA_SELECT_CLASS(ASIM_MODULE parent,
+					  const char * const name,
+					  const char * const tname = "",
+					  UINT32 sel_size = 1,
+					  bool enable = true) :
+  BASE_CTRL_POWER_MACRO_CLASS(parent, name, tname, sel_size, enable) {};
+    
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       UINT32 in_bw,
+		       UINT32 out_bw,
+		       UINT32 ctrl_bw,
+		       vector<C> ctrl_sel,
+		       MUX_NON_SEL_TYPE non_sel,
+		       U sr,
+		       FUNC_UNIT_TYPE function){  };
+
+
+  void InitializeMacro(VF_DOMAIN_CLASS *domain,
+		       UINT32 in_bw,
+		       UINT32 out_bw,
+		       UINT32 ctrl_bw,
+		       vector< set<C> > ctrl_sel,
+		       vector<string> ctrl_name,
+		       MUX_NON_SEL_TYPE non_sel,
+		       U sr,
+		       FUNC_UNIT_TYPE function){ };
+
+    // Destructor
+  ~FUNC_UNIT_POWER_MACRO_DATA_SELECT_CLASS(){};
+  
+};
+
+
 
 
 class BASE_EXE_POWER_MACRO_CLASS : public BASE_POWER_MACRO_CLASS
@@ -517,7 +677,7 @@ template<class T, class POWER_MACRO_CLASS, int F = 1>
 		       UINT32 bw){ }
 
   /* Write method is the same as in port.h */
-  bool Write(T data, UINT64 cycle);
+  using WritePort<T,F>::Write;
 
   /* Desctrutor */
   ~PowerWritePort(){
@@ -593,7 +753,7 @@ template<class T, class POWER_MACRO_CLASS, int S = 0>
   }
   
   /* Write method is the same as port.h */
-  bool Write(T data, UINT64 cycle);
+  using WriteSkidPort<T,S>::Write;
 };
 
 // Power Write Stall port inherited from PowerWriteStallPort in port.h
@@ -663,7 +823,7 @@ class PowerWriteStallPort : public WriteStallPort <T>
   }
 
   /* Write method is the same as port.h */
-  bool Write(T data, UINT64 cycle);
+  using WriteStallPort<T>::Write;
 };
 
 
@@ -732,7 +892,7 @@ template<class T, class POWER_MACRO_CLASS>
 		       UINT32 bw){  }
 
   /* Read method which is the same as in port.h */
-  bool Read(T& data, UINT64 cycle);
+  using ReadPort<T>::Read;
  /* destructor */
   ~PowerReadPort(){
     delete powerMacro;
@@ -807,7 +967,7 @@ template<class T, class POWER_MACRO_CLASS, int S = 0>
  }
 
   /* Read method which is the same as in port.h */
-  bool Read(T& data, UINT64 cycle);
+  using ReadSkidPort<T,S>::Read;
 };
 // PowerReadStallPort is inherited from ReadStallPort in port.h
 template<class T, class POWER_MACRO_CLASS>
@@ -875,7 +1035,7 @@ class PowerReadStallPort : public ReadStallPort <T>
   }
 
   /* Read function from port.h */
-  bool Read(T& data, UINT64 cycle);
+  using ReadStallPort<T>::Read;
 };
 
 // Write method for PowerWritePort

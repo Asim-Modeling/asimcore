@@ -7889,3 +7889,14 @@ Log message:	CSN: CSN-simcore-3465
 
 - models usign mini-controller can now start and stop event data collection
 using -esc and -eec flags or through AWB GUI
+
+----------
+mgambhir    Date: Thu Oct 24 10:24:21 EDT 2013  CSN: CSN-asimcore-382
+                  Thu Oct 24 14:24:21 UTC 2013
+
+
+Directory modules/power_model
+ null_power_model.h        Locally Modified          381 
+ null_power_model.awb      Locally Modified          381 
+
+- Sync with Intel null power module
