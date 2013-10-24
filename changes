@@ -7920,3 +7920,13 @@ Directory modules/power_model
  null_power_model.h        Locally Modified          383 
 
 - Another sync from Intel null power model
+
+----------
+mgambhir    Date: Thu Oct 24 14:53:44 EDT 2013  CSN: CSN-asimcore-385
+                  Thu Oct 24 18:53:44 UTC 2013
+
+
+Directory .
+ pm                        Locally Removed           384 
+
+Removed the pm dir soft link since it duplicates all the module names
