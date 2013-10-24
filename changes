@@ -7910,3 +7910,13 @@ Directory .
  pm/                       Locally Added               0 
 
 - Added a softlink to modules directory called pm
+
+----------
+mgambhir    Date: Thu Oct 24 13:22:39 EDT 2013  CSN: CSN-asimcore-384
+                  Thu Oct 24 17:22:39 UTC 2013
+
+
+Directory modules/power_model
+ null_power_model.h        Locally Modified          383 
+
+- Another sync from Intel null power model
