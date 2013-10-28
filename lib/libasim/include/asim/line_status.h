@@ -40,6 +40,8 @@ typedef enum
     S_FORWARD, 
     S_LOCKED,
     S_RESERVED,
+    S_NC_CLEAN,
+    S_NC_DIRTY,
     S_MAX_LINE_STATUS 
 } LINE_STATUS;
 
@@ -53,7 +55,9 @@ static const char * LINE_STATUS_STRINGS[S_MAX_LINE_STATUS] =
     "Invalid", 
     "Forward",
     "Locked",
-    "Reserved"
+    "Reserved",
+    "NC_clean",
+    "NC_dirty"
 };
 
 #endif

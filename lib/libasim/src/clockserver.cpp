@@ -19,12 +19,13 @@
 
 
 /**
- * @author Santi Galan, Ken Barr, Ramon Matas Navarro
+ * @author Santi Galan, Ken Barr, Ramon Matas Navarro, Carl Beckmann
  **/
 
 #include <stdlib.h>
 #include <cstdlib>
 #include <ctime>
+#include <sched.h>
 
 #include "asim/clockserver.h"
 #include "asim/clockable.h"
@@ -33,13 +34,12 @@
 #include "asim/rate_matcher.h"
 
 
-
 /******************************************************************************
 *   ASIM_CLOCKSERVER_THREAD_CLASS
 *******************************************************************************/
 
 void
-ASIM_CLOCKSERVER_THREAD_CLASS::CreatePthread()
+ASIM_CLOCKSERVER_THREAD_CLASS::CreatePthread( bool active )
 {
     VERIFYX(!ThreadActive());
 
@@ -55,21 +55,25 @@ ASIM_CLOCKSERVER_THREAD_CLASS::CreatePthread()
     
     threadForceExit = false;
 
-    ASIM_SMP_CLASS::CreateThread(
-        &thread,
-        &thread_attr,
-        ASIM_CLOCKSERVER_THREAD_CLASS::ThreadWork,
-        this,
-        GetAsimThreadHandle());
+    // maybe start an actual pthread running
+    if ( active )
+    {
+        ASIM_SMP_CLASS::CreateThread(
+            &thread,
+            &thread_attr,
+            ASIM_CLOCKSERVER_THREAD_CLASS::ThreadWork,
+            this,
+            GetAsimThreadHandle());
 
-    // Wait the pthread to be initialized
-    // We are serializing the pthread creation this way
-    while(!ThreadActive());
+        // Wait the pthread to be initialized
+        // We are serializing the pthread creation this way
+        while(!ThreadActive()) ;
+    }
 }
 
 bool ASIM_CLOCKSERVER_THREAD_CLASS::DestroyPthread()
 {
-    VERIFYX(ThreadActive());
+    if (!ThreadActive()) return true;
 
     bool return_value = true;
     UINT32* status;
@@ -98,57 +102,13 @@ bool ASIM_CLOCKSERVER_THREAD_CLASS::DestroyPthread()
     return return_value;
 }
 
-void * ASIM_CLOCKSERVER_THREAD_CLASS::ThreadWork(void* param)
-{
-    
-    ASIM_CLOCKSERVER_THREAD parent = (ASIM_CLOCKSERVER_THREAD)param;
-    VERIFYX(parent != NULL);
 
-    parent->threadActive = true;
-    
-    // Before enter the loop lock the task_list_mutex to avoid any race condition
-    pthread_mutex_lock(&(parent->task_list_mutex));
-   
-    while(1)
-    {      
-        // IMPORTANT!! We don't need to get/release the lock in this loop
-        // since pthread_cond_wait does it for us.
+// ThreadWork() moved to clockserver variant .cpp files
 
-        // Wait until we get some work to perform
-        while(parent->tasks_completed)
-        {
-            pthread_cond_wait(&(parent->wait_condition), &(parent->task_list_mutex));
-        }
+// CheckAllTasksCompleted() moved to clockserver variant .cpp files
 
-        // Check if we have to exit...
-        if(parent->threadForceExit)
-        {
-            // Not needed, for sanity...
-            parent->tasks_completed = true;
+// PerformTasksThreaded() moved to clockserver variant .cpp files
 
-            // Make sure to release the lock before exiting!
-            pthread_mutex_unlock(&(parent->task_list_mutex));
-            
-            pthread_exit(0);
-        }
-        
-        CLOCK_CALLBACK_INTERFACE cb = parent->GetNextWorkItem();
-        while(cb != NULL)
-        {              
-            cb->Clock();
-            cb = parent->GetNextWorkItem();
-        }
-
-        // Tell the master thread that all the work is done
-        pthread_mutex_lock(&(parent->finish_cond_mutex));
-        parent->tasks_completed = true;
-        pthread_cond_broadcast(&(parent->finish_condition));
-        pthread_mutex_unlock(&(parent->finish_cond_mutex));
-                
-    }    
-    
-    return 0;
-}
 
 /** Execute sequentially the current list of tasks */
 void ASIM_CLOCKSERVER_THREAD_CLASS::PerformTasksSequential()
@@ -228,13 +188,10 @@ ASIM_CLOCK_SERVER_CLASS::~ASIM_CLOCK_SERVER_CLASS()
     for(iter_threads = lThreads.begin(); iter_threads != lThreads.end();
         ++iter_threads)
     {
-        if((*iter_threads)->ThreadActive())
-        {
-            (*iter_threads)->DestroyPthread();
-        }
+        // assumes pthreads have already been stopped by StopClockServer() !
         delete *iter_threads;
     }
-    
+
     list<pthread_mutex_t*>::iterator iter_mutexs;
     for(iter_mutexs = lCreatedMutexs.begin(); iter_mutexs != lCreatedMutexs.end();
         ++iter_mutexs)
@@ -370,7 +327,7 @@ ASIM_CLOCK_SERVER_CLASS::MapThread(ASIM_SMP_THREAD_HANDLE tHandle)
     if (thread == NULL)
     {
         // Create a new thread (will be the default one for this domain)
-        thread = new ASIM_CLOCKSERVER_THREAD_CLASS(tHandle);
+        thread = new_ASIM_CLOCKSERVER_THREAD_CLASS(tHandle);
         threads[tHandle->GetThreadId()] = thread;
         lThreads.push_back(thread);
     }
@@ -392,7 +349,7 @@ ASIM_CLOCK_SERVER_CLASS::NewClockDomain(
     // Check that the given clock domain doesn't exist
     list<CLOCK_DOMAIN>::iterator iter_dom = lDomain.begin();
     for( ; (iter_dom != lDomain.end()) && ((*iter_dom)->name!=domainName);
-        ++iter_dom);
+        ++iter_dom) ;
     VERIFY(iter_dom == lDomain.end(), "Clocking domain " << domainName <<
            " already exists!");
 
@@ -461,7 +418,7 @@ void ASIM_CLOCK_SERVER_CLASS::SetReferenceClockDomain(string referenceDomain)
     {
         list<CLOCK_DOMAIN>::iterator iter_dom = lDomain.begin();
         for(; (iter_dom != lDomain.end()) && ((*iter_dom)->name!=referenceDomain);
-            ++iter_dom);
+            ++iter_dom) ;
 
         VERIFY(iter_dom != lDomain.end(), "Clocking domain " <<
                referenceDomain << " doesn't exist!");
@@ -580,7 +537,7 @@ ASIM_CLOCK_SERVER_CLASS::RegisterClock(
     // Find the clock domain
     list<CLOCK_DOMAIN>::iterator iter_dom = lDomain.begin();
     for( ; (iter_dom != lDomain.end()) && ((*iter_dom)->name!=domainName);
-        ++iter_dom);
+        ++iter_dom) ;
     VERIFY(iter_dom != lDomain.end(), "Clocking domain " << domainName <<
            " not created!");
     CLOCK_DOMAIN domain = (*iter_dom);
@@ -694,7 +651,7 @@ void ASIM_CLOCK_SERVER_CLASS::SetDomainFrequency(string domainName, float freq)
     bool found = false;
     list<CLOCK_DOMAIN>::iterator iter_dom = lDomain.begin();
     for( ; !found && (iter_dom != lDomain.end()); ++iter_dom)
-        if((found = ((*iter_dom)->name == domainName))) domain = (*iter_dom);
+        if(found = ((*iter_dom)->name == domainName)) domain = (*iter_dom);
     VERIFY(found, "Clocking domain doesn't exist!");    
     
     UINT32 normFreq = static_cast<UINT32>(freq * 100.0);
@@ -805,7 +762,11 @@ void ASIM_CLOCK_SERVER_CLASS::AddTimeEvent(UINT64 time, CLOCK_REGISTRY freq)
  **/
 void ASIM_CLOCK_SERVER_CLASS::InitClockServer(void) 
 {
-       
+    // clear out the time events list (in case we RE-initialize ourselves)
+    lTimeEvents.clear();
+
+    // make sure the default clock domain is set
+    if (!referenceClockDomain) SetReferenceClockDomain("");
     
     // a) Connect the Rate matchers and register them to be clocked.
     //    Basically this process is composed by assigning the ClockRegistry 
@@ -912,22 +873,36 @@ void ASIM_CLOCK_SERVER_CLASS::InitClockServer(void)
     // Init the random state
     initstate(random_seed, (char*)random_state, CLOCKSERVER_RANDOM_STATE_LENGTH);
 
+    // initialize multi-threaded clockserver
     if(threaded)
     {
-        UINT32 max_pthreads = ASIM_SMP_CLASS::GetMaxThreads();
-        VERIFY(lThreads.size() <= max_pthreads, "Max pthreads set to "
-                << max_pthreads << " and the model is trying to create "
-                << lThreads.size() << " pthreads");
-        
-        // Create the pthreads if requested
-        list<ASIM_CLOCKSERVER_THREAD>::iterator iter_threads = lThreads.begin();
-        for( ; iter_threads != lThreads.end(); ++iter_threads)
-        {
-            (*iter_threads)->CreatePthread();
-        }
+        VERIFY(!runWithEventsOn, "DRAL Events unavailable in multi-threaded runs");
+        InitClockServerThreaded();
     }
     
 }
+
+
+/**
+ * Stop the clock server running.
+ *
+ * If you are running the threaded clockserver, this must be called prior
+ * to the destructor, in order to kill all running threads.
+ **/
+void ASIM_CLOCK_SERVER_CLASS::StopClockServer(void) 
+{
+    if(threaded)
+    {
+        // if running the threaded clock server, stop all Pthreads:
+        list<ASIM_CLOCKSERVER_THREAD>::iterator iter_threads;
+        for(  iter_threads  = lThreads.begin();
+              iter_threads != lThreads.end();
+            ++iter_threads                      )
+        {
+            (*iter_threads)->DestroyPthread();
+        }
+    }
+}       
 
 
 /**
@@ -971,7 +946,7 @@ UINT64 ASIM_CLOCK_SERVER_CLASS::Clock()
         return RandomClock();        
     }
     
-    if(threaded)
+    if(threaded && !eventsOn && !traceOn)
     {
         return ThreadedClock();
     }
@@ -1110,119 +1085,35 @@ UINT64 ASIM_CLOCK_SERVER_CLASS::UniqueDomainClock()
     
 }
 
-UINT64 ASIM_CLOCK_SERVER_CLASS::ThreadedClock() 
+
+// ThreadedClock() moved to clockserver variant .cpp files
+
+    
+//
+// for fuzzy-barrier threaded clock implementations
+// return global committed time, which is the minimum
+// committed time of any worker thread.
+//
+INT64 ASIM_CLOCK_SERVER_CLASS::GetGlobalDoneTime()
 {
-    deque<CLOCK_REGISTRY> lClockedEvents;
-    
-    CLOCK_REGISTRY currentEvent = lTimeEvents.front();
-    UINT64 currentBaseCycle = currentEvent->nBaseCycle;
-    UINT64 currentBaseCycleMod = currentBaseCycle/100;
-    
-    while(true)
+    CLOCKSERVER_THREADS_ITERATOR iter_threads = lThreads.begin();
+    INT64 min_time =           (*iter_threads)->GetLocalDoneTime();
+    for ( ++iter_threads; iter_threads != lThreads.end(); ++iter_threads )
     {
-        
-        if(lTimeEvents.size() > 0) currentEvent = lTimeEvents.front();
-        
-        if((lTimeEvents.size() <= 0) ||
-           (currentBaseCycle != currentEvent->nBaseCycle))
+        INT64 t = (*iter_threads)->GetLocalDoneTime();
+        if ( t < min_time )
         {
-            
-            if(!eventsOn && !traceOn)
-            {
-                // Perform task threaded
-                
-                // Wake up threads
-                list<ASIM_CLOCKSERVER_THREAD>::iterator
-                    iter_threads = lThreads.begin();
-                for( ; iter_threads != lThreads.end(); ++iter_threads)
-                {
-                    (*iter_threads)->PerformTasksThreaded();
-                }
-
-                // Cycle-by-cycle barrier: wait for all threads to finish
-                iter_threads = lThreads.begin();
-                for( ; iter_threads != lThreads.end(); )
-                {
-                    if((*iter_threads)->CheckAllTasksCompleted())
-                        ++iter_threads;
-                }
-            }
-            else
-            {
-
-                // Perform tasks sequentially
-                list<ASIM_CLOCKSERVER_THREAD>::iterator
-                    iter_threads = lThreads.begin();
-                for( ; iter_threads != lThreads.end(); ++iter_threads)
-                {
-                    (*iter_threads)->PerformTasksSequential();
-                }
-
-            }
-            
-            // Re-add the events to the list
-            // IMPORTANT: This has to be done after all the threads have
-            // finished, because they may change the frequency of some events.
-            deque<CLOCK_REGISTRY>::iterator it_event = lClockedEvents.begin();
-            for( ; it_event != lClockedEvents.end(); ++it_event)
-            {
-        
-                // Also clock all the WriterRateMatcher that must be clocked at current time.
-		// FIX?  This is done sequentially, because there is not much work to do,
-		// and because it is easier to enforce the ordering with other tasks.
-                vector< pair<ASIM_CLOCKABLE, CLOCK_CALLBACK_INTERFACE> >::iterator
-                    endRM = (*it_event)->lWriterRM.end();
-                vector< pair<ASIM_CLOCKABLE, CLOCK_CALLBACK_INTERFACE> >::iterator
-                    iter = (*it_event)->lWriterRM.begin();
-
-                if(eventsOn && iter != endRM)
-                {
-                    // Generate dral new cycle event if necessary
-                    EVENT( (*it_event)->DralNewCycle(); );   
-                }
-
-                for( ; iter != endRM; ++iter)
-                {
-                    (*iter).second->currentCycle = (*it_event)->nCycle;
-                    (*iter).second->Clock();
-                }
-        
-                (*it_event)->nCycle++;
-                
-                // WARNING! The step may have been modified at
-                // setDomainFrequency during the clocking
-                (*it_event)->nBaseCycle += (*it_event)->nStep;
-                AddTimeEvent((*it_event)->nBaseCycle, (*it_event));
-            }
-
-            // Return the number of base cycles forwarded                       
-            UINT64 inc = currentBaseCycleMod - internalBaseCycle;  
-            internalBaseCycle = currentBaseCycleMod; 
-            return inc;
+            min_time = t;
         }
-        
-        lTimeEvents.pop_front();
-        lClockedEvents.push_back(currentEvent);
-   
-        // We insert all the modules that must be clocked at current
-        // time in the threads task list
-        vector< pair<ASIM_CLOCKABLE, CLOCK_CALLBACK_INTERFACE> >::iterator
-            endM = currentEvent->lModules.end();
-        vector< pair<ASIM_CLOCKABLE, CLOCK_CALLBACK_INTERFACE> >::iterator
-            iter = currentEvent->lModules.begin();
-            
-        for( ; iter != endM; ++iter)
-        {
-            (*iter).second->currentCycle = currentEvent->nCycle;
-            (*iter).first->GetClockingThread()->AssignTask((*iter).second);
-        }
-        
     }
-    
-    VERIFYX(false);
-    return 0;
-    
+    return min_time;
 }
+
+
+// StartAllWorkerThreads() moved to clockserver variant .cpp files
+
+// WaitForAllWorkerThreads() moved to clockserver variant .cpp files
+
 
 /**
  * Method that clocks the registered modules in function of their
@@ -1328,7 +1219,36 @@ UINT64 ASIM_CLOCK_SERVER_CLASS::RandomClock()
     internalBaseCycle = currentBaseCycle / 100;
     return inc;    
 }
+     
+/**
+ * unregister all callbacks for all modules and rate matchers from this clock server
+ */
+void ASIM_CLOCK_SERVER_CLASS::UnregisterAll()
+{
+    referenceClockRegitry = NULL;
+    firstClockRegitry = NULL;
+    firstClockRegitrySet = false;
 
+    // unregister from all clock domains, but don't delete any domain
+    for (list<CLOCK_DOMAIN>::iterator dom = lDomain.begin(); dom != lDomain.end(); dom++)
+        (*dom)->UnregisterAll();
+
+    // empty the rate matcher lists.
+    lrateWriter.clear();
+    lrateReader.clear();
+}
+    
+/**
+ * unregister all callbacks for all modules and rate matchers from this clock domain
+ */
+void ClockDomain::UnregisterAll()
+{
+    // unregister it from any clock domains, and maybe delete the registery item
+    list<CLOCK_REGISTRY>::iterator reg = lClock.begin();
+    for ( ; reg != lClock.end(); reg++)
+        delete *reg;
+    lClock.clear();
+}
 
 /**
  * Calls the DralEventsTurnedOn method of all the ASIM_CLOCKABLE instances
@@ -1343,4 +1263,3 @@ void ClockRegistry::DralEventsTurnedOn ()
         (*iter)->DralEventsTurnedOn();
     }
 }
-

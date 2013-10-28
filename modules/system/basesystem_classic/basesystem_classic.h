@@ -109,6 +109,15 @@ class ASIM_SYSTEM_CLASS : public ASIM_MODULE_CLASS
             UINT32 feederThreads = 0);
         virtual ~ASIM_SYSTEM_CLASS () { delete [] committed; delete [] macroCommitted; delete [] cpu2module; }
 
+	// Functions to start and stop the Vtune Thread Profiler at 
+	// specified cycles/macro-instructions
+
+	void (*ittPause)();
+	void (*ittResume)();
+	virtual void SetUpThreadProfiler();
+	virtual void StartThreadProfiler();
+	virtual void StopThreadProfiler();
+
         UINT32 NumCpus() const { return num_cpus; }
         UINT32 NumFeederThreads() const { return num_feeder_threads; };
 

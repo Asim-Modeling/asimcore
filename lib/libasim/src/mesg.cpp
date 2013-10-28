@@ -23,11 +23,14 @@
  */
 
 // generic
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include <assert.h>
 
 // ASIM core
 #include "asim/syntax.h"

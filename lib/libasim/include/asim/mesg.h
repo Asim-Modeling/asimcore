@@ -139,7 +139,7 @@ extern pthread_mutex_t asim_mesg_mutex;
 // VERIFYX( cond )   - same as VERIYX( cond )
 //
 //------------------------------------------------------------------------------
-#define ASSERTION_COND_MSG( type, condition, ... )  if (! (condition)) ASSERTION_MSG( type , ## __VA_ARGS__ )
+#define ASSERTION_COND_MSG( type, condition, ... )  if (! (condition)) ASSERTION_MSG( type, ## __VA_ARGS__ )
 #define ASSERTION_MSG( ... )  MSG_ADDON_CHOOSER( __VA_ARGS__, MSG_WITH_ADDON, MSG_WITHOUT_ADDON )( __VA_ARGS__ )
 #define MSG_ADDON_CHOOSER( type, skip, impl, ... )  impl
 #define MSG_WITH_ADDON( type, msg )  ASSERTION_MSG_DUMP( type, << msg << endl )
@@ -153,8 +153,8 @@ extern pthread_mutex_t asim_mesg_mutex;
 // Assertion macros implementation
 #ifdef ASIM_ENABLE_ASSERTIONS
 
-#define WARN( condition, ... )     ASSERTION_COND_MSG( warn, condition , ## __VA_ARGS__ )
-#define ASSERT( condition, ... )   ASSERTION_COND_MSG( assert, condition , ## __VA_ARGS__ )
+#define WARN( condition, ... )     ASSERTION_COND_MSG( warn, condition, ## __VA_ARGS__ )
+#define ASSERT( condition, ... )   ASSERTION_COND_MSG( assert, condition, ## __VA_ARGS__ )
 // Backwards compatibility
 #define WARNX( condition )         ASSERTION_COND_MSG( warn, condition )
 #define ASSERTX( condition )       ASSERTION_COND_MSG( assert, condition )
@@ -170,7 +170,7 @@ extern pthread_mutex_t asim_mesg_mutex;
 #endif // ASIM_ENABLE_ASSERTIONS
 
 // same as ASSERT macros but can't be turned off
-#define VERIFY( condition, ... )   ASSERTION_COND_MSG( assert, condition , ## __VA_ARGS__ )
+#define VERIFY( condition, ... )   ASSERTION_COND_MSG( assert, condition, ## __VA_ARGS__ )
 // Backwards compatibility
 #define VERIFYX( condition )       ASSERTION_COND_MSG( assert, condition )
 

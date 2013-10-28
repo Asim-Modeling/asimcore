@@ -1011,7 +1011,7 @@ template<class T>
 inline typename Vector<T>::Iterator
 Vector<T>::Remove(Iterator pos)
 {
-  T *elem = pos;
+  T *elem = & (*pos);
   ShuffleLeft(elem + 1, -1);
 
   return Iterator(elem);

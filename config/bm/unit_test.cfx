@@ -1,0 +1,43 @@
+: # -*- perl -*-
+eval 'exec perl -X "$0" ${1+"$@"}'
+       if 0;
+
+# # Copyright (C) 2003-2008 Intel Corporation
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2 # of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, # but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details. #
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+# 
+
+#
+#Benchmark setup generator for unit testing though awb and regression.launcher
+#
+use File::Basename;
+use File::Spec;
+use Asim::GenCFG::Auto;
+
+my $my_setup_script = 
+'#!/bin/sh
+cp -f @RUNSCRIPT@ $2/run';
+
+my $my_run_script = 
+'#!/bin/sh
+# if a test runs too long, kill it:
+ulimit -t 600
+# execute it:
+$model
+# create a dummy stats file, unless the regression crashed
+if [ $? -eq 0 ]; then
+  echo $model > unit_test.stats
+fi
+';
+    
+Asim::GenCFG::Auto::Directory('unit_test');
+Asim::GenCFG::Auto::Generate( setup_script => $my_setup_script, run_script => $my_run_script);

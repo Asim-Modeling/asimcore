@@ -17,6 +17,8 @@
  */
 
 #include "asim/plru_masks.h"
+const UINT64 PLRU_MaskInner<1>::mask[1] = { 0x00 };
+const UINT64 PLRU_MaskInner<1>::compare[1] = { 0x00 };
 const UINT64 PLRU_MaskInner<2>::mask[2] = { 0x01, 0x01 };
 const UINT64 PLRU_MaskInner<2>::compare[2] = { 0x00, 0x01 };
 const UINT64 PLRU_MaskInner<3>::mask[3] ={ 0x03, 0x05, 0x06 };

@@ -1,0 +1,142 @@
+/*
+ *Copyright (C) 2005-2010 Intel Corporation
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+
+/*
+ *  A modular version of libasim, except the clock server,
+ *  which is provided by a submodule.
+ */
+%AWB_START
+
+%name ASIM simulation core
+%desc Modular Asim simulation core classes, replaces libasim
+%attributes asim
+%provides simcore
+%requires clockserver
+
+%public  ../../lib/libasim/include/asim/address.h
+%public  ../../lib/libasim/include/asim/agequeue.h
+%public  ../../lib/libasim/include/asim/alphaops.h
+%public  ../../lib/libasim/include/asim/arch_register.h
+%public  ../../lib/libasim/include/asim/arraylist.h
+%public  ../../lib/libasim/include/asim/atoi.h
+%public  ../../lib/libasim/include/asim/atomic.h
+%public  ../../lib/libasim/include/asim/buffer.h
+%public  ../../lib/libasim/include/asim/cache.h
+%public  ../../lib/libasim/include/asim/cache_dyn.h
+%public  ../../lib/libasim/include/asim/cache_manager.h
+%public  ../../lib/libasim/include/asim/cache_manager_smp.h
+%public  ../../lib/libasim/include/asim/cache_mesi.h
+%public  ../../lib/libasim/include/asim/chip_component.h
+%public  ../../lib/libasim/include/asim/chunk.h
+%public  ../../lib/libasim/include/asim/chunkedqueue.h
+%public  ../../lib/libasim/include/asim/circular_queue.h
+%public  ../../lib/libasim/include/asim/clockable.h
+%public  ../../lib/libasim/include/asim/cmd.h
+%public  ../../lib/libasim/include/asim/cqueue.h
+%public  ../../lib/libasim/include/asim/damqueue.h
+%public  ../../lib/libasim/include/asim/deque.h
+%public  ../../lib/libasim/include/asim/disasm.h
+%public  ../../lib/libasim/include/asim/dynamic_array.h
+%public  ../../lib/libasim/include/asim/dynhashtable.h
+%public  ../../lib/libasim/include/asim/event.h
+%public  ../../lib/libasim/include/asim/except.h
+%public  ../../lib/libasim/include/asim/fastlist.h
+%public  ../../lib/libasim/include/asim/fifo.h
+%public  ../../lib/libasim/include/asim/freelist.h
+%public  ../../lib/libasim/include/asim/funnel.h
+%public  ../../lib/libasim/include/asim/hashtable.h
+%public  ../../lib/libasim/include/asim/ioformat.doxy
+%public  ../../lib/libasim/include/asim/ioformat.h
+%public  ../../lib/libasim/include/asim/item.h
+%public  ../../lib/libasim/include/asim/line_status.h
+%public  ../../lib/libasim/include/asim/memory_reference.h
+%public  ../../lib/libasim/include/asim/mesg.h
+%public  ../../lib/libasim/include/asim/message_handler_log.h
+%public  ../../lib/libasim/include/asim/mm.h
+%public  ../../lib/libasim/include/asim/mmptr.h
+%public  ../../lib/libasim/include/asim/mod_numbers.h
+%public  ../../lib/libasim/include/asim/mod_numbers_dyn.h
+%public  ../../lib/libasim/include/asim/module.h
+%public  ../../lib/libasim/include/asim/mpointer.h
+%public  ../../lib/libasim/include/asim/orderedDAMQueue.h
+%public  ../../lib/libasim/include/asim/phase.h
+%public  ../../lib/libasim/include/asim/pool_allocated_object.h
+%public  ../../lib/libasim/include/asim/port.h
+%public  ../../lib/libasim/include/asim/port_handler.h
+%public  ../../lib/libasim/include/asim/profile.h
+%public  ../../lib/libasim/include/asim/queue.h
+%public  ../../lib/libasim/include/asim/rate_matcher.h
+%public  ../../lib/libasim/include/asim/regexobj.h
+%public  ../../lib/libasim/include/asim/registerfile.h
+%public  ../../lib/libasim/include/asim/registry.h
+%public  ../../lib/libasim/include/asim/resource_stats.h
+%public  ../../lib/libasim/include/asim/resource_tracker.h
+%public  ../../lib/libasim/include/asim/sized_stl_queue.h
+%public  ../../lib/libasim/include/asim/smp.h
+%public  ../../lib/libasim/include/asim/stack.h
+%public  ../../lib/libasim/include/asim/stackdump.h
+%public  ../../lib/libasim/include/asim/state.h
+%public  ../../lib/libasim/include/asim/stateout.h
+%public  ../../lib/libasim/include/asim/storage.h
+%public  ../../lib/libasim/include/asim/stripchart.h
+%public  ../../lib/libasim/include/asim/syntax.h
+%public  ../../lib/libasim/include/asim/thread.h
+%public  ../../lib/libasim/include/asim/threaded_log.h
+%public  ../../lib/libasim/include/asim/trace.h
+%public  ../../lib/libasim/include/asim/trace_legacy.h
+%public  ../../lib/libasim/include/asim/trackmem.h
+%public  ../../lib/libasim/include/asim/traps.h
+%public  ../../lib/libasim/include/asim/utils.h
+%public  ../../lib/libasim/include/asim/vector.h
+%public  ../../lib/libasim/include/asim/xcheck.h
+%public  ../../lib/libasim/include/asim/xmlout-gdome.h
+%public  ../../lib/libasim/include/asim/xmlout-nolib-gz.h
+%public  ../../lib/libasim/include/asim/xmlout-nolib.h
+%public  ../../lib/libasim/include/asim/xmlout.h
+
+%private ../../lib/libasim/src/mesg.cpp
+%private ../../lib/libasim/src/profile.cpp
+%private ../../lib/libasim/src/stripchart.cpp
+%private ../../lib/libasim/src/utils.cpp
+%private ../../lib/libasim/src/event.cpp
+%private ../../lib/libasim/src/disasm.cpp
+%private ../../lib/libasim/src/module.cpp
+%private ../../lib/libasim/src/atoi.cpp
+%private ../../lib/libasim/src/xmlout.cpp
+%private ../../lib/libasim/src/registry.cpp
+%private ../../lib/libasim/src/thread.cpp
+%private ../../lib/libasim/src/xcheck.cpp
+%private ../../lib/libasim/src/except.cpp
+%private ../../lib/libasim/src/stackdump.cpp
+%private ../../lib/libasim/src/trace.cpp
+%private ../../lib/libasim/src/trace_legacy.cpp
+%private ../../lib/libasim/src/ioformat.cpp
+%private ../../lib/libasim/src/port.cpp
+%private ../../lib/libasim/src/stateout.cpp
+%private ../../lib/libasim/src/trackmem.cpp
+%private ../../lib/libasim/src/arch_register.cpp
+%private ../../lib/libasim/src/clockable.cpp
+%private ../../lib/libasim/src/atomic.cpp
+%private ../../lib/libasim/src/smp.cpp
+%private ../../lib/libasim/src/regexobj.cpp
+%private ../../lib/libasim/src/cache_dyn.cpp
+%private ../../lib/libasim/src/cache_manager.cpp
+%private ../../lib/libasim/src/cache_manager_smp.cpp 
+
+%AWB_END

@@ -64,6 +64,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
 #include <iostream>
 
 #if defined(HOST_UNIX)

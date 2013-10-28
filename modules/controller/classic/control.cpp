@@ -253,6 +253,49 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
 }
 
 CONTROLLER_BASE_EXTERNAL_FUNCTION( 
+  void, CMD_StartThreadProfiler,
+  (CMD_ACTIONTRIGGER trigger, UINT64 n),
+  (                  trigger,        n)
+)
+/*
+ * Create an action to Start the Vtune Thread Profiler
+ */
+{
+    ASIM_XMSG( "CMD_StartThreadProfiler...");
+
+    //
+    // Generate the start thread profiler work item for the controller and break the
+    // performance model so that it will return control to the controller
+    // if it is executing.
+
+    ctrlWorkList->Add(new CMD_STARTTHREADPROFILER_CLASS(trigger, n)); 
+    asimSystem->SetUpThreadProfiler();
+    asimSystem->SYS_Break();
+}
+
+CONTROLLER_BASE_EXTERNAL_FUNCTION( 
+  void, CMD_StopThreadProfiler,
+  (CMD_ACTIONTRIGGER trigger, UINT64 n),
+  (                  trigger,        n)
+)
+/*
+ * Create an action to stop the Vtune Thread Profiler
+ */
+{
+    ASIM_XMSG( "CMD_StopThreadProfiler...");
+
+    //
+    // Generate the stop thread profiler work item for the controller and break the
+    // performance model so that it will return control to the controller
+    // if it is executing.
+
+    ctrlWorkList->Add(new CMD_STOPTHREADPROFILER_CLASS(trigger, n)); 
+    asimSystem->SYS_Break();
+}
+
+// -----------------------
+
+CONTROLLER_BASE_EXTERNAL_FUNCTION( 
   void, CMD_Debug,
   (bool on, CMD_ACTIONTRIGGER trigger, UINT64 n),
   (     on,                   trigger,        n)
@@ -565,6 +608,47 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
     asimSystem->SYS_Break();
 }
 
+CONTROLLER_BASE_EXTERNAL_FUNCTION( 
+  void, CMD_SaveFuncState,
+  (CMD_ACTIONTRIGGER trigger, UINT64 n),
+  (                  trigger,        n)
+)
+/*
+ * Create an action to save functional state.
+ */
+{
+    ASIM_XMSG("CMD_SaveFuncState...");
+    cout << "Turning functional save on" << endl;
+    
+    //
+    // Generate the progress work item for the controller and break the
+    // performance model so that it will return control to the controller
+    // if it is executing.
+    
+    ctrlWorkList->Add(new CMD_SAVEFUNCSTATE_CLASS(trigger, n)); 
+    asimSystem->SYS_Break();       
+}
+
+CONTROLLER_BASE_EXTERNAL_FUNCTION( 
+  void, CMD_RestoreFuncState,
+  (CMD_ACTIONTRIGGER trigger, UINT64 n, const char *fileName),
+  (                  trigger,        n,             fileName)
+)
+/*
+ * Create an action to restore functional state.
+ */
+{
+    ASIM_XMSG("CMD_RestoreFuncState...");
+    
+    //
+    // Generate the progress work item for the controller and break the
+    // performance model so that it will return control to the controller
+    // if it is executing.
+    
+    ctrlWorkList->Add(new CMD_RESTOREFUNCSTATE_CLASS(trigger, n, fileName)); 
+    asimSystem->SYS_Break();       
+}
+
 
 /**********************************************************************/
 
@@ -725,7 +809,7 @@ CONTROLLER_BASE_EXTERNAL_FUNCTION(
     ASIM_XMSG("CMD_SchedulerLoop exiting ... calling AWB_Exit");
 
     //Stop the threads
-    //asimSystem->SYS_StopPThreads();
+    asimSystem->SYS_StopPThreads();
 
     // Stop the awb workbench
     AWB_Exit();
@@ -822,6 +906,11 @@ CMD_EMITSTATS_CLASS::CmdAction (void)
 {
     ostringstream statsFileName;
 
+    if (!statsOn) 
+    {
+        return;
+    }
+
     UINT64 currentInst = 0;
     for (UINT32 i = 0; i < asimSystem->NumCpus(); i++)
     {
@@ -857,6 +946,24 @@ CMD_RESETSTATS_CLASS::CmdAction (void)
 
     asimSystem->ClearModuleStats(); 
     IFEEDER_BASE_CLASS::ClearAllFeederStats();
+}
+
+
+void
+CMD_STARTTHREADPROFILER_CLASS::CmdAction (void)
+{
+    ASIM_XMSG("CMD_STARTTHREADPROFILER starting the thread profiler");
+
+    asimSystem->StartThreadProfiler(); 
+}
+
+
+void
+CMD_STOPTHREADPROFILER_CLASS::CmdAction (void)
+{
+    ASIM_XMSG("CMD_STOPTHREADPROFILER stopping the thread profiler");
+
+    asimSystem->StopThreadProfiler(); 
 }
 
 
@@ -917,7 +1024,43 @@ CMD_EXIT_CLASS::CmdAction (void)
     theController.pmExiting = true;
 }
 
+void
+CMD_SAVEFUNCSTATE_CLASS::CmdAction (void)
+{
+    ostringstream funcStateFileName;
+    ofstream funcStateFile;
+    
+    UINT64 currentInst = 0;
+    for (UINT32 i = 0; i < asimSystem->NumCpus(); i++)
+    {
+       currentInst += asimSystem->SYS_CommittedInsts(i); 
+    }
 
+    funcStateFileName.str("");      // Clear
+    funcStateFileName << "cycle_"  << asimSystem->SYS_Cycle()
+                      << "_nano_"  << asimSystem->SYS_Nanosecond()
+                      << "_insts_" << currentInst
+                      << ".funcstate";
+    funcStateFile.open(funcStateFileName.str().c_str());
+
+    ASIM_XMSG("CMD_SAVEFUNCSTATE emitting intermediate functional state: " 
+              << funcStateFileName.str());
+   
+    asimSystem->DumpFunctionalState(funcStateFile);
+    //IFEEDER_BASE_CLASS::DumpAllFeederStats(stateOut);
+}
+
+void
+CMD_RESTOREFUNCSTATE_CLASS::CmdAction (void)
+{
+    ASIM_XMSG("CMD_RESTOREFUNCSTATE restoring functional state ");
+    cout << "Restoring functional state " << endl;
+
+    if(restoreStateFile != NULL)
+    {
+        asimSystem->LoadFunctionalState(restoreStateFile);
+    }
+}
 
 /*******************************************************************
  *

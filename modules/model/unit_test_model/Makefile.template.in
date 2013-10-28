@@ -32,7 +32,7 @@ include $REPLACE$MAKEFILECONFIG
 #-----------------------------------------------------------------------------
 ASIM_INCDIRS=$REPLACE$INCDIRS
 INCDIRS=$(ASIM_INCDIRS) -I. -I$(CXXTESTDIR) -I$(CXXTESTEXTDIR) -I$(BOOST_INC)
-TMP_LFLAGS=$(LFLAGS) -Wl,-rpath,$(BOOST_LIB) -L$(BOOST_LIB) -l$(BOOST_NAM)
+TMP_LFLAGS=$(LFLAGS) -Wl,-rpath,$(BOOST_LIB) -L$(BOOST_LIB) $(foreach l,$(BOOST_NAM),-l$l)
 #-----------------------------------------------------------------------------
 # TARGET and required components
 #-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ $(TARGET) : $(CPPTARGETS) $(OOBJS) $(SUBTARGETS)
 	@echo done building $@
 
 $(CPPTARGETS):
-	$(CXXTESTGEN) --runner=FErrorPrinter --include="cxxtest/FRoot.cpp" --part -o $@ src/include/asim/restricted/*.h
+	$(CXXTESTGEN) --runner=FErrorPrinter --include="cxxtest/FRoot.cpp" --have-std -o $@ src/include/asim/restricted/*.h
 
 # generate both .o files and .d files for #include dependencies;
 # we create all .o file in a separate obj/ directory;

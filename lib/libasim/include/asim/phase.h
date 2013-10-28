@@ -39,10 +39,6 @@ typedef enum clk_edge
 
 static const char* edgesName[NUM_CLK_EDGES] = {"H", "L"};
 
-// Static array used to map a phase to a certain skew
-static UINT32 clkEdges2skew[NUM_CLK_EDGES] = {0, 50};
-
-
 // -------------------------------------------------------------------------
 //
 // Class phase

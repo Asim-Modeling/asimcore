@@ -22,6 +22,7 @@
 #include "message_handler_log.h"
 #include <queue>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -122,8 +123,7 @@ template< class char_type, class traits_type = std::char_traits< char_type> >
                 // write the string
                 if ( pstr)
                 {
-                    cout << *pstr;
-//                    m_pThis->m_underlyingLog << *pstr;
+                    m_pThis->m_underlyingLog << *pstr;
                     delete pstr;
                 }
 
@@ -306,11 +306,9 @@ private:
 typedef basic_thread_safe_log< char> thread_safe_log;
 typedef basic_thread_safe_log< wchar_t> wthread_safe_log;
 
-inline thread_safe_log get_thread_safe_log(){
+inline thread_safe_log get_thread_safe_log(std::ostream *out){
 #if MAX_PTHREADS > 1
-    static std::ofstream out( "out.txt");
-//    static std::ostringstream out(ostringstream::out);   
-    static internal_thread_safe_log log( out);
+    static internal_thread_safe_log log( *out);
     return thread_safe_log(log);
 #else
 std::cerr << "trying to use wrong log scheme" << std::endl;

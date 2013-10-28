@@ -47,7 +47,7 @@
 #include "args_mini.h"
 
 // Global declaration of control variables - BAD
-UINT64 MaxCycles = 100;
+UINT64 MaxCycles = -1UL;
 char *StatsFileName = const_cast<char *>("stats.xml");
 
 static void PrintInfo();
@@ -86,7 +86,7 @@ main (INT32 argc, char *argv[], char *envp[])
     //
     // Let the system execute until our scheduled options are complete.
     //
-    system = SYS_Init(0, 0, 0);
+    system = SYS_Init(sysArgc, sysArgv, envp);
     system->SYS_Execute(MaxCycles, UINT64_MAX, UINT64_MAX);
 
     system->PrintModuleStats(StatsFileName);

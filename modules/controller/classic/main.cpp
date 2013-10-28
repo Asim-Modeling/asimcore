@@ -55,7 +55,7 @@ int
 main (INT32 argc, char *argv[], char *envp[])
 {
   // just instantiate the classic controller, and call its main:
-  theController.main( argc, argv, envp );
+  return theController.main( argc, argv, envp );
 }
 
 

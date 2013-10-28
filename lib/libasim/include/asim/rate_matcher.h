@@ -67,13 +67,23 @@ class RateMatcher: public ASIM_CLOCKABLE_CLASS
       
       pthread_mutex_t* port_mutex;  // Mutex to access the port 
       
+      BasePort &port;  // reference to the rate matcher's port in this base class
+
+      // set the enclosing module this rate matcher is attached to
+      void SetModule(ASIM_CLOCKABLE_CLASS *m)
+      {
+          VERIFYX(clockable == NULL || clockable == m);
+          clockable = m;
+      }
+      
     public:
     
-      RateMatcher(ASIM_CLOCKABLE _clockable)
-        : ASIM_CLOCKABLE_CLASS(NULL),
+      RateMatcher(ASIM_CLOCKABLE _clockable, BasePort &_p)
+        : ASIM_CLOCKABLE_CLASS(NULL /* why don't we link this into the hierarchy? FIX? */),
           listCreated(false),
           initialized(false),
-          clockable(_clockable)
+          clockable(_clockable),
+          port(_p)
       { /* Nothing */ }
       
       virtual ~RateMatcher() { } 
@@ -108,6 +118,16 @@ class RateMatcher: public ASIM_CLOCKABLE_CLASS
           return tmp.c_str();
       }
       
+      // return the module we are instantiated in
+      ASIM_CLOCKABLE GetModule()
+      {
+          return clockable;
+      }
+      
+      BasePort &GetPort()
+      {
+          return port;
+      }
 };
 
 
@@ -122,9 +142,9 @@ class ReadRateMatcher: public ReadPort<T>, public RateMatcher
     
   public:
   
-    ReadRateMatcher(ASIM_CLOCKABLE _clockable):
+    ReadRateMatcher(ASIM_CLOCKABLE _clockable = NULL):
         ReadPort<T>(),
-        RateMatcher(_clockable)
+        RateMatcher(_clockable, *this)
     {
         // Nothing.
     }
@@ -150,10 +170,21 @@ class ReadRateMatcher: public ReadPort<T>, public RateMatcher
         VERIFY(false, "The read rate matcher should not be clocked!");
     }
 
-    
-    // Redefined from BasePort
+    // this old initialization API might become deprecated at some point
     bool Init(const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL);
     bool InitConfig(const char *name, int bw, int lat, int nodeId = 0 );
+    
+    // this new initialization API requires us to pass in a pointer to the enclosing module
+    bool Init(ASIM_CLOCKABLE m, const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL)
+    {
+        SetModule(m);
+        return Init(name, nodeId, instance, scope);
+    }
+    bool InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId = 0 )
+    {
+        SetModule(m);
+        return InitConfig(name, bw, lat, nodeId);
+    }
 
     // Read is redefined to lock the port before accessing in a multithreaded simulation
     bool Read(T& data, UINT64 cycle);
@@ -176,8 +207,8 @@ template<class T, int W, int L>
 bool
 ReadRateMatcher<T,W,L>::Init(const char *name, int nodeId, int instance, const char *scope)
 {
-
-    bool ret = BasePort::Init(name, nodeId, instance, scope);
+    // initialize the port object
+    bool ret = ReadPort<T>::Init(clockable, name, nodeId, instance, scope);
     
     if(ret)
     {
@@ -209,8 +240,8 @@ template<class T, int W, int L>
 bool
 ReadRateMatcher<T,W,L>::InitConfig(const char *name, int bw, int lat, int nodeId)
 {
-    
-    bool ret = BasePort::InitConfig(name, bw, lat, nodeId);
+    // initialize the port object
+    bool ret = ReadPort<T>::InitConfig(clockable, name, bw, lat, nodeId);
     
     if(ret)
     {
@@ -245,7 +276,7 @@ ReadRateMatcher<T,W,L>::getConnectedRateMatchers()
     if(listCreated) return connectedRateMatchers;
 
     // Access the BasePort list of connected ports    
-    list<BasePort*> connectedPorts = ReadPort<T>::BasePort::connectedPorts;
+    list<BasePort*> connectedPorts = ReadPort<T>::BasePort::getConnectedPorts();
     VERIFY(connectedPorts.size() > 0, "No WriteRateMatcher connected to ReadRateMatcher " << id);
     
     for(list<BasePort*>::iterator it = connectedPorts.begin(); it != connectedPorts.end(); it++)
@@ -281,9 +312,9 @@ class WriteRateMatcher: public WritePort<T,F>, public RateMatcher
     UINT64 nextReaderCycle; // keep track of reader clock cycle
   public:
   
-    WriteRateMatcher(ASIM_CLOCKABLE _clockable):
+    WriteRateMatcher(ASIM_CLOCKABLE _clockable = NULL):
         WritePort<T,F>(),
-        RateMatcher(_clockable),
+        RateMatcher(_clockable, *this),
         currentPosition(0),
         Dummy(T()),
         zeroLatencyBypass(false),
@@ -328,9 +359,21 @@ class WriteRateMatcher: public WritePort<T,F>, public RateMatcher
     // into the real port when the rate matcher is clocked.
     bool Write(const T data, UINT64 cycle);
         
-    // Redefined from BasePort
+    // this old initialization API might become deprecated at some point
     bool Init(const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL);
     bool InitConfig(const char *name, int bw, int lat, int nodeId = 0 );
+    
+    // this new initialization API requires us to pass in a pointer to the enclosing module
+    bool Init(ASIM_CLOCKABLE m, const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL)
+    {
+        SetModule(m);
+        return Init(name, nodeId, instance, scope);
+    }
+    bool InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId = 0 )
+    {
+        SetModule(m);
+        return InitConfig(name, bw, lat, nodeId);
+    }
 
     
     // Returns true if there is free space in the buffer.
@@ -353,8 +396,8 @@ template<class T, int F, int W, int L>
 bool
 WriteRateMatcher<T,F,W,L>::Init(const char *name, int nodeId, int instance, const char *scope)
 {
-
-    bool ret = BasePort::Init(name, nodeId, instance, scope);
+    // initialize the port object
+    bool ret = WritePort<T,F>::Init(clockable, name, nodeId, instance, scope);
     
     if(ret)
     {
@@ -385,8 +428,8 @@ template<class T, int F, int W, int L>
 bool
 WriteRateMatcher<T,F,W,L>::InitConfig(const char *name, int bw, int lat, int nodeId)
 {
-    
-    bool ret = BasePort::InitConfig(name, bw, lat, nodeId);
+    // initialize the port object
+    bool ret = WritePort<T,F>::InitConfig(clockable, name, bw, lat, nodeId);
     
     if(ret)
     {
@@ -494,7 +537,7 @@ WriteRateMatcher<T,F,W,L>::getConnectedRateMatchers()
 
     if(listCreated) return connectedRateMatchers;
     
-    list<BasePort*> connectedPorts = WritePort<T,F>::BasePort::connectedPorts;
+	list<BasePort*> connectedPorts = WritePort<T,F>::BasePort::getConnectedPorts();
     VERIFY(connectedPorts.size() > 0, "No ReadRateMatcher connected to WriteRateMatcher " << id);
     
     for(list<BasePort*>::iterator it = connectedPorts.begin(); it != connectedPorts.end(); it++)

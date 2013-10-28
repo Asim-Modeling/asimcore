@@ -25,6 +25,9 @@
  * @ingroup IoFormat
  */
 
+// generic
+#include <stdlib.h>
+
 // ASIM core
 #include "asim/ioformat.h"
 #include <stdlib.h>
@@ -103,7 +106,8 @@ namespace IoFormat {
     //
     // parse optional precision specifier
     if (*p == '.') {
-      precision (strtol(++p, (char**) &p, 10));
+      ++p;
+      precision (strtol(p, (char**) &p, 10));
     }
     if (*p == '\0') {
       return *this;

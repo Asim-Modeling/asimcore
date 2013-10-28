@@ -1,0 +1,9 @@
+# ***************
+#
+# Benchmark file for running simcore unit tests
+#
+# ***************
+config/bm/unit_test.cfx/unit_test.cfg 
+
+experiments = /event_test_asim/
+config/bm/asim_event_utest.cfx/event_unit_test.cfg 

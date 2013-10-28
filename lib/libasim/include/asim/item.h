@@ -168,7 +168,7 @@ class ASIM_ITEM_CLASS
     // All of them ecapsulate the use of itemId.
     //
     inline void 
-    SetItemTag (char tag_name[], UINT64 value, bool persistent=false)
+    SetItemTag (const char tag_name[], UINT64 value, bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -177,7 +177,7 @@ class ASIM_ITEM_CLASS
     }
 
     inline void
-    SetItemTag (char tag_name[], INT64 value, bool persistent=false)
+    SetItemTag (const char tag_name[], INT64 value, bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -186,7 +186,7 @@ class ASIM_ITEM_CLASS
     }
 
     inline void
-    SetItemTag (char tag_name[], UINT32 value, bool persistent=false)
+    SetItemTag (const char tag_name[], UINT32 value, bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -195,7 +195,7 @@ class ASIM_ITEM_CLASS
     }
 
     inline void
-    SetItemTag (char tag_name[], INT32 value, bool persistent=false)
+    SetItemTag (const char tag_name[], INT32 value, bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -205,7 +205,7 @@ class ASIM_ITEM_CLASS
 
     inline void 
     SetItemTag (
-        char tag_name[], const char str[], bool persistent=false)
+        const char tag_name[], const char str[], bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -214,7 +214,7 @@ class ASIM_ITEM_CLASS
     }
 
     inline void 
-    SetItemTag (char tag_name[], char character, bool persistent=false)
+    SetItemTag (const char tag_name[], char character, bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {
@@ -224,7 +224,7 @@ class ASIM_ITEM_CLASS
 
     inline void 
     SetItemTag (
-        char tag_name[], UINT32 nval, UINT64 value[], bool persistent=false)
+        const char tag_name[], UINT32 nval, UINT64 value[], bool persistent=false)
     {
         if (runWithEventsOn && eventsEnabled)
         {

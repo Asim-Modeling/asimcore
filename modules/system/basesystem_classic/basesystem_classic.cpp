@@ -36,7 +36,8 @@
 #include "asim/provides/default_adf.h"
 
 // ASIM local module
-#include "basesystem_classic.h"
+#include "asim/provides/basesystem.h"
+#include <dlfcn.h>
 
 
 ASIM_SYSTEM_CLASS::ASIM_SYSTEM_CLASS(

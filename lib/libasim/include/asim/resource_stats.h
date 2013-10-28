@@ -49,6 +49,7 @@
 #define _HISTOGRAM_STATS_
 
 // generic
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
@@ -70,9 +71,6 @@ using namespace std;
 // This file contains classes which allow the user to keep histogram
 // stats for particular events or resource.  
 //
-
-// declaration of orphan routines
-static UINT32 CountEntries(const char *s);
 
 //
 // This is the generic histogram stats class.  You can specify either binned
@@ -151,14 +149,29 @@ class HISTOGRAM_TEMPLATE {
           Clear();
       }
       Constructor(num_rows, num_cols, row_size, row_flex_cap, col_size, col_flex_cap, skip_trailing_empty_rows);
-  }
+    }
+
+  // 
+  // Constructor allowing dynamic enabling of the histogram
+  //
+  void Init (bool is_enabled, UINT32 num_rows, UINT32 num_cols = 1, 
+                      UINT32 row_size = 1, bool row_flex_cap = false,
+                      UINT32 col_size = 1, bool col_flex_cap = false,
+                      bool skip_trailing_empty_rows = false) {
+      enabled = is_enabled;
+      if (enabled == true) {
+          Clear();
+      }
+      Constructor(num_rows, num_cols, row_size, row_flex_cap, col_size, col_flex_cap, skip_trailing_empty_rows);
+    }
+
 
   // do the actual work of the constructor.
   // Separated out, so we can call this explicitly after insantiating an array,
   // since ISO C++ only allows default constructors for array elements.
   void Constructor   (UINT32 num_rows, UINT32 num_cols = 1, 
-                      UINT32 row_size = 1, bool row_flex_cap = false,
-                      UINT32 col_size = 1, bool col_flex_cap = false,
+          UINT32 row_size = 1, bool row_flex_cap = false,
+          UINT32 col_size = 1, bool col_flex_cap = false,
                       bool skip_trailing_empty_rows = false)
   {
       if (enabled == true) {
@@ -428,11 +441,11 @@ class HISTOGRAM_TEMPLATE {
   //
   UINT32 CountStringNames(const char *n) {
       if (enabled == true) {
-          char copy[MAX_STRING_LENGTH];
-          
-          ASSERT(strlen(n) <= MAX_STRING_LENGTH-1, this->Name());
-          strcpy (copy, n);
-          return (this->CountEntries(copy));
+          std::stringstream stream(n);
+          std::string oneEntry;
+          unsigned int count = 0;
+          while (getline(stream, oneEntry, ',')) {count++;}
+          return count;
       }
   }
 
@@ -779,7 +792,7 @@ class HISTOGRAM_TEMPLATE {
       if (enabled == true) {
           ostringstream os;
           
-          UINT32 i, j;
+          UINT32 i;
           UINT64 count = 0;
           UINT32 nActualRows = numRows;
           UINT32 nRowsMax = maxRowVal;
@@ -946,7 +959,43 @@ class HISTOGRAM_TEMPLATE {
           }
       }
   }
-
+    
+    // 
+    // Return the value of an element at a given row/col
+    //
+    UINT32 GetValue (UINT32 row_val, UINT32 col_val = 0) {
+        INT32 row_number = row_val;
+        INT32 col_number = col_val;
+          
+        if (rowSize != 1) {
+            row_number = (INT32)(floor((double)(row_number)/(double)(rowSize)));
+        }
+        
+        if (colSize != 1) {
+            col_number = (INT32)(floor((double)(col_number)/(double)(colSize)));
+        }
+        
+        if (row_number >= INT32(numRows)) {
+            if (rowFlexcap == true) {
+                row_number = numRows - 1;
+            }
+            else {
+                VERIFY(false, "Exceeding number of rows of histogram");
+            }
+        }
+         
+        if (col_number >= INT32(numCols)) {
+            if (colFlexcap == true) {
+                col_number = numCols - 1;
+            }
+            else {
+                VERIFY(false, "Exceeding number of cols of histogram");
+            }
+        }
+        return (histData[row_number][col_number]);
+    }
+    
+  
  //
  // HISTOGRAM ACCESS METHODS
  //
@@ -1400,24 +1449,6 @@ class THREE_DIM_HISTOGRAM_TEMPLATE {
   
 };
 
-//
-// Orphan function, not method.  Does not belong to any class. 
-//
-static UINT32
-CountEntries(const char *s) {
-  char copy[MAX_STRING_LENGTH];
-  char *str;
-  UINT32 count = 0;
-
-  strcpy (copy, s);
-  str = strtok(copy, SEPARATORS);
-  while (str != NULL) {
-    count++;
-    str = strtok(NULL, SEPARATORS);
-  }
-  ASSERTX (count > 0);
-  return count;
-}
 #endif // _HISTOGRAM_STATS_
 
 

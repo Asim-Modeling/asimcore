@@ -97,13 +97,7 @@ CompareAndExchangeU32(
     UINT32 oldValue,
     UINT32 newValue)
 {
-    UINT8 didXchg;
-    __asm__ __volatile__("lock; cmpxchgl %2,%1\n\t"
-                         "sete %0"
-                             : "=a"(didXchg), "+m"(*mem)
-                             : "q"(newValue), "0"(oldValue)
-                             : "memory", "cc");
-    return didXchg;
+    return __sync_bool_compare_and_swap(mem, oldValue, newValue);
 }
 
 inline bool
@@ -113,24 +107,7 @@ CompareAndExchangeU64(
     UINT64 oldValue,
     UINT64 newValue)
 {
-    UINT8 didXchg;
-#if __WORDSIZE >= 64
-    __asm__ __volatile__("lock; cmpxchgq %2,%1\n\t"
-                         "sete %0"
-                             : "=a"(didXchg), "+m"(*mem)
-                             : "r"(newValue), "0"(oldValue)
-                             : "memory", "cc");
-#else
-    __asm__ __volatile__("lock; cmpxchg8b %1\n\t"
-                         "sete %0"
-                             : "=q"(didXchg), "+m"(*mem)
-                             : "b"((UINT32)newValue),
-                               "c"((UINT32)(newValue >> 32)),
-                               "a"((UINT32)oldValue),
-                               "d"((UINT32)(oldValue >> 32))
-                             : "memory", "cc");
-#endif
-    return didXchg;
+    return __sync_bool_compare_and_swap(mem, oldValue, newValue);
 }
 
 #if defined INT128_AVAIL && !defined __ICC
@@ -240,7 +217,7 @@ static inline _Atomic_word
 __attribute__ ((__unused__))
 __exchange_and_add (volatile _Atomic_word *__mem, int __val)
 {
-    register _Atomic_word __result;
+    _Atomic_word __result;
     __asm__ __volatile__ ("lock; xaddl %0,%2"
                           : "=r" (__result) 
                           : "0" (__val), "m" (*__mem) 
@@ -284,15 +261,20 @@ __atomic_add (volatile _Atomic64* __mem, _Atomic64 __val)
 #endif
 }
 
+union _Atomic64Split {
+    _Atomic64 comb;
+    unsigned int split[2];
+};
+
 static inline _Atomic64 
 __attribute__ ((__unused__))
 __exchange_and_add (volatile _Atomic64 *__mem, _Atomic64 __val)
 {
-    _Atomic64 __result;
+    _Atomic64Split __result;
 
 #if __WORDSIZE >= 64
     __asm__ __volatile__ ("lock; xaddq %0,%2"
-                          : "=r" (__result) 
+                          : "=r" (__result.comb) 
                           : "0" (__val), "m" (*__mem) 
                           : "memory");
 #else
@@ -306,11 +288,11 @@ __exchange_and_add (volatile _Atomic64 *__mem, _Atomic64 __val)
                          "jnz             1b\n\t"
                          "movl            %%eax, %2\n\t" 
                          "movl            %%edx, %3\n" 
-                         : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (ll_low(__result)),  "=m" (ll_high(__result))
+                         : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (__result.split[0]),  "=m" (__result.split[1])
                          : "m" (__val) 
                          : "memory", "eax", "edi", "ecx", "edx", "cc"); 
 #endif
-    return __result;
+    return __result.comb;
 }
 
  
@@ -343,7 +325,7 @@ __exchange_and_decr (volatile _Atomic64 *__mem, _Atomic64 __val)
 #if __WORDSIZE >= 64
     return __exchange_and_add(__mem, -__val);
 #else
-    _Atomic64 __result;
+    _Atomic64Split __result;
 
     __asm__ __volatile__("movl  %0, %%eax\n\t" 
                          "movl  %1, %%edx\n\t" 
@@ -355,10 +337,10 @@ __exchange_and_decr (volatile _Atomic64 *__mem, _Atomic64 __val)
                          "jnz             1b\n\t"
                          "movl            %%eax, %2\n\t" 
                          "movl            %%edx, %3\n" 
-                         : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (ll_low(__result)),  "=m" (ll_high(__result))
+                         : "+o" (ll_low(*__mem)), "+o" (ll_high(*__mem)), "=m" (__result.split[0]),  "=m" (__result.split[1])
                          : "m" (__val) 
                          : "memory", "eax", "edi", "ecx", "edx", "cc"); 
-    return __result;
+    return __result.comb;
 #endif
 }
 
@@ -367,24 +349,24 @@ static inline _Atomic64
 __attribute__ ((__unused__)) 
 __read_val(const _Atomic64 * target) 
 {
-    _Atomic64 __out;
+    _Atomic64Split __out;
 
 #if __WORDSIZE >= 64
-    __out = *target;
+    __out.comb = *target;
 #else
     __asm__ __volatile__("       xorl            %%eax, %%eax\n"
                          "       xorl            %%edx, %%edx\n"
-                         "       xorl            %%ebx, %%edi\n"
+                         "       xorl            %%edi, %%edi\n"
                          "       xorl            %%ecx, %%ecx\n"
                          "lock;  cmpxchg8b       %2\n"
                          "       movl            %%eax, %0\n"
                          "       movl            %%edx, %1"
-                         : "=m" (ll_low(__out)), "=m" (ll_high(__out))
+                         : "=m" (__out.split[0]), "=m" (__out.split[1])
                          : "o" (*target)
                          : "memory", "eax", "edi", "ecx", "edx", "cc");
 #endif
 
-    return __out;
+    return __out.comb;
 }
 
 

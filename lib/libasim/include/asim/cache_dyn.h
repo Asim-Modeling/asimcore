@@ -436,7 +436,7 @@ class VictimPolicy
             NumLinesPerWay = nLinesPerWay;
             NumWays = nWays;
             Policy = vPolicy;
-            LruArray = new(lruInfo*[NumLinesPerWay]);
+            LruArray = new lruInfo*[NumLinesPerWay];
             for(UINT32 i=0; i<NumLinesPerWay; i++){
                 LruArray[i] = new lruInfo(NumWays);
             }
@@ -445,13 +445,13 @@ class VictimPolicy
                 case VP_LRUReplacement:
                 case VP_RandomReplacement:
                 case VP_RandomNotMRUReplacement:
-                    LruArray = new(lruInfo*[NumLinesPerWay]);
+                    LruArray = new lruInfo*[NumLinesPerWay];
                     for(UINT32 i=0; i<NumLinesPerWay; i++){
                         LruArray[i] = new lruInfo(NumWays);
                     }
                     break;
                 case VP_PseudoLRUReplacement:
-                    LruArray = new(lruInfo*[NumLinesPerWay]);
+                    LruArray = new lruInfo*[NumLinesPerWay];
                     for(UINT32 i=0; i<NumLinesPerWay; i++){
                         LruArray[i] = new pseudo_lru_info_dynamic(NumWays);
                     }
@@ -679,10 +679,10 @@ class dyn_cache_class : public VictimPolicy
         UINT32 KiloObjects = ( NumWays *  NumLinesPerWay * NumObjectsPerLine) / 1024;
 
         //! 2D array of lineStates
-        TagArray = new(lineState**[NumLinesPerWay]);
+        TagArray = new lineState**[NumLinesPerWay];
         for ( i = 0; i < NumLinesPerWay; i++ ) 
         {
-            TagArray[i] = new(lineState*[NumWays]);
+            TagArray[i] = new lineState*[NumWays];
             for(int j=0; j<NumWays; j++){ 
                 TagArray[i][j] = new lineState(NumObjectsPerLine);
             }

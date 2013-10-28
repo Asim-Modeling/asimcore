@@ -39,6 +39,7 @@
 #ifndef _ARCHREGISTER_
 #define _ARCHREGISTER_
 
+#include <string.h>
 #include <iostream>
 #include <string.h>
 

@@ -1,3 +1,21 @@
+/*
+ *Copyright (C) 2004-2006 Intel Corporation
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 ******************************************************************
 Awb module specification
 ******************************************************************
@@ -13,6 +31,7 @@ Awb module specification
 %public single_chip_clockserver_system.h 
 %private single_chip_clockserver_system.cpp 
 %library lib/libasim/libasim.a
+%syslibrary -lpthread
 
 %export MAX_TOTAL_NUM_CPUS          128 "Maximum number of CPUS allowed"
 %export MAX_TOTAL_NUM_HWCS          128 "Maximum number of hardware contexts allowed"
@@ -25,10 +44,13 @@ Awb module specification
 %export PTHREAD_PER_CORE              0 "Are core models run in parallel?"
 %export PTHREAD_PER_UNIT              0 "Are unit models run in parallel?"
 %export PTHREAD_PER_MODULE            0 "Are all modules run in parallel?"
+%export %dynamic CORES_PER_PTHREAD	  1 "How many core models are run on one pthread? (Range is 1 to max num of cores)" 
 
 %export %dynamic THREADED_CLOCKING            1 "Enables the threaded clocking"
 %export %dynamic RANDOM_CLOCKING_SEED         0 "Seed to clock modules in random order (0 == Fixed order)"
 %export %dynamic DUMP_CLOCKING_PROFILE        0 "Enables the Clock routine profiling"
+%param  %dynamic CLOCKSERVER_THREAD_LOOKAHEAD "0" "fuzzy barrier lookahead, format: [<domain>:]<cycles>"
+%const           CLOCKSERVER_THREAD_DELAY     "0" "threading startup delay, format: [<domain>:]<cycles>"
 
 %param %dynamic SIMULATED_REGION_WEIGHT 10000 "The weight of the benchmark section from 1-10000"
 %param %dynamic SIMULATED_REGION_INSTRS_REPRESENTED 0 "Total instructions per CPU in benchmark represented by this region"

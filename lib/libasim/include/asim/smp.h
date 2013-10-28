@@ -121,7 +121,13 @@ class ASIM_SMP_CLASS
         void *arg,
         ASIM_SMP_THREAD_HANDLE threadHandle);
 
+    // create a "dormant" thread, that shares a pthread with other active threads
+    static void CreateThread(
+        ASIM_SMP_THREAD_HANDLE threadHandle);
+
     static ASIM_SMP_THREAD_HANDLE GetThreadHandle(void);
+
+    static void SetThreadHandle(ASIM_SMP_THREAD_HANDLE);
 
     //
     // Total of all running threads
@@ -138,7 +144,9 @@ class ASIM_SMP_CLASS
 
     static INT32 GetRunningThreadNumber(void)
     {
-#ifdef TLS_AVAILABLE
+#if MAX_PTHREADS == 1
+        return 0;
+#elif defined(TLS_AVAILABLE)
         return ASIM_SMP_RunningThreadNumber;
 #else
         if (GetTotalRunningThreads() <= 1)
@@ -155,6 +163,11 @@ class ASIM_SMP_CLASS
     static UINT32 GetMaxThreads(void) { return maxThreads; };
 
     static ASIM_SMP_THREAD_HANDLE GetMainThreadHandle(void) { return mainThread; };
+
+    static INT32 GetMaxRunningThreadNumber(void)
+    {
+        return ASIM_SMP_THREAD_HANDLE_CLASS::threadUidGen - 1;
+    };
 
   private:
     static ASIM_SMP_THREAD_HANDLE mainThread;

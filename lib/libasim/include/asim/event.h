@@ -35,15 +35,14 @@ using namespace std;
  * If events are not enabled, then no event method invocations will
  * be compiled into the model.
  */
-// *** Doesn't work with multi-threaded models ***
-#if defined(ASIM_ENABLE_EVENTS) && (MAX_PTHREADS <= 1)
+#if defined(ASIM_ENABLE_EVENTS)
 #define DRALEVENT(E)          ASIM_DRAL_EVENT_CLASS::event->E
 #define DRALEVENT_GUARDED(E)  if (ASIM_DRAL_EVENT_CLASS::event) {ASIM_DRAL_EVENT_CLASS::event->E;}
-#define EVENT(E)        E
+#define EVENT(...) __VA_ARGS__
 #else
 #define DRALEVENT(E)
 #define DRALEVENT_GUARDED(E)
-#define EVENT(E)
+#define EVENT(...)
 #endif
 
 // FEDE: IN ORDER TO AVOID REPLICATING OCCUPANCY STRINGS WE DEFINE THEM HERE

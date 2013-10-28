@@ -1,0 +1,99 @@
+: # -*- perl -*-
+eval 'exec perl -X "$0" ${1+"$@"}'
+       if 0;
+# # Copyright (C) 2003-2008 Intel Corporation
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2 # of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, # but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details. #
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+# 
+
+#
+# Benchmark setup generator specifically for the Asim events unit test.
+# This runs the unit test, then checks the generated DRAL files.
+#
+use File::Basename;
+use File::Spec;
+use Asim::GenCFG::Auto;
+
+# if browsing in AWB, just generate a list of virtual .cfg files to generate:
+if ( $ARGV[0] ne '--emit' ) {
+  Asim::GenCFG::Auto::Directory('event_unit_test');
+  Asim::GenCFG::Auto::Generate();
+  exit 0;
+}
+# otherwise, actually generate a .cfg:
+
+my $my_setup_script = 
+'#!/bin/sh
+cp -f @RUNSCRIPT@ $2/run';
+
+# if the Dreams package is installed, look for the dralTranslator
+# tool so we can check the contents of DRAL output files
+chomp(my $dralTranslator = `awb-resolver tools/dralTranslator/src/dralTranslator` || '');
+
+# for now, we only check that the DRAL files were created.
+# At some point, we should check their contents...
+my $my_run_script = 
+'#!/bin/sh
+# if a test runs too long, kill it:
+ulimit -t 600
+# execute it:
+$model
+if [ $? -eq 0 ]; then
+  # make sure the expected DRAL files were created
+  for df in \
+    Fanout NonPODpointerPort NormalPointerPort IntPort \
+    NonPODsmartPointerPort SilentItemPort \
+    MultiClock NormalItemPort SilentPointerPort
+  do
+    file=test${df}.drl.gz
+    if [ -e $file ]; then
+      echo expected DRAL output file $file ok
+    else
+      echo expected DRAL output file $file not found
+      exit 1
+    fi
+  done
+';
+# if we found dralTranslator, add code to check DRAL output:
+if ($dralTranslator ne '') {
+  $my_run_script .=
+'  DT='.$dralTranslator.'
+  # make sure some files DO have moveitems in them
+  for df in Fanout NormalPointerPort MultiClock NormalItemPort ; do
+    events=`zcat test${df}.drl.gz | $DT | grep moveitem`
+    if [ -z "$events" ]; then
+      echo no expected moveitem events in DRAL output file $file
+      exit 1
+    fi
+  done
+  # make sure other files DO NOT have moveitems in them
+  for df in IntPort SilentItemPort SilentPointerPort NonPODpointerPort NonPODsmartPointerPort ; do
+    events=`zcat test${df}.drl.gz | $DT | grep moveitem`
+    if [ -n "$events" ]; then
+      echo unexpected moveitem events in DRAL output file $file :
+      echo $events
+      exit 1
+    fi
+  done
+';
+} else {
+  $my_run_script .=
+'  echo WARNING: dralTranslator not found, not checking events file contents
+';
+}
+$my_run_script .=
+'  # if all went well, create a dummy stats file to tell regression.verifier we passed
+  echo $model > @BENCHMARKNAME@.stats
+fi
+';
+    
+Asim::GenCFG::Auto::Generate( setup_script => $my_setup_script, run_script => $my_run_script);

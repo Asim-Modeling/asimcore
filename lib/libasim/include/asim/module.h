@@ -40,6 +40,7 @@
 #include "asim/item.h"
 #include "asim/trace.h"
 #include "asim/clockable.h"
+#include "asim/regexobj.h"
 
 using namespace std;
 
@@ -194,7 +195,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn)
         {
-            UINT32 lst[1] = { position };
+            EVENT(UINT32 lst[1] = { position });
 
             DRALEVENT(SetNodeTag(
                           uniqueId, tagName, value, 1, lst, persistent));
@@ -207,7 +208,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn)
         {
-            UINT32 lst[2] = { position1, position2 };
+            EVENT(UINT32 lst[2] = { position1, position2 });
 
             DRALEVENT(SetNodeTag(
                           uniqueId, tagName, value, 2, lst, persistent));
@@ -297,7 +298,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item->GetEventsEnabled())
         {
-           UINT32 positions[1] = {position};
+           EVENT(UINT32 positions[1] = {position});
            DRALEVENT(EnterNode(
                           uniqueId, item->GetItemId(),1,positions,persistent));
         }
@@ -309,7 +310,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item.GetEventsEnabled())
         {
-           UINT32 positions[1] = {position};
+           EVENT(UINT32 positions[1] = {position});
            DRALEVENT(EnterNode(
                           uniqueId, item.GetItemId(),1,positions,persistent));
         }
@@ -321,7 +322,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item->GetEventsEnabled())
         {
-           UINT32 positions[2] = { position1, position2 };
+           EVENT(UINT32 positions[2] = { position1, position2 });
            DRALEVENT(EnterNode(
                           uniqueId, item->GetItemId(), 2, positions, persistent));
         }
@@ -333,7 +334,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item.GetEventsEnabled())
         {
-           UINT32 positions[2] = {position1, position2};
+           EVENT(UINT32 positions[2] = {position1, position2});
            DRALEVENT(EnterNode(
                           uniqueId, item.GetItemId(),2,positions,persistent));
         }
@@ -367,7 +368,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item->GetEventsEnabled())
         {
-           UINT32 positions[1] = {position};
+           EVENT(UINT32 positions[1] = {position});
            DRALEVENT(ExitNode(
                           uniqueId, item->GetItemId(),1,positions,persistent));
         }
@@ -379,7 +380,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item.GetEventsEnabled())
         {
-           UINT32 positions[1] = {position};
+           EVENT(UINT32 positions[1] = {position});
            DRALEVENT(ExitNode(
                           uniqueId, item.GetItemId(),1,positions,persistent));
         }
@@ -391,7 +392,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item->GetEventsEnabled())
         {
-           UINT32 positions[2] = { position1, position2 };
+           EVENT(UINT32 positions[2] = { position1, position2 });
            DRALEVENT(ExitNode(
                           uniqueId, item->GetItemId(), 2, positions, persistent));
         }
@@ -403,7 +404,7 @@ class ASIM_DRAL_NODE_CLASS
     {
         if (runWithEventsOn && active && item.GetEventsEnabled())
         {
-           UINT32 positions[2] = {position1, position2};
+           EVENT(UINT32 positions[2] = {position1, position2});
            DRALEVENT(ExitNode(
                           uniqueId, item.GetItemId(),2,positions,persistent));
         }
@@ -519,6 +520,20 @@ class ASIM_ADF_NODE_CLASS
 };
 
 
+// Structure to hold the multi-threading command line parameters:
+// 1. regex string holds the regex specified.
+// 2. limit holds the number of the above specified modules to run on a pthread.
+// 3. count helps figure out when to create a new pthread handle.
+// 4. prevHandle stores the thread handle of the previous module that created one.
+
+struct module_regex {
+    string regex;
+    int limit;
+    int count;
+    ASIM_SMP_THREAD_HANDLE prevHandle;
+};
+
+
 /*
  * Class ASIM_MODULE
  *
@@ -570,14 +585,6 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
          * multiprocessor system.  */
         UINT16		module_id;
 
-    protected:
-        /*
-	 * a thread object, if this module wants to run in parallel.
-	 * This is left protected, so that derived classes can allocate
-	 * threads in non-standard ways if they choose.
-	 */
-	ASIM_SMP_THREAD_HANDLE thread;
-
     public:
         ASIM_MODULE_CLASS (ASIM_MODULE p, const char * const n,
 			   ASIM_EXCEPT e = NULL, bool create_thread = false);
@@ -593,6 +600,13 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
         ASIM_EXCEPT Except (void) { ASSERTX(eMod != NULL);  return(eMod); }
         ASIM_MODULE GetParent(void) const { return(parent); }
         UINT16      GetId (void) const { return(module_id); }
+
+        bool didModuleCreateThread;
+        bool createThread;
+        bool SetThreadHandle();
+        static list<module_regex> regexList;
+        string traceName;
+        static void SetModuleRegex(string regex, int limit);
 
         /*
          * Modifiers
@@ -641,6 +655,7 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
         virtual void PrintModuleStats (STATE_OUT stateOut);
         virtual void PrintModuleStats (char *filename);
 
+        /*
         virtual void DumpFunctionalState(ostream& out)
         {
            //for now we will assert if we ever call this on a module with
@@ -648,6 +663,15 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
            //we may not want to have this defined on each module
            ASSERT(false,"This module does not have a dump function");
         }
+        */
+        /*
+         * Dump the functional state of this module and then recursively
+         * the state of all contained modules
+         */
+         
+        virtual void DumpFunctionalState(ostream& out);
+        
+        /*
         virtual void LoadFunctionalState(istream& in)
         {
            //for now we will assert if we ever call this on a module with
@@ -655,6 +679,13 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
            //we may not want to have this defined on each module
            ASSERT(false,"This module does not have a load function");
         }
+        */
+        /*
+         * Restore the functional state of this module and then recursively
+         * the state of all contained modules
+         */
+        virtual void LoadFunctionalState(istream& in);
+        
         /*
          * Clear this module statistics and then recursively the stats
          * of all contained modules.
@@ -713,9 +744,10 @@ class ASIM_MODULE_CLASS : public ASIM_REGISTRY_CLASS, public ASIM_DRAL_NODE_CLAS
         virtual ASIM_SMP_THREAD_HANDLE GetHostThread(void)
         {
             // if this module allocated a thread itself, return it:
-	    if (thread)
+            ASIM_SMP_THREAD_HANDLE h = ASIM_CLOCKABLE_CLASS::GetHostThread();
+            if (h)
             {
-                return thread;
+                return h;
             }
 	    // otherwise, get the thread from the parent, if any:
             ASIM_MODULE p = GetParent();

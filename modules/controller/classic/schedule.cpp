@@ -92,8 +92,18 @@ CMD_SCHEDULE_CLASS::ReadyEvent (UINT64 currentNanosecond, UINT64 currentCycle, U
         if ((head->Trigger() == ACTION_NOW)
             || (((head->Trigger() == ACTION_CYCLE_ONCE)
                  || (head->Trigger() == ACTION_CYCLE_PERIOD))
-                && (head->ReadyCycle() == currentCycle)))
+                && (head->ReadyCycle() <= currentCycle)))
         {
+            // The cycle count comparison above was changed from an exact equality to an inequality
+            // to support clock servers that do not have fine control over the number of cycles that
+            // can be simulated in a single call.  If we advanced simulation time beyond the time
+            // for the next event, still dequeue the stale action but also print a warning:
+            if ( (  ( head->Trigger() == ACTION_CYCLE_ONCE   )
+                 || ( head->Trigger() == ACTION_CYCLE_PERIOD ) )
+              && (  head->ReadyCycle() < currentCycle         ) )
+            {
+                ASIMWARNING( "Processing action for cycle " << head->ReadyCycle() << " at cycle " << currentCycle << " !\n" );
+            }
             CMD_WORKITEM ht = cycleList->Remove();
             VERIFYX(ht == head);
             return(head);
@@ -228,19 +238,19 @@ CMD_SCHEDULE_CLASS::Schedule (CMD_WORKITEM item, UINT64 currentNanosecond, UINT6
 
     if (trig == ACTION_CYCLE_PERIOD)
     {
-        item->ReadyCycle() = ((currentCycle + 1 + item->Period()) /
+        item->ReadyCycle() = ((currentCycle + item->Period()) /
                               item->Period()) * item->Period();
         ASSERTX(item->ReadyCycle() != currentCycle);
     }
     else if (trig == ACTION_INST_PERIOD)
     {
-        item->ReadyInst() = ((currentInst + 1 + item->Period()) /
+        item->ReadyInst() = ((currentInst + item->Period()) /
                               item->Period()) * item->Period();
         ASSERTX(item->ReadyInst() != currentInst);
     }
     else if (trig == ACTION_MACROINST_PERIOD)
     {
-        item->ReadyMacroInst() = ((currentMacroInst + 1 + item->Period()) /
+        item->ReadyMacroInst() = ((currentMacroInst + item->Period()) /
                                   item->Period()) * item->Period();
         ASSERTX(item->ReadyMacroInst() != currentMacroInst);
     }

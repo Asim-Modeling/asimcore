@@ -52,14 +52,19 @@ using namespace iof;
 
 typedef UINT64 MM_UID_TYPE;
 
-
+#if MAX_PTHREADS < 1
+    #error MAX_PTHREADS must be > 0
+#endif
 
 /**
  * Macro used to define static members in ASIM_MM_CLASS.
  */
+#ifndef ASIM_MM_SCALE
+#define ASIM_MM_SCALE 1
+#endif
 #define ASIM_MM_DEFINE(M, MAX) \
 template<> \
-ASIM_MM_CLASS<M>::DATA ASIM_MM_CLASS<M>::data(MAX, #M);
+ASIM_MM_CLASS<M>::DATA ASIM_MM_CLASS<M>::data(MAX*ASIM_MM_SCALE, #M);
 
 // allocate all memory of the pool at once (rather than each object on demand)
 #define MM_PREALLOC_MEMORY
@@ -99,6 +104,47 @@ ASIM_MM_CLASS<M>::DATA ASIM_MM_CLASS<M>::data(MAX, #M);
 #endif
 
 extern bool debugOn;
+
+
+/**
+ * ASIM_MM_CLASS_PER_THREAD_FREE_LISTS manages multiple free lists for
+ * an MM_CLASS, allocating one least for each host thread.  The goal is to
+ * keep storage private to hardware threads whenever possible to improve
+ * cache locality.  In some cases objects may be allocated by one thread
+ * and released by another, causing an imbalance in the sizes of each
+ * hardware thread's free list.  This class rebalances the lists dynamically.
+ **/
+template <typename MM_TYPE>
+class ASIM_MM_CLASS_PER_THREAD_FREE_LISTS
+{
+  public:
+    ASIM_MM_CLASS_PER_THREAD_FREE_LISTS();
+    ~ASIM_MM_CLASS_PER_THREAD_FREE_LISTS() {};
+
+    // Push an object on to the free list for a thread.  If no threadId is
+    // supplied the object is pushed on the current thread's list.
+    void Push(MM_TYPE *obj, INT32 threadId = -1);
+
+    // Pop an object from the free list for a thread.  If the list for the
+    // current thread is empty then pop from some other thread.
+    //
+    // If a threadId is supplied then pop only from the specified thread.
+    MM_TYPE *Pop(INT32 threadId = -1);
+
+    // Number of objects on free lists of all threads, combined.
+    INT32 Size(void) const;
+    
+  private:
+    struct
+    {
+        // Force the free lists to be aligned to the cache line size so list
+        // heads aren't shared across host processors.
+        ASIM_FREE_LIST_CLASS<MM_TYPE> freeList __attribute__ ((aligned(64)));
+        UINT32 lastStolenThreadNum;
+    } freeLists[MAX_PTHREADS];
+};
+
+
 
 /**
  * @brief simple reference counting, memory debugging class
@@ -180,7 +226,7 @@ class ASIM_MM_CLASS : public ASIM_FREE_LIST_ELEMENT_CLASS<MM_TYPE>
         ATOMIC_INT32 mmTotalObjs;     ///< Number of Objects
 
         /// List of free MM_TYPE objects.
-        ASIM_FREE_LIST_CLASS<MM_TYPE> mmFreeList;
+        ASIM_MM_CLASS_PER_THREAD_FREE_LISTS<MM_TYPE> mmFreeList;
 
 #ifdef MM_OBJ_DUMP
         /// List of all objects (only in extended debug mode MM_OBJ_DUMP)
@@ -202,14 +248,9 @@ class ASIM_MM_CLASS : public ASIM_FREE_LIST_ELEMENT_CLASS<MM_TYPE>
         /// Dump all objects of this MM type.
         void ObjDump(void);
         void AddToObjDumpList(MM_TYPE *newMmObj);
-	
+
 #ifdef MM_PREALLOC_MEMORY
-	// has preallocation happened?  In multithreaded mode, this
-	// needs to be volatile since it synchronizes between threads
-        #if MAX_PTHREADS > 1 
- 	volatile
- 	#endif
-	bool prealloc_done;
+        volatile bool prealloc_done;
 
         /// Pre-allocate memory for the whole pool of objects
         void PreAllocateMemory (void);
@@ -356,10 +397,13 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::~DATA()
     }
 
     // free all objects that are on the free list
-    MM_TYPE * obj;
-    while ( obj = mmFreeList.Pop() )
+    for (INT32 t = 0; t < MAX_PTHREADS; t++)
     {
-        FinalObjectCleanup(obj);
+        MM_TYPE * obj;
+        while (( obj = mmFreeList.Pop(t) ))
+        {
+            FinalObjectCleanup(obj);
+        }
     }
 
     destructed = true;
@@ -591,13 +635,13 @@ ASIM_MM_CLASS<MM_TYPE>::DATA::PreAllocateMemory (void)
     {
         MM_TYPE * newMmObj;
         newMmObj = ((MM_TYPE *) new char[sizeof(MM_TYPE)]);
-        memset(newMmObj, 0, sizeof(MM_TYPE));
+        memset((void *)newMmObj, 0, sizeof(MM_TYPE));
 
         AddToObjDumpList(newMmObj);
 
         // object is on the freelist, no deletion necessary
         newMmObj->mmCnt = MMCNT_ON_FREELIST_AND_DELETED;
-        mmFreeList.Push(newMmObj);
+        mmFreeList.Push(newMmObj, /*threadId=*/0);
 
 #ifdef MM_VALGRIND
         // object is on the free list and should not be accessed anymore!
@@ -677,12 +721,14 @@ ASIM_MM_CLASS<MM_TYPE>::operator new (
         ASSERT(newMmObj->mmCnt == MMCNT_ON_FREELIST_AND_DELETED,
             "MM Object type " << data.className
             << " taken from free list has not yet been destructed!");
+
+        memset((void *)newMmObj, 0, sizeof(MM_TYPE));
     }
     else
     {
         // acquire memory for 1 object on demand
         ++data.mmTotalObjs;
-	if (data.mmTotalObjs > data.mmMaxObjs)
+        if (data.mmTotalObjs > data.mmMaxObjs)
         {
             cout << "MEMORY FAILURE: mmMaxObjs (" << data.mmMaxObjs << ")"
                  << " for " << data.className << " exceeded." << endl;
@@ -692,7 +738,7 @@ ASIM_MM_CLASS<MM_TYPE>::operator new (
         }
 
         newMmObj = ((MM_TYPE *) new char[size]);
-        memset(newMmObj, 0, sizeof(MM_TYPE));
+        memset((void *)newMmObj, 0, sizeof(MM_TYPE));
 
         data.AddToObjDumpList(newMmObj);
     }
@@ -771,7 +817,7 @@ ASIM_MM_CLASS<MM_TYPE>::SetMaxObjs (
              << "Old Value = " << data.mmMaxObjs
              << ", New Value = " << max << endl;
     }
-    if (data.mmTotalObjs > max)
+    if (data.mmTotalObjs > 0 && UINT32(data.mmTotalObjs) > max)
     {
         cerr << "ERROR: " << data.className
              << ": trying to change to max number of objects to "
@@ -848,6 +894,90 @@ const
 
 #endif // ASIM_ENABLE_MM_DEBUG
 
+
+
+
+template <typename MM_TYPE>
+ASIM_MM_CLASS_PER_THREAD_FREE_LISTS<MM_TYPE>::ASIM_MM_CLASS_PER_THREAD_FREE_LISTS()
+{
+    for (INT32 t = 0; t < MAX_PTHREADS; t++)
+    {
+        freeLists[t].lastStolenThreadNum = 0;
+    }
+}
+
+
+template <typename MM_TYPE>
+void
+ASIM_MM_CLASS_PER_THREAD_FREE_LISTS<MM_TYPE>::Push(
+    MM_TYPE *obj,
+    INT32 threadId)
+{
+    if (threadId == -1)
+    {
+        threadId = ASIM_SMP_CLASS::GetRunningThreadNumber();
+    }
+    ASSERTX(threadId < MAX_PTHREADS);
+
+    freeLists[threadId].freeList.Push(obj);
+}
+
+
+template <typename MM_TYPE>
+MM_TYPE *
+ASIM_MM_CLASS_PER_THREAD_FREE_LISTS<MM_TYPE>::Pop(INT32 threadId)
+{
+    if (threadId >= 0)
+    {
+        ASSERTX(threadId < MAX_PTHREADS);
+        return freeLists[threadId].freeList.Pop();
+    }
+
+    threadId = ASIM_SMP_CLASS::GetRunningThreadNumber();
+    MM_TYPE *obj = freeLists[threadId].freeList.Pop();
+    if (obj != NULL)
+    {
+        return obj;
+    }
+
+    // Current thread's list is empty.  Try to steal from a different thread.
+    const INT32 s = freeLists[threadId].lastStolenThreadNum;
+    INT32 t = s + 1;
+    if (t > ASIM_SMP_CLASS::GetMaxRunningThreadNumber())
+    {
+        t = 0;
+    }
+    while (t != s)
+    {
+        obj = freeLists[t].freeList.Pop();
+        if (obj != NULL)
+        {
+            freeLists[threadId].lastStolenThreadNum = t;
+            return obj;
+        }
+
+        t += 1;
+        if (t > ASIM_SMP_CLASS::GetMaxRunningThreadNumber())
+        {
+            t = 0;
+        }
+    }
+
+    return freeLists[s].freeList.Pop();
+}
+
+
+template <typename MM_TYPE>
+INT32
+ASIM_MM_CLASS_PER_THREAD_FREE_LISTS<MM_TYPE>::Size(void) const
+{
+    INT32 freeListObjs = 0;
+    for (UINT32 t = 0; t < MAX_PTHREADS; t++)
+    {
+        freeListObjs += freeLists[t].freeList.Size();
+    }
+    return freeListObjs;
+}
 
 #endif // _MM_
 

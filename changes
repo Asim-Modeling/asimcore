@@ -7930,3 +7930,207 @@ Directory .
  pm                        Locally Removed           384 
 
 Removed the pm dir soft link since it duplicates all the module names
+
+----------
+mgambhir    Date: Mon Oct 28 16:06:20 EDT 2013  CSN: CSN-asimcore-386
+                  Mon Oct 28 20:06:20 UTC 2013
+
+
+Directory .
+ configure                 Locally Modified          385 
+ configure.in              Locally Modified          385 
+
+Directory experiments
+ simcore/                  Locally Added               0 
+
+Directory experiments/simcore
+ regression/               Locally Added               0 
+
+Directory experiments/simcore/regression
+ regression.models         Locally Added               0 
+ regression.benchmarks     Locally Added               0 
+
+Directory .
+ experiments/              Locally Added               0 
+
+Directory config/pm/asim
+ unit_test/                Locally Added               0 
+
+Directory config/pm/asim/unit_test
+ stat_test_asim.apm        Locally Added               0 
+ event_test_asim.apm       Locally Added               0 
+ port_test_wb_bw_manual_asim.apm Locally Added               0 
+ clockserver_test_asim.apm Locally Added               0 
+ port_test_asim.apm        Locally Added               0 
+ mpool_test_asim.apm       Locally Added               0 
+ mptr_port_test_asim.apm   Locally Added               0 
+
+Directory config
+ bm/                       Locally Added               0 
+
+Directory config/bm
+ asim_event_utest.cfx      Locally Added               0 
+ unit_test.cfx             Locally Added               0 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          385 
+
+Directory lib/libasim/include/asim
+ mesg.h                    Locally Modified          385 
+ trace.h                   Locally Modified          385 
+ smp.h                     Locally Modified          385 
+ resource_stats.h          Locally Modified          385 
+ clockserver.h             Locally Modified          385 
+ clockserver_threaded_dynamic.h Locally Added               0 
+ xmlout-nolib-gz.h         Locally Modified          385 
+ atomic.h                  Locally Modified          385 
+ freelist.h                Locally Modified          385 
+ plru_masks.h              Locally Modified          385 
+ cache_mesi.h              Locally Modified          385 
+ event.h                   Locally Modified          385 
+ module.h                  Locally Modified          385 
+ item.h                    Locally Modified          385 
+ rate_matcher.h            Locally Modified          385 
+ phase.h                   Locally Modified          385 
+ mm.h                      Locally Modified          385 
+ cache_dyn.h               Locally Modified          385 
+ arch_register.h           Locally Modified          385 
+ port.h                    Locally Modified          385 
+ line_status.h             Locally Modified          385 
+ time_events_ring.h        Locally Added               0 
+ vector.h                  Locally Modified          385 
+ cache.h                   Locally Modified          385 
+ threadsafe.h              Locally Added               0 
+ clockable.h               Locally Modified          385 
+ state.h                   Locally Modified          385 
+ threaded_log.h            Locally Modified          385 
+ trace_legacy.h            Locally Modified          385 
+ syntax.h                  Locally Modified          385 
+ ssc.h                     Locally Added               0 
+
+Directory lib/libasim/include
+ Makefile.am               Locally Modified          385 
+
+Directory lib/libasim
+ t/                        Locally Added               0 
+
+Directory lib/libasim/t
+ stat_test.h               Locally Added               0 
+ stat_test.awb             Locally Added               0 
+ port_test_wr_bw_man.h     Locally Added               0 
+ event_test.h              Locally Added               0 
+ port_test_wr_bw_man.awb   Locally Added               0 
+ clockserver_test.h        Locally Added               0 
+ event_test.awb            Locally Added               0 
+ clockserver_test.awb      Locally Added               0 
+ port_test.h               Locally Added               0 
+ mpool_test.h              Locally Added               0 
+ mptr_port_test.h          Locally Added               0 
+ port_test.awb             Locally Added               0 
+ mpool_test.awb            Locally Added               0 
+ mptr_port_test.awb        Locally Added               0 
+
+Directory lib/libasim
+ doc/                      Locally Added               0 
+
+Directory lib/libasim/doc
+ Makefile.in               Locally Added               0 
+ Makefile.am               Locally Added               0 
+
+Directory lib/libasim/src
+ xcheck.cpp                Locally Modified          385 
+ clockserver_lookahead_param.cpp Locally Added               0 
+ ioformat.cpp              Locally Modified          385 
+ plru_masks.cpp            Locally Modified          385 
+ event.cpp                 Locally Modified          385 
+ trace_legacy.cpp          Locally Modified          385 
+ module.cpp                Locally Modified          385 
+ clockserver_threaded_fuzzy.cpp Locally Added               0 
+ mesg.cpp                  Locally Modified          385 
+ trace.cpp                 Locally Modified          385 
+ smp.cpp                   Locally Modified          385 
+ regexobj.cpp              Locally Modified          385 
+ stateout.cpp              Locally Modified          385 
+ registry.cpp              Locally Modified          385 
+ clockserver.cpp           Locally Modified          385 
+ clockserver_threaded_basic.cpp Locally Added               0 
+ clockserver_threaded_dynamic.cpp Locally Added               0 
+ clockserver_threaded_lockfree.cpp Locally Added               0 
+
+Directory modules/model/unit_test_model
+ Makefile.template.in      Locally Modified          385 
+
+Directory modules
+ simcore/                  Locally Added               0 
+
+Directory modules/simcore
+ simcore_asim.awb          Locally Added               0 
+ libasim.awb               Locally Added               0 
+ clockserver_asim/         Locally Added               0 
+
+Directory modules/simcore/clockserver_asim
+ clockserver_asim_basic.awb Locally Added               0 
+ clockserver_asim_threaded_dynamic.awb Locally Added               0 
+ clockserver_asim_threaded_fuzzy.awb Locally Added               0 
+ clockserver_asim_threaded_lockfree.awb Locally Added               0 
+
+Directory modules/simcore
+ README                    Locally Added               0 
+
+Directory modules/controller/classic
+ control-notcl.h           Locally Modified          385 
+ awb.h                     Locally Modified          385 
+ control.cpp               Locally Modified          385 
+ main.cpp                  Locally Modified          385 
+ control.h                 Locally Modified          385 
+ awb-notcl.cpp             Locally Modified          385 
+ awb-notcl.h               Locally Modified          385 
+ args.cpp                  Locally Modified          385 
+ schedule.cpp              Locally Modified          385 
+
+Directory modules/controller/workbench/simple
+ Makefile.template         Locally Modified          385 
+
+Directory modules/controller/minimal
+ main_mini.cpp             Locally Modified          385 
+ args_mini.cpp             Locally Modified          385 
+
+Directory modules/system
+ single_chip_common_system_v3.awb Locally Added               0 
+
+Directory modules/system/basesystem_classic
+ basesystem_classic.cpp    Locally Modified          385 
+ basesystem_classic.h      Locally Modified          385 
+
+Directory modules/system
+ multi_chip_common_system.awb Locally Modified          385 
+ null_chip.awb             Locally Modified          385 
+ single_chip_common_x86system_v2.awb Locally Added               0 
+ null_system.awb           Locally Modified          385 
+ multi_chip_common_system_v2.awb Locally Modified          385 
+ multi_chip_common_system_v3.awb Locally Added               0 
+ multi_chip_common_system.cpp Locally Modified          385 
+ null_chip.cpp             Locally Modified          385 
+ multi_chip_common_system.h Locally Modified          385 
+ single_chip_clockserver_system.awb Locally Modified          385 
+ null_chip.h               Locally Modified          385 
+ single_chip_clockserver_system_v2.awb Locally Modified          385 
+ single_chip_clockserver_system_v3.awb Locally Added               0 
+ single_chip_clockserver_system.cpp Locally Modified          385 
+
+Directory modules/warmup
+ warmup_instrs.h           Locally Modified          385 
+ null_warmup_manager.h     Locally Modified          385 
+ null_warmup_manager.awb   Locally Modified          385 
+ do_warmup.cpp             Locally Modified          385 
+ warmup_instrs.cpp         Locally Modified          385 
+
+Directory modules/isa/utilities/instprofile
+ instprofile.cpp           Locally Modified          385 
+ instprofile.h             Locally Modified          385 
+ perinst_stats.h           Locally Modified          385 
+
+Directory modules
+ Makefile.template.in      Locally Modified          385 
+
+- manual sync with Intel simcore repository

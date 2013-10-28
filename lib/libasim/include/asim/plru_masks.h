@@ -37,6 +37,14 @@ class PLRU_MaskInner{
 
 
 template<>
+class PLRU_MaskInner<1> {
+public:
+  static const UINT64  mask[1];     
+  static const UINT64 compare[1];  
+};
+
+
+template<>
 class PLRU_MaskInner<2> {
 public:
   static const UINT64  mask[2];     
@@ -135,7 +143,7 @@ public:
       /* if this is reserved, treat it as MRU and try again */
       state = makeMRU(way,state);
       counter++;
-      ASSERT(counter<=Ways || ((rsvd & (1<<way) ==0)), "Can't find any ways!");
+      ASSERT(counter<=Ways || ((rsvd & (1<<way)) == 0), "Can't find any ways!");
     }
     while(rsvd & (1 << way));
     return way;

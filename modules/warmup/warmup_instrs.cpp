@@ -29,13 +29,39 @@
 #include "asim/provides/hardware_context.h"
 #include "asim/provides/instfeeder_interface.h"
 
+const char* WARMUP_CALLBACK_CLASS::access_s[] = {
+  "INVALID",
+  "READ_CODE",
+  "READ_DATA",
+  "RFO",
+  "INVAL",
+  "WRITE_M2I",
+  "WRITE_M2E",
+  "SNOOP_I",
+  "SNOOP_S",
+  "SNOOP_F",
+  "WRITE_F2E",
+  "WRITE_E2I"
+};
+
+const char* WARMUP_CALLBACK_CLASS::state_s[] = {
+  "I",
+  "E",
+  "S",
+  "M",
+  "F",
+  "O"
+};
+
+
 WARMUP_MANAGER_CLASS::WARMUP_MANAGER_CLASS(
     ASIM_MODULE parent,
     const char *name)
     : ASIM_MODULE_CLASS(parent, name),
       nDataCallbacks(0),
       nIFetchCallbacks(0),
-      nInstrCallbacks(0)
+      nInstrCallbacks(0),
+      nInvalCallbacks(0)
 {
 }
 
@@ -70,6 +96,8 @@ WARMUP_MANAGER_CLASS::RegisterHWC(HW_CONTEXT hwc)
                   "Number of data references parsed during warm-up");
     RegisterState(&whwc->nIFetchInits, "warmupIFetchRefs",
                   "Number of instruction fetches parsed during warm-up");
+    RegisterState(&whwc->nInvalInits, "warmupInvalRefs",
+                  "Number of cache invalidations parsed during warm-up");
     RegisterState(&whwc->nCtrlInits, "warmupCtrlRefs",
                   "Number of control transfer instructions parsed during warm-up");
     RegisterState(&whwc->nEmptyInits, "warmupEmptyRefs",
@@ -150,11 +178,30 @@ WARMUP_MANAGER_CLASS::RegisterForInstrs(
 }
 
 
+void
+WARMUP_MANAGER_CLASS::RegisterForInval(
+    WARMUP_CALLBACK cbk,
+    HW_CONTEXT hwc)
+{
+    nInvalCallbacks += 1;
+
+    if (hwc == NULL)
+    {
+        globalInvalCallbacks.push_back(cbk);
+    }
+    else
+    {
+        FindHWC(hwc)->invalCallbacks.push_back(cbk);
+    }
+}
+
+
 
 WARMUP_MANAGER_CLASS::WARMUP_HWC_CLASS::WARMUP_HWC_CLASS(HW_CONTEXT hwc)
     : hwc(hwc),
       nDataInits(0),
       nIFetchInits(0),
+      nInvalInits(0),
       nCtrlInits(0),
       nEmptyInits(0)
 {

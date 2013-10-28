@@ -39,6 +39,7 @@
 #include "asim/event.h"
 #include "asim/atomic.h"
 #include "asim/phase.h"
+#include "asim/module.h"
 
 extern bool registerPortStats;
 
@@ -112,6 +113,7 @@ protected:
   
   // List of the ports connected to this one
   list<BasePort*> connectedPorts;
+  list<BasePort*> getConnectedPorts() { return connectedPorts; }
 
 public:
   // Accessors for bandwidth and latency.
@@ -141,8 +143,10 @@ public:
 
 
   bool Init(const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL);
+  bool Init(ASIM_CLOCKABLE m, const char *name, int nodeId = 0, int instance = 0, const char *scope = NULL);
   bool Config(int bw, int lat);
   bool InitConfig(const char *name, int bw, int lat, int nodeId = 0 );
+  bool InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId = 0 );
 
 public:
   static void ConnectAll();
@@ -218,7 +222,14 @@ private:
   void Notify(const ASIM_ITEM_CLASS& data);
   void Notify(const ASIM_SILENT_ITEM& data);
   void Notify(const ASIM_SILENT_ITEM_CLASS& data);
+  // this one catches pointers or smart pointers to classes that inherit from neither ASIM_ITEM_CLASS
+  // nor ASIM_SILENT_ITEM_CLASS, and handles them silently.
+  void Notify(void *data);
+  // this catches everyting else, but beware of passing non-POD (plain-old-data) types over ports,
+  // since varargs doesn't handle them.  You will get a compiler warning but the code will crash
+  // with an illegal instruction.  Solution: have your class inherit from ASIM_SILENT_ITEM_CLASS.
   void Notify(...);
+  void Notify(const T& data);
 
   int Test(ASIM_ITEM);
   int Test(ASIM_ITEM*);
@@ -275,6 +286,7 @@ public:
   INT64 LatestWrite();
   bool IsActive(){ return active; } 
 
+  void Clear(); // empty out all data from the buffer
 };
 
 template <class T, int S = 0>
@@ -333,6 +345,8 @@ public:
   void SetLastAccessed(UINT64);
   void Deactivate();
 
+  void Clear(); // empty out all data from the port buffer
+
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
   virtual const type_info &GetDataType() { return typeid( T ); };
@@ -366,6 +380,8 @@ public:
 
   virtual PortType GetType() const;
 
+  void Clear(); // empty out all data from the port buffer
+
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
   virtual const type_info &GetDataType() { return typeid( T ); };
@@ -398,6 +414,8 @@ public:
   virtual void EventConnect(int bufNum, int destination);
 
   virtual PortType GetType() const;
+
+  void Clear(); // empty out all data from the port buffer
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -443,6 +461,8 @@ public:
   UINT64 GetLastAccessed();
   bool IsActive();
 
+  void Clear(); // empty out all data from the port buffer
+
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
   virtual const type_info &GetDataType() { return typeid( T ); };
@@ -484,6 +504,8 @@ public:
   virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
+
+  void Clear(); // empty out all data from the port buffer
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -531,6 +553,8 @@ public:
 
   INT16 GetEventEdgeId();
 
+  void Clear(); // empty out all data from the port buffer
+
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
   virtual const type_info &GetDataType() { return typeid( T ); };
@@ -563,6 +587,8 @@ public:
   virtual PortType GetType() const;
 
   INT16 GetEventEdgeId();
+
+  void Clear(); // empty out all data from the port buffer
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -608,6 +634,9 @@ public:
   bool SetLatencyPhases(int lat);
   bool Config(int bw, int lat);
   bool InitConfig(const char *name, int bw, int lat, int nodeId = 0 );  
+  bool InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId = 0 );  
+
+  void Clear(); // empty out all data from the port buffer
   
 
 protected:
@@ -653,7 +682,9 @@ public:
   bool SetLatencyPhases(int lat);
   bool Config(int bw, int lat);
   bool InitConfig(const char *name, int bw, int lat, int nodeId = 0 );  
-  
+  bool InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId = 0 );  
+
+  void Clear(); // empty out all data from the port buffer
 
 protected:
   // this is used to ensure the endpoints of a connected port have the same type:
@@ -694,6 +725,12 @@ BasePort::BasePort()
 inline
 BasePort::~BasePort()
 {
+    // remove this port from the global list
+    asim::Vector<BasePort*>::Iterator i = AllPorts.Begin();
+    while (i != AllPorts.End() && *i != this) i++;
+    VERIFYX(i != AllPorts.End());
+    AllPorts.Remove(i);
+
     delete [] Scope;
     delete [] Name;
 }
@@ -809,12 +846,20 @@ BasePort::Init(const char *name, int nodeId, int instance, const char *scope)
 }
 
 inline bool
+BasePort::Init(ASIM_CLOCKABLE m, const char *name, int nodeId, int instance, const char *scope)
+{ return Init(name, nodeId, instance, scope); }
+
+inline bool
 BasePort::Config(int bw, int lat)
 { return SetBandwidth(bw) && SetLatency(lat); }
 
 inline bool
 BasePort::InitConfig(const char *name, int bw, int lat, int nodeId)
 { return Init(name, nodeId) && SetBandwidth(bw) && SetLatency(lat); }
+
+inline bool
+BasePort::InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId)
+{ return BasePort::InitConfig(name, bw, lat, nodeId); }
 
 inline const char*
 BasePort::GetTypeName() const
@@ -937,9 +982,14 @@ BufferStorage<T,S>::CreateStorage(UINT32 latency, UINT32 bandwidth)
 
     //We need to have at least one entry and when the latency ==1 we
     //need to be able to let the read port read an empty slot on
-    //startup and we will write the other entry that cycle
-    Store = new CycleEntry[(Latency + 1)];
-    BufferSize = Latency + 1;
+    //startup and we will write the other entry that cycle.
+    // CJB: in fact we need even more than this, if we are running in
+    // parallel with lookahead.
+
+    // FIX FIX should be tied to CLOCKSERVER_FUZZY_BARRIER_LOOKAHEAD !!
+    const unsigned int         BUFFER_STORAGE_LOOKAHEAD = 3;
+    BufferSize = Latency + 1 + BUFFER_STORAGE_LOOKAHEAD;
+    Store = new CycleEntry[BufferSize];
 
     //Make sure that memory was allocated
     ASSERT(Store, "No storage was created!!");
@@ -1019,6 +1069,14 @@ template<class T, int S>
 inline
 BufferStorage<T,S>::~BufferStorage()
 {
+    Clear();
+}
+
+// clear out everything - releases smart pointers
+template<class T, int S>
+inline void
+BufferStorage<T,S>::Clear()
+{
     if(Store)
     {
         // clear out everything - releases smart pointers
@@ -1030,6 +1088,11 @@ BufferStorage<T,S>::~BufferStorage()
                 Store[count].Data[position] = Dummy;
             }
         }  
+        // also reset read and write indexes
+        ReadIndex = 0;
+        WriteIndex = BufferSize-1;
+        PeekReadIndex = 0;
+        SequentialWrites = 0;
     }
 }
 
@@ -1379,6 +1442,7 @@ BufferStorage<T,F>::Notify(const ASIM_ITEM_CLASS& data)
     }
 }
 
+// Other-wise do nothing
 template <class T, int F>
 inline void
 BufferStorage<T,F>::Notify(const ASIM_SILENT_ITEM& data) 
@@ -1391,7 +1455,14 @@ BufferStorage<T,F>::Notify(const ASIM_SILENT_ITEM_CLASS& data)
 { 
 }
 
-// Other-wise do nothing
+template <class T, int F>
+inline void
+BufferStorage<T,F>::Notify(void *data) 
+{
+    // this case handles pointers or smart pointers to non-ASIM_ITEM_CLASS objects silently
+    // and without the non-POD issues of the case below.
+}
+
 template <class T, int F>
 inline void
 BufferStorage<T,F>::Notify(...)
@@ -1403,7 +1474,16 @@ BufferStorage<T,F>::Notify(...)
     // The class xxxxx MUST inherit from ASIM_ITEM_CLASS if you want to
     // obtain events or inherit from ASIM_SILENT_ITEM_CLASS if you
     // don't want events.
-    // This error may also manifest itself by a SEGFLT.
+    // This error may also manifest itself by a SEGFLT or ILLEGAL INSTRUCTION.
+}
+
+template <class T, int F>
+inline void
+BufferStorage<T,F>::Notify(const T& data)
+{
+    // This should cover non ASIM_ITEM_CLASS and ASIM_SILENT_ITEM_CLASS cases
+    // and save users the misery caused by those ILLEGAL INSTRUCTION errors and
+    // segfaults.
 }
 
 template<class T, int S>
@@ -1496,6 +1576,11 @@ inline INT16
 ReadPort<T>::GetEventEdgeId()
 { return Buffer.GetEventEdgeId(); }
 
+template <class T>
+inline void
+ReadPort<T>::Clear()
+{ Buffer.Clear(); }
+
 
 ///////////////////////////
 // class ReadSkidPort<T, Storage>
@@ -1552,6 +1637,11 @@ template <class T, int S>
 inline INT16
 ReadSkidPort<T,S>::GetEventEdgeId()
 { return Buffer.GetEventEdgeId(); }
+
+template <class T, int S>
+inline void
+ReadSkidPort<T,S>::Clear()
+{ Buffer.Clear(); }
 
 
 ///////////////////////////
@@ -1643,6 +1733,11 @@ template <class T>
 inline INT16
 ReadStallPort<T>::GetEventEdgeId()
 { return Buffer.GetEventEdgeId(); }
+
+template <class T>
+inline void
+ReadStallPort<T>::Clear()
+{ Buffer.Clear(); }
 
 ///////////////////////////
 // class ReadRemotePort<T, Storage>
@@ -1799,6 +1894,16 @@ bool
 WritePhasePort<T,F>::InitConfig(const char *name, int bw, int lat, int nodeId)
 { return BasePort::InitConfig(name, bw, 2*lat, nodeId); }
 
+template <class T, int F>
+bool
+WritePhasePort<T,F>::InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId)
+{ return WritePhasePort<T,F>::InitConfig(name, bw, lat, nodeId); }
+
+template <class T, int F>
+inline void
+WritePhasePort<T,F>::Clear()
+{ Buffer.Clear(); }
+
 
 ///////////////////////////
 // class ReadPhasePort<T>
@@ -1890,6 +1995,16 @@ template <class T>
 bool
 ReadPhasePort<T>::InitConfig(const char *name, int bw, int lat, int nodeId)
 { return BasePort::InitConfig(name, bw, 2*lat, nodeId); }
+
+template <class T>
+bool
+ReadPhasePort<T>::InitConfig(ASIM_CLOCKABLE m, const char *name, int bw, int lat, int nodeId)
+{ return ReadPhasePort<T>::InitConfig(name, bw, lat, nodeId); }
+
+template <class T>
+inline void
+ReadPhasePort<T>::Clear()
+{ Buffer.Clear(); }
 
 ////////////////////////////
 // class WritePort<T,F>
@@ -2007,6 +2122,15 @@ inline INT16
 WritePort<T,F>::GetEventEdgeId()
 { return Buffer[0]->GetEventEdgeId(); }
 
+template <class T, int F>
+inline void
+WritePort<T,F>::Clear()
+{
+  for (int f = 0; f < Fanout; f++) {
+    Buffer[f]->Clear();
+  }
+}
+
 ////////////////////////////
 // class WriteSkidPort<T,S>
 //
@@ -2045,6 +2169,11 @@ WriteSkidPort<T,S>::EventConnect(int bufNum, int destination)
                   Buffer->GetBandwidth(), Buffer->GetLatency(), GetName()))));   
     }
 }
+
+template <class T, int S>
+inline void
+WriteSkidPort<T,S>::Clear()
+{ Buffer->Clear(); }
 
 ////////////////////////////
 // class WriteStallPort<T>
@@ -2090,6 +2219,11 @@ WriteStallPort<T>::EventConnect(int bufNum, int destination)
     }
 }
 
+template <class T>
+inline void
+WriteStallPort<T>::Clear()
+{ Buffer->Clear(); }
+
 
 ///////////////////////////
 // class PeekPort<T>
@@ -2118,26 +2252,30 @@ template <class T>
 inline bool
 PeekPort<T>::CreateStorage(UINT32 latency, UINT32 bandwidth)
 {
-    return Buffer.CreateStorage(latency, bandwidth);
+    return Buffer->CreateStorage(latency, bandwidth);
 }
 
 template <class T>
 inline bool
 PeekPort<T>::DeleteStorage()
 {
-    //cout << "PeekPort::DeleteStorage() called for " << Name << endl;
-    return Buffer.DeleteStorage();
+    return Buffer->DeleteStorage();
 }
 
 template <class T>
 inline INT16
 PeekPort<T>::GetEventEdgeId()
-{ return Buffer.GetEventEdgeId(); }
+{ return Buffer->GetEventEdgeId(); }
 
 template <class T>
 inline void
 PeekPort<T>::SetBuffer(void *buf, int rdPortNum)
 { Buffer = reinterpret_cast< Storage<T>* >(buf); }
+
+template <class T>
+inline void
+PeekPort<T>::Clear()
+{ Buffer->Clear(); }
 
 
 

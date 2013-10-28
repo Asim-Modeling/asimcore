@@ -22,6 +22,22 @@
 
 #include "asim/provides/inst_stats.h"
 
+static UID_GEN32 numInst = 0;
+
+//
+// String associated with enum for printing purposes.  Must be in the
+// same order as the enum. 
+static
+const char* PERINST_COUNTER_STRING[] = 
+{
+    "DYN_INST",
+    "ISSUE", 
+    "CTRL_MP", 
+    "DC_MISS",
+    "MC_MISS",
+    "LAST"
+};
+
 //
 // PERINST_ENTRY
 //

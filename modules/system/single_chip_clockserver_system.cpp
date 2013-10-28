@@ -70,7 +70,9 @@ ASIM_COMMON_SYSTEM_CLASS::ASIM_COMMON_SYSTEM_CLASS(
     clock = ASIM_CLOCKABLE_CLASS::GetClockServer();
     clock -> SetRandomClockingSeed(RANDOM_CLOCKING_SEED);
     clock -> SetDumpProfile(DUMP_CLOCKING_PROFILE);
-    clock -> SetThreadedClocking(THREADED_CLOCKING == 1);
+    clock -> SetThreadedClocking  ( THREADED_CLOCKING == 1       ,
+                                    CLOCKSERVER_THREAD_LOOKAHEAD ,
+                                    CLOCKSERVER_THREAD_DELAY     );
 
     // Initialize single instance of thermal model
     myThermalModel = THERMAL_MODEL_CLASS::Instance();
@@ -102,12 +104,12 @@ ASIM_COMMON_SYSTEM_CLASS::InitModule()
         ASIMERROR("The chip module did not initialize properly\n");
     }
 
+    // Set the reference clock domain (-rd option)
+    clock->SetReferenceClockDomain(referenceDomain);    
+
     // We initialize the clockserver structures
     // IMPORTANT! It must be done after the modules initialization!
     clock->InitClockServer();
-
-    // Set the reference clock domain (-rd option)
-    clock->SetReferenceClockDomain(referenceDomain);    
     
     return true;
 }

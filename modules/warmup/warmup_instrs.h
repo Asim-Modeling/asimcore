@@ -35,6 +35,8 @@
 #include "asim/provides/basesystem.h"
 #include "asim/provides/isa.h"
 
+#include <vector>
+
 /*
  * Class WARMUP_INFO
  *
@@ -44,6 +46,7 @@ typedef class WARMUP_CLIENTS_CLASS *WARMUP_CLIENTS;
 typedef class WARMUP_DATA_CLASS *WARMUP_DATA;
 typedef class WARMUP_IFETCH_CLASS *WARMUP_IFETCH;
 typedef class WARMUP_INSTR_CLASS *WARMUP_INSTR;
+typedef class WARMUP_INVAL_CLASS *WARMUP_INVAL;
 typedef class WARMUP_CALLBACK_CLASS *WARMUP_CALLBACK;
 typedef class WARMUP_MANAGER_CLASS *WARMUP_MANAGER;
 
@@ -65,15 +68,18 @@ class WARMUP_CLIENTS_CLASS
     WARMUP_CLIENTS_CLASS(
         bool monitorDCache = false,
         bool monitorICache = false,
-        bool monitorInstrs = false)
+        bool monitorInstrs = false,
+        bool monitorInvals = false)
         : monitorDCache(monitorDCache),
           monitorICache(monitorICache),
-          monitorInstrs(monitorInstrs)
+          monitorInstrs(monitorInstrs),
+          monitorInvals(monitorInstrs)
     {};
 
     bool MonitorDCache(void) const { return monitorDCache; };
     bool MonitorICache(void) const { return monitorICache; };
     bool MonitorInstrs(void) const { return monitorInstrs; };
+    bool MonitorInvals(void) const { return monitorInvals; };
 
     bool operator== (const WARMUP_CLIENTS_CLASS& cmp) const;
 
@@ -81,6 +87,7 @@ class WARMUP_CLIENTS_CLASS
     bool monitorDCache;
     bool monitorICache;
     bool monitorInstrs;
+    bool monitorInvals;
 };
 
 inline bool
@@ -88,7 +95,8 @@ WARMUP_CLIENTS_CLASS::operator== (const WARMUP_CLIENTS_CLASS& cmp) const
 {
     return (monitorDCache == cmp.monitorDCache) &&
            (monitorICache == cmp.monitorICache) &&
-           (monitorInstrs == cmp.monitorInstrs);
+           (monitorInstrs == cmp.monitorInstrs) &&
+           (monitorInstrs == cmp.monitorInvals);
 };
 
 
@@ -109,7 +117,8 @@ class WARMUP_DATA_CLASS
           pa(pa),
           bytes(bytes),
           isLoad(isLoad),
-          isIAddrValid(false)
+          isIAddrValid(false),
+          isNonCoherent(false)
     {};
     
     ~WARMUP_DATA_CLASS() {};
@@ -141,11 +150,17 @@ class WARMUP_DATA_CLASS
         instrVA = iVA;
         instrPA = iPA;
     }
+    void SetNonCoherent()
+    {
+        isNonCoherent = true;
+    }
     bool IsInstrAddrValid(void) const { return isIAddrValid; }
     UINT64 GetInstrVA(void) const { return instrVA; }
     UINT64 GetInstrPA(void) const { return instrPA; }
 
     bool IsLoad() { return isLoad; }
+
+    bool nonCoherent() { return isNonCoherent; }
 
   private:
     ASIM_MACRO_INST aInst;
@@ -159,6 +174,7 @@ class WARMUP_DATA_CLASS
 
     const bool isLoad;
     bool isIAddrValid;
+    bool isNonCoherent;
 };
     
 
@@ -212,7 +228,37 @@ class WARMUP_INSTR_CLASS
   private:
     const ASIM_MACRO_INST aInst;
 };
-    
+
+
+//
+// WARMUP_INVAL_CLASS describes a cache invalidation.
+//
+// The feeder returns only a VA and PA, not the size of an instruction since
+// only the model knows the line size and fetch rules.  If an instruction might
+// span a page the feeder should claim to fetch from both pages, though
+// getting this wrong in the warm-up code probably won't be too harmful.
+//
+//
+class WARMUP_INVAL_CLASS
+{
+  public:
+    WARMUP_INVAL_CLASS(
+        UINT64 va,
+        UINT64 pa)
+        : va(va),
+          pa(pa)
+    {};
+
+    ~WARMUP_INVAL_CLASS() {};
+
+    UINT64 GetVA(void) const { return va; };
+    UINT64 GetPA(void) const { return pa; };
+
+  private:
+    const UINT64 va;
+    const UINT64 pa;
+};
+
 
 //
 // Classes that need to receive warm-up data must be derived from the
@@ -255,6 +301,104 @@ class WARMUP_CALLBACK_CLASS
     {
         ASIMERROR("No warm-up instrunction handler defined in derived class");
     };
+
+    virtual void WarmUpInval(HW_CONTEXT hwc, const WARMUP_INVAL wInval)
+    {
+        ASIMERROR("No warm-up invalidate handler defined in derived class");
+    };
+
+    // cache access type
+    enum ACCESS_T
+    {
+        ACCESS_INVALID=0,
+        ACCESS_READ_CODE,
+        ACCESS_READ_DATA,
+        ACCESS_RFO,
+        ACCESS_INVAL,
+        ACCESS_WRITE_M2I,
+        ACCESS_WRITE_M2E,
+        ACCESS_SNOOP_I,
+        ACCESS_SNOOP_S,
+        ACCESS_SNOOP_F,
+        ACCESS_WRITE_F2E,
+        ACCESS_WRITE_E2I,
+        ACCESS_MAX,
+    };
+
+    static const char* access_s[ACCESS_MAX];
+
+    // mesifo state of a cache line
+    enum STATE_T
+    {
+        STATE_I=0,
+        STATE_E,
+        STATE_S,
+        STATE_M,
+        STATE_F,
+        STATE_O,
+        STATE_MAX
+    };
+
+    static const char* state_s[STATE_MAX];
+
+    // result of a cache access
+    struct INFO_T
+    {
+        // initialize as invalid
+        INFO_T() : hitState(STATE_I), set(-1), way(-1), state(STATE_I), victimState(STATE_I) {}
+
+        // did we hit or miss on access and what was previous state/pa
+        STATE_T hitState;
+
+        // accessed cache line (for victim and resulting line)
+        // FIXME: do we actually need this?  no but is it useful to caller?
+        INT32 set;
+        INT32 way;
+
+        // resulting state for this access
+        STATE_T state;
+
+        // was there a victim and what was its pa
+        // FIXME: do we actually need this?   no but is it useful to caller?
+        STATE_T victimState;
+        UINT64 victimPa;
+    };
+
+    // some useful typedefs for interface functions.
+    typedef std::vector<WARMUP_CALLBACK_CLASS*> CALLBACKS_T;
+
+    // actually accessing this cache level with reads, writes, and invals, and
+    // snoops. it is expected that this function will call up and down the
+    // heirarchy as appropriate for the users' cache implementation
+    virtual INFO_T WarmUpAccess(WARMUP_CALLBACK_CLASS* caller, HW_CONTEXT hwc, UINT64 va, UINT64 pa, ACCESS_T accesstype)
+    {
+        ASIMERROR("No warm-up access handler defined in derived class"); return INFO_T();
+    };
+
+    // the optional position is for which position in the vector.  perhaps the
+    // user has a specific order in mind for the representation of each cache.
+    // this hookup methodolgy requires the user to have pointers to the next
+    // level of cache which is not great.
+    // 
+    // TODO: we should create other hookup options.
+    //
+    void WarmUpConnectHigher(WARMUP_CALLBACK_CLASS* cache) { higher_caches.push_back(cache); cache->lower_caches.push_back(this); }
+    void WarmUpConnectLower(WARMUP_CALLBACK_CLASS* cache) { lower_caches.push_back(cache); cache->higher_caches.push_back(this); }
+  
+    // accessor to get neighoring caches.  they should have back pointers
+    const CALLBACKS_T& WarmUpGetLower() const { return lower_caches; }
+    const CALLBACKS_T& WarmUpGetHigher() const { return higher_caches; }
+
+private:
+    // the meaning of "lower" and "higher" levels of cache can be ambiguous.
+    // we are using the convention where the closest caches to the core are the
+    // L0 caches which we will term "lowest" cache level.  btw i am not really
+    // sure where you would get multiple higher level caches but maybe the next
+    // level is split between multiple modules or maybe there are parallel caches
+    // or whatever.  the implementation chooses how to use these so we just let
+    // them deal with the specifics.
+    CALLBACKS_T higher_caches;
+    CALLBACKS_T lower_caches;
 };
 
 
@@ -273,7 +417,9 @@ class WARMUP_INFO_CLASS
           nLoads(0),
           nStores(0),
           isIFetch(false),
-          isCtrlTransfer(false)
+          isInval(false),
+          isCtrlTransfer(false),
+          isNonCoherent(false)
     {};
 
     ~WARMUP_INFO_CLASS() {};
@@ -283,9 +429,10 @@ class WARMUP_INFO_CLASS
     bool IsLoad(void) const { return (nLoads > 0); };
     bool IsStore(void) const { return (nStores > 0); };
     bool IsCtrlTransfer(void) const { return isCtrlTransfer; };
+    bool IsInval(void) const { return isInval; };
 
-    UINT64 GetIFetchVA(void) const { ASSERTX(IsIFetch()); return instrVA; };
-    UINT64 GetIFetchPA(void) const { ASSERTX(IsIFetch()); return instrPA; };
+    UINT64 GetIFetchVA(void) const { ASSERTX(IsIFetch()||IsInval()); return instrVA; };
+    UINT64 GetIFetchPA(void) const { ASSERTX(IsIFetch()||IsInval()); return instrPA; };
 
     UINT32 NLoads(void) const { return nLoads; };
     UINT64 GetLoadVA(UINT32 n) const { ASSERTX(nLoads > n); return loads[n].va; };
@@ -304,6 +451,7 @@ class WARMUP_INFO_CLASS
         UINT64 va,
         UINT64 pa)
     {
+        ASSERTX(!isInval);
         isIFetch = true;
         instrVA = va;
         instrPA = pa;
@@ -343,6 +491,29 @@ class WARMUP_INFO_CLASS
             nStores += 1;
         }
     };
+
+    //
+    // Call to indicate warm-up is a data reference
+    //
+    void NoteInval(
+        UINT64 va,
+        UINT64 pa)
+    {
+        ASSERTX(!isIFetch);
+        isInval = true;
+        instrVA = va;
+        instrPA = pa;
+    }
+
+    void NoteNonCoherent()
+    {
+        isNonCoherent = true;
+    }
+
+    bool nonCoherent() const
+    {
+        return isNonCoherent;
+    }
 
     //
     // Call to indicate warm-up is a control transfer instruction.
@@ -394,7 +565,9 @@ class WARMUP_INFO_CLASS
     UINT32 nStores;
 
     bool isIFetch;
+    bool isInval;
     bool isCtrlTransfer;
+    bool isNonCoherent;
 };
 
 
@@ -430,6 +603,11 @@ class WARMUP_MANAGER_CLASS : public ASIM_MODULE_CLASS
     // Pass NULL for hwc to be notified about all fetches or pass a hwc to
     // be called only for a specific context.
     void RegisterForIFetch(WARMUP_CALLBACK cbk, HW_CONTEXT hwc, UINT32 lineBytes);
+
+    // Register to be notified about cache invalidates.  Pass NULL for
+    // hwc to be notified about all data or pass a hwc to be called
+    // only for a specific context.
+    void RegisterForInval(WARMUP_CALLBACK cbk, HW_CONTEXT hwc);
 
     // Register to be notified about control transfer instructions.
     // Pass NULL to be notified for all hardware context.
@@ -489,6 +667,7 @@ class WARMUP_MANAGER_CLASS : public ASIM_MODULE_CLASS
     typedef list<WARMUP_CALLBACK> DATA_CALLBACK_LIST;
     typedef list<IFETCH_CALLBACK> IFETCH_CALLBACK_LIST;
     typedef list<WARMUP_CALLBACK> INSTR_CALLBACK_LIST;
+    typedef list<WARMUP_CALLBACK> INVAL_CALLBACK_LIST;
 
     class WARMUP_HWC_CLASS
     {
@@ -501,10 +680,12 @@ class WARMUP_MANAGER_CLASS : public ASIM_MODULE_CLASS
         DATA_CALLBACK_LIST   dataCallbacks;
         IFETCH_CALLBACK_LIST ifetchCallbacks;
         INSTR_CALLBACK_LIST  instrCallbacks;
+        INVAL_CALLBACK_LIST  invalCallbacks;
 
         UINT64 hwcUID;
         UINT64 nDataInits;
         UINT64 nIFetchInits;
+        UINT64 nInvalInits;
         UINT64 nCtrlInits;
         UINT64 nEmptyInits;
     };
@@ -519,11 +700,13 @@ class WARMUP_MANAGER_CLASS : public ASIM_MODULE_CLASS
     DATA_CALLBACK_LIST   globalDataCallbacks;
     IFETCH_CALLBACK_LIST globalIFetchCallbacks;
     INSTR_CALLBACK_LIST  globalInstrCallbacks;
+    INVAL_CALLBACK_LIST  globalInvalCallbacks;
 
     UINT32 nDataCallbacks;
     UINT32 nIFetchCallbacks;
     UINT32 nInstrCallbacks;
-
+    UINT32 nInvalCallbacks;
+ 
     WARMUP_HWC FindHWC(HW_CONTEXT hwc)
     {
         for (WARMUP_HWC_LIST::iterator whwc = hwcs.begin();
@@ -595,6 +778,36 @@ class WARMUP_MANAGER_CLASS : public ASIM_MODULE_CLASS
             cbk++;
         }
     };
+
+    void CallInvalCallbacks(const INVAL_CALLBACK_LIST cbkList,
+                            HW_CONTEXT hwc,
+                            WARMUP_INVAL wInval)
+    {
+        INVAL_CALLBACK_LIST::const_iterator cbk = cbkList.begin();
+        while (cbk != cbkList.end())
+        {
+            (*cbk)->WarmUpInval(hwc, wInval);
+            cbk++;
+        }
+    };
 };
 
 #endif /* _WARMUP_INSTRS_ */
+
+
+/*
+ * Local Variables:
+ * mode: C++
+ * c-basic-offset: 4
+ * c-indentation-style: linux
+ * indent-tabs-mode: nil
+ * tab-width: 8
+ * default-tab-width: 8
+ * c-file-offsets: ((substatement-open . 0) 
+ *                  (statement-block-intro . +) 
+ *                  (innamespace . 0)
+ *                  (brace-list-open . 0)
+ *                  (brace-list-intro . +))
+ * End:
+ *
+ */

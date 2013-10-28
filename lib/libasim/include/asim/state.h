@@ -79,8 +79,8 @@ class ASIM_STATE_CLASS
         /*
          * Name and description of the state.
          */
-        const char * name;
-        const char * desc;
+        const char * const name;
+        const char * const desc;
 
         /*
          * Path to the state.
@@ -157,13 +157,13 @@ class ASIM_STATE_CLASS
          */
         void SaveValue (void)
         {
-            if (type == STATE_UINT) 
+            if (type == STATE_UINT) { 
                 memcpy(save, u.iPtr, saveSz);
-            else if (type == STATE_FP)
+            } else if (type == STATE_FP) {
                 memcpy(save, u.fPtr, saveSz);
-            else if (type == STATE_STRING)
+            } else if (type == STATE_STRING) {
                 *((string *)save) = *(u.sPtr);
-            else if (type == STATE_HISTOGRAM)
+            } else if (type == STATE_HISTOGRAM)
             {
                 *((HISTOGRAM_TEMPLATE<true> *)save) = *(u.hPtr);
             }
@@ -182,13 +182,13 @@ class ASIM_STATE_CLASS
         
         void SaveInitialValue (void)
         {
-            if (type == STATE_UINT) 
+            if (type == STATE_UINT) {
                 memcpy(initial_values_save, u.iPtr, saveSz);
-            else if (type == STATE_FP)
+            } else if (type == STATE_FP) {
                 memcpy(initial_values_save, u.fPtr, saveSz);
-            else if (type == STATE_STRING)
+            } else if (type == STATE_STRING) {
                 *((string *)initial_values_save) = *(u.sPtr);
-            else if (type == STATE_HISTOGRAM)
+            } else if (type == STATE_HISTOGRAM)
             {
                 // Not saved
             }
@@ -211,13 +211,13 @@ class ASIM_STATE_CLASS
          */
         void RestoreValue (void)
         {
-            if (type == STATE_UINT) 
+            if (type == STATE_UINT) { 
                 memcpy(u.iPtr, save, saveSz);
-            else if (type == STATE_FP)
+            } else if (type == STATE_FP) {
                 memcpy(u.fPtr, save, saveSz);
-            else if (type == STATE_STRING)
+            } else if (type == STATE_STRING) {
                 *(u.sPtr) = *((string *)save);
-            else if (type == STATE_HISTOGRAM)
+            } else if (type == STATE_HISTOGRAM)
             {
                 *(u.hPtr) = *((HISTOGRAM_TEMPLATE<true> *)save);
             }

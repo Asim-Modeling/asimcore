@@ -115,6 +115,7 @@ class ASIM_MULTI_CHIP_SYSTEM_CLASS : public ASIM_SYSTEM_CLASS
     bool SYS_Execute(const UINT64 stop_nanosecond, const UINT64 stop_cycle, const UINT64 stop_inst, const UINT64 stop_macroinst, const UINT64 stop_packet=0);
     void SYS_Break();
     void SYS_ClearBreak();
+    void SYS_StopPThreads();
     
     // We need to redefine the following function
     inline UINT64 SYS_Cycle (UINT32 cpunum)

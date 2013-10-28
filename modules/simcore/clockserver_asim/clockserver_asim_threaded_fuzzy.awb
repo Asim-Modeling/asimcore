@@ -1,0 +1,32 @@
+/*
+ *Copyright (C) 2005-2010 Intel Corporation
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+%AWB_START
+
+%name Asim clock server fuzzy
+%desc Asim multithreaded clock server with fuzzy barrier
+%attributes asim
+%provides clockserver
+%public  ../../../lib/libasim/include/asim/clockserver.h
+%private ../../../lib/libasim/src/clockserver.cpp
+%private ../../../lib/libasim/src/clockserver_threaded_fuzzy.cpp
+%private ../../../lib/libasim/src/clockserver_lookahead_param.cpp
+
+%param %dynamic CLOCKSERVER_SPINWAIT_YIELD_INTERVAL 500 "number of spin loop retries until we yield the thread"
+
+%AWB_END

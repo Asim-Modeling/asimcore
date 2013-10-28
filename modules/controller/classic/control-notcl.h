@@ -1299,6 +1299,9 @@ extern CONTROL_TRACEABLE_CLASS controlTraceable;
 //#undef ASIM_XMSG
 //#define ASIM_XMSG(x) do{ TTRACE(x); exit(1); }while(0)
 
-//#define DMSG(x) ({ T1_UNCOND(__FILE__ << ":" << __LINE__ << ": " <<  x); })
+#define DMSG(x) \
+({ \
+       T1_UNCOND(__FILE__ << ":" << __LINE__ << ": " <<  x); \
+})
 
 #endif /* _CMD_ */

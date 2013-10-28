@@ -36,6 +36,7 @@ nobase_include_HEADERS = asim/address.h\
 		asim/circular_queue.h\
 		asim/clockable.h\
 		asim/clockserver.h\
+        asim/clockserver_threaded_dynamic.h\
 		asim/cmd.h\
 		asim/cqueue.h\
 		asim/damqueue.h\
@@ -78,6 +79,7 @@ nobase_include_HEADERS = asim/address.h\
 		asim/resource_tracker.h\
 		asim/sized_stl_queue.h\
 		asim/smp.h\
+        asim/ssc.h\
 		asim/stackdump.h\
 		asim/stack.h\
 		asim/state.h\
@@ -87,6 +89,8 @@ nobase_include_HEADERS = asim/address.h\
 		asim/syntax.h\
 		asim/threaded_log.h\
 		asim/thread.h\
+        asim/threadsafe.h\
+        asim/time_events_ring.h
 		asim/trace.h\
 		asim/trace_legacy.h\
 		asim/trackmem.h\

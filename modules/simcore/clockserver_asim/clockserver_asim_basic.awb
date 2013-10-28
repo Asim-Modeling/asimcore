@@ -1,0 +1,36 @@
+/*
+ *Copyright (C) 2005-20010 Intel Corporation
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+
+%AWB_START
+
+%name Asim clock server
+%desc Basic Asim sequential clock server
+%attributes asim
+%provides clockserver
+%public  ../../../lib/libasim/include/asim/clockserver.h
+%private ../../../lib/libasim/src/clockserver.cpp
+%private ../../../lib/libasim/src/clockserver_threaded_basic.cpp
+
+%param          CLOCKSERVER_USES_PTHREADS_SIGNALLING   0   "set to 1 to use pthreads signal-and-wait, 0 for user-level spin waiting"
+%param %dynamic CLOCKSERVER_SPINWAIT_YIELD_INTERVAL    500 "number of spin loop retries until we yield the thread"
+%param          CLOCKSERVER_THREAD_RUNS_FIRST_TASK     0   "if set to 1 clock server thread will execute first task itself without waking worker thread"
+%param          CLOCKSERVER_READDS_EVENTS_CONCURRENTLY 0   "if set to 1 clockserver will re-add the events to time list while workers are executing"
+%param          CLOCKSERVER_SINGLE_WORKER_SIGNAL       0   "use a single variable to signal and barrier synchronize the worker thread"
+
+%AWB_END

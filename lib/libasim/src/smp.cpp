@@ -78,15 +78,9 @@ ASIM_SMP_CLASS::Init(
 
     mainThread = new ASIM_SMP_THREAD_HANDLE_CLASS();
     mainThread->NoteThreadActive(activeThreads++);
-#ifdef TLS_AVAILABLE
-    ASIM_SMP_RunningThreadNumber = mainThread->threadNumber;
-#endif
-
     VERIFY(mainThread->GetThreadId() == 0, "ASIM_SMP_CLASS::Init() called more than once");
-
     VERIFYX(0 == pthread_key_create(&threadLocalKey, NULL));
-    VERIFYX(0 == pthread_setspecific(threadLocalKey, mainThread));
-
+    SetThreadHandle(mainThread);
     VERIFYX(GetRunningThreadNumber() == 0);
 }
 
@@ -110,6 +104,23 @@ ASIM_SMP_CLASS::CreateThread(
 }
 
 
+//
+// create a "dormant" thread.
+// Do not allocate a pthread here, but still give it an active thread ID.
+//
+void
+ASIM_SMP_CLASS::CreateThread(
+    ASIM_SMP_THREAD_HANDLE threadHandle)
+{
+    threadHandle->start_routine   = NULL;
+    threadHandle->threadCreateArg = NULL;
+    threadHandle->threadNumber    = activeThreads++;
+
+    VERIFY(UINT32(threadHandle->threadNumber) < ASIM_SMP_CLASS::GetMaxThreads(),
+           "Thread limit exceeded (" << ASIM_SMP_CLASS::GetMaxThreads() << ")");
+}
+
+
 void *
 ASIM_SMP_CLASS::ThreadEntry(void *arg)
 {
@@ -119,11 +130,7 @@ ASIM_SMP_CLASS::ThreadEntry(void *arg)
 
     ASIM_SMP_THREAD_HANDLE threadHandle = ASIM_SMP_THREAD_HANDLE(arg);
 
-#ifdef TLS_AVAILABLE
-    ASIM_SMP_RunningThreadNumber = threadHandle->threadNumber;
-#endif
-
-    VERIFYX(0 == pthread_setspecific(threadLocalKey, threadHandle));
+    SetThreadHandle(threadHandle);
 
     cout << "Thread " << GetRunningThreadNumber() << " created." << endl;
     

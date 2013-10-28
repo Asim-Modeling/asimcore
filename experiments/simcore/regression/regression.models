@@ -1,0 +1,71 @@
+#******************
+#
+# Unit testing model for running regresions over simcore.
+#
+#******************
+
+## Cameroon
+
+args_test                        config/pm/unit_test/cameroon/args_test.apm
+atomic_resource_conditional_test config/pm/unit_test/cameroon/atomic_resource_conditional_test.apm
+backtrace_test                   config/pm/unit_test/cameroon/backtrace_test.apm
+callback_test                    config/pm/unit_test/cameroon/callback_test.apm
+circular_buffer_test             config/pm/unit_test/cameroon/circular_buffer_test.apm
+clock_server_2_test              config/pm/unit_test/cameroon/clock_server_2_test.apm
+clock_server_test                config/pm/unit_test/cameroon/clock_server_test.apm
+clock_server_test_mt             config/pm/unit_test/cameroon/clock_server_test_mt.apm
+clock_test                       config/pm/unit_test/cameroon/clock_test.apm
+clockable_test                   config/pm/unit_test/cameroon/clockable_test.apm
+condition_test                   config/pm/unit_test/cameroon/condition_test.apm
+connection_checker_test          config/pm/unit_test/cameroon/connection_checker_test.apm
+connection_manager_test          config/pm/unit_test/cameroon/connection_manager_test.apm
+connection_test                  config/pm/unit_test/cameroon/connection_test.apm
+debug_logger_test                config/pm/unit_test/cameroon/debug_logger_test.apm
+debug_registry_test              config/pm/unit_test/cameroon/debug_registry_test.apm
+event_test                       config/pm/unit_test/cameroon/event_test.apm
+exceptions_test                  config/pm/unit_test/cameroon/exceptions_test.apm
+fan_port_test                    config/pm/unit_test/cameroon/fan_port_test.apm
+format_test                      config/pm/unit_test/cameroon/format_test.apm
+hierarchy_test                   config/pm/unit_test/cameroon/hierarchy_test.apm
+knob_parser_test                 config/pm/unit_test/cameroon/knob_parser_test.apm
+knob_registry_test               config/pm/unit_test/cameroon/knob_registry_test.apm
+knob_test                        config/pm/unit_test/cameroon/knob_test.apm
+log_sts_formatter_test           config/pm/unit_test/cameroon/log_sts_formatter_test.apm
+logger_test                      config/pm/unit_test/cameroon/logger_test.apm
+math_test                        config/pm/unit_test/cameroon/math_test.apm
+module_test                      config/pm/unit_test/cameroon/module_test.apm
+module_test_mt                   config/pm/unit_test/cameroon/module_test_mt.apm
+mpool_test                       config/pm/unit_test/cameroon/mpool_test.apm
+mt_exit_test                     config/pm/unit_test/cameroon/mt_exit_test.apm
+mt_port_test                     config/pm/unit_test/cameroon/mt_port_test.apm
+mutex_test                       config/pm/unit_test/cameroon/mutex_test.apm
+port_buffer_test                 config/pm/unit_test/cameroon/port_buffer_test.apm
+port_test                        config/pm/unit_test/cameroon/port_test.apm
+provider_test                    config/pm/unit_test/cameroon/provider_test.apm
+ptr_test                         config/pm/unit_test/cameroon/ptr_test.apm
+scope_test                       config/pm/unit_test/cameroon/scope_test.apm
+semantic_cast_test               config/pm/unit_test/cameroon/semantic_cast_test.apm
+small_obj_test                   config/pm/unit_test/cameroon/small_obj_test.apm
+stat_test                        config/pm/unit_test/cameroon/stat_test.apm
+task_wait_test                   config/pm/unit_test/cameroon/task_wait_test.apm
+task_yield_test                  config/pm/unit_test/cameroon/task_yield_test.apm
+units_test                       config/pm/unit_test/cameroon/units_test.apm
+value_registry_test              config/pm/unit_test/cameroon/value_registry_test.apm
+
+## Asim
+
+mpool_test_asim                  config/pm/unit_test/asim/mpool_test_asim.apm
+port_test_asim                   config/pm/unit_test/asim/port_test_asim.apm
+mptr_port_test_asim              config/pm/unit_test/asim/mptr_port_test_asim.apm
+clockserver_test_asim            config/pm/unit_test/asim/clockserver_test_asim.apm
+stat_test_asim                   config/pm/unit_test/asim/stat_test_asim.apm
+event_test_asim                  config/pm/unit_test/asim/event_test_asim.apm
+
+## Asim on Cameroon
+
+mpool_test_asim2cam              config/pm/unit_test/asim2cam/mpool_test_asim2cam.apm
+port_test_asim2cam               config/pm/unit_test/asim2cam/port_test_asim2cam.apm
+mptr_port_test_asim2cam          config/pm/unit_test/asim2cam/mptr_port_test_asim2cam.apm
+clockserver_test_asim2cam        config/pm/unit_test/asim2cam/clockserver_test_asim2cam.apm
+stat_test_asim2cam               config/pm/unit_test/asim2cam/stat_test_asim2cam.apm
+event_test_asim2cam              config/pm/unit_test/asim2cam/event_test_asim2cam.apm

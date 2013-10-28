@@ -1,0 +1,8 @@
+This directory contains module variant for the "simulation core",
+i.e. a modular version of what libasim.a provides, namely base classes
+for ports, clocks, modules, etc., and a clock server.
+
+It also contains modules for libasim and libdral, for use with the
+"version 3" system modules, so you can choose which version of libasim
+independently (the legacy libasim.a, or the single- or multi-threaded versions).
+

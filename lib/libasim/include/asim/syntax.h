@@ -50,22 +50,32 @@ typedef uint32_t            UINT32;
 typedef  int64_t             INT64;
 typedef uint64_t            UINT64;
 
+typedef  intptr_t  PTR_SIZED_INT;
+typedef uintptr_t PTR_SIZED_UINT;
+
 #if __WORDSIZE >= 64
 #define INT128_AVAIL
-/* 
-   The following code sequence causes gcc 3.4.3 to hang in some cases. 
-   Besides this is a round-about way of getting a 128 bit integer on 
-   a 64 bit machine.
- // Uses SSE.  Limited support in 32 bit mode.
- // typedef int __attribute__((__mode__(__TI__)))          INT128;
- // typedef unsigned int __attribute__((__mode__(__TI__))) UINT128;
-*/
+ 
+//  The following code sequence causes gcc 3.4.3 to hang in some cases. 
+//  Besides this is a round-about way of getting a 128 bit integer on 
+//  a 64 bit machine.
+// Uses SSE.  Limited support in 32 bit mode.
+//typedef int __attribute__((__mode__(__TI__)))          INT128;
+//typedef unsigned int __attribute__((__mode__(__TI__))) UINT128;
+
+#ifdef __ICC
+class UINT128
+{
+public:
+    UINT64 low;
+    UINT64 high;
+};
+#else
 typedef __int128_t INT128;
 typedef __uint128_t UINT128;
 #endif
 
-typedef  intptr_t  PTR_SIZED_INT;
-typedef uintptr_t PTR_SIZED_UINT;
+#endif
 
 // already defined in stdint.h:
 // #define UINT32_MAX          4294967295UL

@@ -158,9 +158,9 @@ ParseVariables(INT32 argc, char **argv)
     {
         ASSERT(runWithEventsOn,"You are trying to generate events in a "
               "model not compiled with events. Build the model with EVENTS=1");
-        DRALEVENT(TurnOn());
-        DRALEVENT(StartActivity(ASIM_CLOCKABLE_CLASS::GetClockServer()->getFirstDomainCycle()));
-        ASIM_CLOCKABLE_CLASS::GetClockServer()->DralTurnOn();
+        //DRALEVENT(TurnOn());
+        //DRALEVENT(StartActivity(ASIM_CLOCKABLE_CLASS::GetClockServer()->getFirstDomainCycle()));
+        //ASIM_CLOCKABLE_CLASS::GetClockServer()->DralTurnOn();
     }
     else if (strcmp(argv[0], "-esc") == 0) 
     {

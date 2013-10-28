@@ -58,7 +58,10 @@ class ASIM_FREE_LIST_CLASS
     {
         struct
         {
-            PTR_SIZED_UINT txnId;
+	    // this has to be incremented atomically,
+	    // and it must be the same size as a pointer,
+	    // but it cannot be a class since we're inside an anonymous struct:
+            volatile _Atomic_ptr_sized_int txnId;
             L_TYPE_PTR list;
         };
 
@@ -132,7 +135,7 @@ L_TYPE *ASIM_FREE_LIST_CLASS<L_TYPE>::Pop()
     HEAD oldHead, newHead;
     do
     {
-        oldHead.txnId = head.txnId++ + 1;
+        oldHead.txnId = __exchange_and_add((volatile _Atomic_ptr_sized_int *)(&head.txnId),1) + 1;
         oldHead.list = head.list;
 
         if (oldHead.list == NULL)

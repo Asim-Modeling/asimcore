@@ -258,7 +258,7 @@ using namespace std;
 //
 // Major Cache Line Coherency States
 //
-typedef enum { S_INVALID, S_EXCLUSIVE_CLEAN, S_EXCLUSIVE_DIRTY, S_SHARED, S_FORWARD, S_MAX_LINE_STATUS } LINE_STATUS;
+typedef enum { S_INVALID, S_EXCLUSIVE_CLEAN, S_EXCLUSIVE_DIRTY, S_SHARED, S_FORWARD, S_NC_CLEAN, S_NC_DIRTY, S_MAX_LINE_STATUS } LINE_STATUS;
 
 static char * LINE_STATUS2STR[S_MAX_LINE_STATUS] = { "Invalid", "Exclusive", "Dirty", "Shared", "Forward" };
 
@@ -830,7 +830,9 @@ gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData>::SetLineDat
  //
  // Check we are in the appropriate state
  //
- ASSERT((TagArray[index][way].GetStatus() == S_EXCLUSIVE_DIRTY)||(TagArray[index][way].GetStatus() == S_EXCLUSIVE_CLEAN),"You can not use SetLineData on a line that is not S_EXCLUSIVE_*\n");
+ ASSERT((TagArray[index][way].GetStatus() == S_EXCLUSIVE_DIRTY)||(TagArray[index][way].GetStatus() == S_EXCLUSIVE_CLEAN)
+        ||(TagArray[index][way].GetStatus() == S_NC_DIRTY)||(TagArray[index][way].GetStatus() == S_NC_CLEAN),
+	"You can not use SetLineData on a line that is not S_EXCLUSIVE_*\n");
 
  //
  // copy data into the cache
@@ -863,7 +865,9 @@ gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData>::SetLineDat
  //
  // Check we are in the appropriate state
  //
- ASSERT((TagArray[index][way].GetStatus() == S_EXCLUSIVE_DIRTY)||(TagArray[index][way].GetStatus() == S_EXCLUSIVE_CLEAN),"You can not use SetLineData on a line that is not S_EXCLUSIVE_*\n");
+ ASSERT((TagArray[index][way].GetStatus() == S_EXCLUSIVE_DIRTY)||(TagArray[index][way].GetStatus() == S_EXCLUSIVE_CLEAN)
+        ||(TagArray[index][way].GetStatus() == S_NC_DIRTY)||(TagArray[index][way].GetStatus() == S_NC_CLEAN),
+        "You can not use SetLineData on a line that is not S_EXCLUSIVE_*\n");
 
  //
  // copy data item into the cache

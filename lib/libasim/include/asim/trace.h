@@ -41,57 +41,70 @@ extern bool     printTraceNames;
 //
 
 #define WARNING_KEEP(out) \
-do { \
-    std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-} while(0)
+    do { \
+        std::ostringstream __traceBuf; \
+        __traceBuf << out; \
+        (this)->Trace(__traceBuf); \
+    } while(0)
 
 #define T1_KEEP(out) \
-if((this)->traceOnArr[0]) { \
-    std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-}
+    do { \
+        if ((this)->traceOnArr[0]) { \
+            std::ostringstream __traceBuf; \
+            __traceBuf << out; \
+            (this)->Trace(__traceBuf); \
+        } \
+    } while (0)
 
 #define T2_KEEP(out) \
-if((this)->traceOnArr[1]) { \
-    std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-}
+    do { \
+        if ((this)->traceOnArr[1]) { \
+            std::ostringstream __traceBuf; \
+            __traceBuf << out; \
+            (this)->Trace(__traceBuf); \
+        } \
+    } while (0)
 
 #define T2_COND_KEEP(out) \
-if((this)->traceOnArr[1]) { \
-    out; \
-    fflush(NULL); \
-}
+    do { \
+        if ((this)->traceOnArr[1]) { \
+            out; \
+            fflush(NULL); \
+        } \
+    } while (0)
 
 #define WARNING_AS_KEEP(this, out) \
-do { std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-} while(0)
+    do { \
+        std::ostringstream __traceBuf; \
+        __traceBuf << out; \
+        (this)->Trace(__traceBuf); \
+    } while (0)
 
 #define T1_AS_KEEP(this, out) \
-if((this)->traceOnArr[0]) { \
-    std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-}
+    do { \
+        if ((this)->traceOnArr[0]) { \
+            std::ostringstream __traceBuf; \
+            __traceBuf << out; \
+            (this)->Trace(__traceBuf); \
+        } \
+    } while (0)
 
 #define T2_AS_KEEP(this, out) \
-if((this)->traceOnArr[1]) { \
-    std::ostringstream __traceBuf; \
-    __traceBuf << out; \
-    (this)->Trace(__traceBuf); \
-}
+    do { \
+        if ((this)->traceOnArr[1]) { \
+            std::ostringstream __traceBuf; \
+            __traceBuf << out; \
+            (this)->Trace(__traceBuf); \
+        } \
+    } while (0)
 
 #define T2_AS_COND_KEEP(out) \
-if((this)->traceOnArr[1]) { \
-    out; \
-    fflush(NULL); \
-}
+    do { \
+        if ((this)->traceOnArr[1]) { \
+            out; \
+            fflush(NULL); \
+        } \
+    } while (0)
 
 #define T1_UNCOND_KEEP(out) T1_AS(unconditionalTraceable, out);
 
@@ -101,30 +114,29 @@ if((this)->traceOnArr[1]) { \
 #define T1(out) T1_KEEP(out)
 #define T2(out) T2_KEEP(out)
 #define T2_COND(out) T2_COND_KEEP(out)
-#define TRACING(level)          (((level>=1)||(level<=2)) ? (this)->traceOnArr[level-1] : false)
+#define TRACING(level) (((level>=1)||(level<=2)) ? (this)->traceOnArr[level-1] : false)
 #define WARNING_AS(this, out) WARNING_AS_KEEP(this, out)
 #define T1_AS(this, out) T1_AS_KEEP(this, out)
 #define T2_AS(this, out) T2_AS_KEEP(this, out)
 #define T2_AS_COND(out) T2_AS_COND_KEEP(out)
-#define TRACING_AS(this,level)	(((level>=1)||(level<=2)) ? (this)->traceOnArr[level-1] : false)
+#define TRACING_AS(this,level) (((level>=1)||(level<=2)) ? (this)->traceOnArr[level-1] : false)
 #define T1_UNCOND(out) T1_UNCOND_KEEP(out)
-#define BUILT_WITH_TRACE_FLAGS true
+#define BUILT_WITH_TRACE_FLAGS (true)
 
 #else /* ASIM_ENABLE_TRACE */
 
-#define WARNING(out)
-#define T1(out) 
-#define T2(out) 
-#define T2_COND(out)
-#define TRACING(level) false
-#define WARNING_AS(this, out)
-#define T1_AS(this, out) 
-#define T2_AS(this, out) 
-#define T2_COND(out)
-#define T1_UNCOND(out) 
-#define TRACING_AS(this, level) false
-#define BUILT_WITH_TRACE_FLAGS false
- 
+#define WARNING(out) do {} while (0)
+#define T1(out) do {} while (0)
+#define T2(out) do {} while (0)
+#define T2_COND(out) do {} while (0)
+#define TRACING(level) (false)
+#define WARNING_AS(this, out) do {} while (0)
+#define T1_AS(this, out) do {} while (0)
+#define T2_AS(this, out) do {} while (0)
+#define T2_COND(out) do {} while (0)
+#define T1_UNCOND(out) do {} while (0)
+#define TRACING_AS(this, level) (false)
+#define BUILT_WITH_TRACE_FLAGS (false)
 
 #endif /* ASIM_ENABLE_TRACE */
 
@@ -136,10 +148,10 @@ struct TRACEABLE_REGEX_CLASS
 {
     Regex *regex;
     int level;
-    TRACEABLE_REGEX_CLASS(Regex *r, int l) : regex(r), level(l) 
+    TRACEABLE_REGEX_CLASS(Regex *r, int l) : regex(r), level(l)
     {
     }
-    ~TRACEABLE_REGEX_CLASS() 
+    ~TRACEABLE_REGEX_CLASS()
     {
         delete regex;
     }
@@ -149,9 +161,9 @@ typedef list<TRACEABLE_REGEX> TRACEABLE_REGEX_LIST;
 // Support the functionality of applying some number of
 // regular expression to enable traces, packaging them
 // all up, turning off the traces enabled by those regular
-// expressions, and applying them at a later time. This 
+// expressions, and applying them at a later time. This
 // allows the user to turn on the desired traceable objects
-// in the normal way and then decide to delay them all 
+// in the normal way and then decide to delay them all
 // until a later time.
 struct TRACEABLE_DELAYED_ACTION_CLASS;
 typedef TRACEABLE_DELAYED_ACTION_CLASS *TRACEABLE_DELAYED_ACTION;
@@ -159,7 +171,7 @@ struct TRACEABLE_DELAYED_ACTION_CLASS
 {
     // The regular expressions to apply at a later time.
     TRACEABLE_REGEX_LIST *savedRegexes;
-    
+
     // Create a new traceable delayed action. This will
     // turn off any enabled traces and save them to be
     // applied at a later time.
@@ -169,29 +181,29 @@ struct TRACEABLE_DELAYED_ACTION_CLASS
     // expression and level.
     TRACEABLE_DELAYED_ACTION_CLASS(string regex, int level);
 
-    ~TRACEABLE_DELAYED_ACTION_CLASS() 
+    ~TRACEABLE_DELAYED_ACTION_CLASS()
     {
-        if(savedRegexes) 
+        if(savedRegexes)
         {
             delete(savedRegexes);
         }
     }
-    
+
     // Apply the regexes in this action.
     void go();
 };
 
 class TRACEABLE_CLASS;
 typedef TRACEABLE_CLASS *TRACEABLE;
-class TRACEABLE_CLASS 
+class TRACEABLE_CLASS
 {
     friend struct TRACEABLE_DELAYED_ACTION_CLASS;
-    
+
   protected:
     // The instance name of the traceable object. For modules, this is
     // the fully qualified name of the object in the instance hierarchy.
     std::string objectName;
-    // Used by the TRACE macro to decide whether to call the trace 
+    // Used by the TRACE macro to decide whether to call the trace
     // member function.
     bool myTraceOn;
     // Controls the verbosity of tracing.
@@ -199,7 +211,12 @@ class TRACEABLE_CLASS
     // 1 = high level information, of interest to other people
     // 2 = detailed information for debugging
     int traceLevel;
-    
+
+    // Controls the output stream where the traces are being logged.
+    // Can be used to redirect traces to a file instead of standard output
+    static std::ostream *traceStream;
+    static filebuf fb;
+
     // The maximum traceLevel allowed.
     static const int maxTraceLevel = 2;
 
@@ -233,7 +250,7 @@ class TRACEABLE_CLASS
     bool traceOnArr[maxTraceLevel];
 
   protected:
-    /// Copy constructor. 
+    /// Copy constructor.
     TRACEABLE_CLASS(const TRACEABLE_CLASS& t);
 
   public:
@@ -260,6 +277,16 @@ class TRACEABLE_CLASS
     static bool EnableTraceByRegex(TRACEABLE_DELAYED_ACTION regex);
     static bool EnableTraceByRegex(TRACEABLE_REGEX regex);
     static bool EnableTraceByRegex(std::string regex, int level);
+
+    // Set trace output stream to redirct traces to a specific file
+    static void SetTraceStream (char *fname) {
+        fb.open(fname, ios::out);
+        TRACEABLE_CLASS::traceStream = new std::ostream(&fb);
+    }
+
+    // Get output trace stream object
+    static std::ostream* GetTraceStream() {return TRACEABLE_CLASS::traceStream;}
+
 protected:
     static bool EnableTraceByRegex(std::string regex, int level, bool saveRegex);
     static bool EnableTraceByRegex(Regex *regex, int level, bool saveRegex);
@@ -287,27 +314,27 @@ public:
 
 };
 
-inline void TRACEABLE_CLASS::RecomputeTraceArr() 
+inline void TRACEABLE_CLASS::RecomputeTraceArr()
 {
-    for(int i = 0; i < maxTraceLevel; i++) 
+    for(int i = 0; i < maxTraceLevel; i++)
     {
         traceOnArr[i] = myTraceOn && (traceLevel >= (i + 1));
     }
 }
 
-inline void TRACEABLE_CLASS::SetObjectName(std::string _n) 
+inline void TRACEABLE_CLASS::SetObjectName(std::string _n)
 {
     objectName = _n;
 }
 
-inline void TRACEABLE_CLASS::SetTraceLevel(int level) 
+inline void TRACEABLE_CLASS::SetTraceLevel(int level)
 {
     assert(level <= maxTraceLevel);
     traceLevel = level;
     RecomputeTraceArr();
 }
 
-inline void TRACEABLE_CLASS::SetTraceOn(bool enabled) 
+inline void TRACEABLE_CLASS::SetTraceOn(bool enabled)
 {
     myTraceOn = enabled;
     RecomputeTraceArr();
@@ -316,9 +343,9 @@ inline void TRACEABLE_CLASS::SetTraceOn(bool enabled)
 inline void TRACEABLE_CLASS::Trace(std::ostringstream &out) const
 {
 #if MAX_PTHREADS > 1
-    get_thread_safe_log().ts() << std::dec << pthread_self() << ": " <<  out.str() << endl;
+    get_thread_safe_log(TRACEABLE_CLASS::traceStream).ts() << std::dec << pthread_self() << ": " <<  out.str() << endl;
 #else
-    std::cout << out.str() << std::endl;
+    *(TRACEABLE_CLASS::traceStream) << out.str() << std::endl;
 #endif
 }
 
@@ -333,7 +360,7 @@ inline bool TRACEABLE_CLASS::EnableTraceByRegex(TRACEABLE_REGEX r)
 }
 
 // Make a class that will be used for unconditional trace calls.
-class UNCONDITIONAL_TRACEABLE_CLASS : public TRACEABLE_CLASS 
+class UNCONDITIONAL_TRACEABLE_CLASS : public TRACEABLE_CLASS
 {
   public:
     UNCONDITIONAL_TRACEABLE_CLASS();

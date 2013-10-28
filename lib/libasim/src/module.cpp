@@ -31,6 +31,8 @@
 // ASIM public modules -- BAD! in asim-core
 //#include "asim/provides/controller.h"
 
+list<module_regex> ASIM_MODULE_CLASS::regexList;
+
 ASIM_DRAL_NODE_CLASS::ASIM_DRAL_NODE_CLASS(ASIM_MODULE parent, const char* const name):
     active(true)
 {
@@ -49,9 +51,10 @@ ASIM_MODULE_CLASS::ASIM_MODULE_CLASS(ASIM_MODULE       p,
 				     bool              create_thread) :
     ASIM_REGISTRY_CLASS(),
     ASIM_DRAL_NODE_CLASS(p,n),
-    ASIM_CLOCKABLE_CLASS((ASIM_CLOCKABLE)p),
+    ASIM_CLOCKABLE_CLASS((ASIM_CLOCKABLE)p, /*create_thread=*/false), // handled in SetThreadHandle()
     ASIM_ADF_NODE_CLASS(p,n),
-    name(strdup(n)), parent(p), eMod(e), contained(NULL)
+    name(strdup(n)), parent(p), eMod(e), contained(NULL),
+    createThread(create_thread)
 /*
  * Initialize...
  */
@@ -70,8 +73,9 @@ ASIM_MODULE_CLASS::ASIM_MODULE_CLASS(ASIM_MODULE       p,
     strcat(path, name);
     SetRegPath(path);
 
-    string traceName = path;
-    for(int i = 0; i < (traceName[i] != 0); i++) {
+    traceName = path;
+
+    for(int i = 0; traceName[i]; i++) {
         if(traceName[i] == '/') {
             traceName[i] = '.';
         }
@@ -80,9 +84,14 @@ ASIM_MODULE_CLASS::ASIM_MODULE_CLASS(ASIM_MODULE       p,
         traceName.erase(0,1);
     }
     SetTraceableName(traceName);
-    
-    // maybe create a thread if we're running in parallel
-    thread = (create_thread) ? new ASIM_SMP_THREAD_HANDLE_CLASS : NULL;
+
+    // Check if a new thread handle has to be created.
+    // If not, set the thread handle to null.
+
+    if ( !SetThreadHandle() )
+    {
+        SetHostThread (NULL);
+    }
 }
 
 ASIM_MODULE_CLASS::~ASIM_MODULE_CLASS ()
@@ -100,8 +109,9 @@ ASIM_MODULE_CLASS::~ASIM_MODULE_CLASS ()
         contained = contained->next;
         delete tmp;
     }
-    if (thread) {
-        delete thread;
+
+    if (!didModuleCreateThread) {
+        SetHostThread( NULL );
     }
 }
 
@@ -203,6 +213,131 @@ ASIM_MODULE_CLASS::ClearModuleStats ()
         scan->module->ClearModuleStats();
         scan = scan->next;
     }
+}
+
+// Functional save
+void
+ASIM_MODULE_CLASS::DumpFunctionalState (ostream& saveFuncState)
+/*
+ * Dump the functional state of this module
+ * Do we want recursive dump of all contained modules?
+ */
+{
+    // This method will likely be overridden by modules to
+    // dump their state as they like, however we provide
+    // a default action of just printing a message here
+    // This should be a NOP if the module does not implement
+    // state save/restore
+    
+    //cout << "Saving state in DumpFunctionalState for " << Name() << "\n";
+    
+    ASIM_MODULELINK scan = contained;
+    while (scan != NULL)
+    {
+        scan->module->DumpFunctionalState(saveFuncState);
+        scan = scan->next;
+    }
+}
+
+void
+ASIM_MODULE_CLASS::LoadFunctionalState (istream& loadFuncState)
+/*
+ * Restore the functional state of this module
+ * Do we want recursive dump of all contained modules?
+ */
+{
+    // This method will likely be overridden by modules to
+    // dump their state as they like, however we provide
+    // a default action of just printing a message here
+    // This should be a NOP if the module does not implement
+    // state save/restore
+    
+    //cout << "Restoring state in LoadFunctionalState for " << Name() << endl; 
+        
+    ASIM_MODULELINK scan = contained;
+    while (scan != NULL)
+    {
+        scan->module->LoadFunctionalState(loadFuncState);
+        scan = scan->next;
+    }
+}
+
+
+// Function to create a new thread handle when necessary.
+bool ASIM_MODULE_CLASS::SetThreadHandle()
+{
+    didModuleCreateThread = false;
+
+    // If PTHREAD_PER_<module> is set to 1 statically, create a 
+    // pthread and return.
+    if (createThread) {
+        SetHostThread (new ASIM_SMP_THREAD_HANDLE_CLASS);
+        return true;
+    }
+    
+    list<module_regex>::iterator iter;
+    
+    // Loop through the list of regexes and match against the 
+    // current module's name/path
+    for (iter = regexList.begin(); iter != regexList.end(); ++iter) {
+        
+        // If there is no regex, return false.
+        // We should not hit this condition.
+        if ((*iter).regex == "") {
+            return false;
+        }
+        
+        // Build a regular expression for regex
+        Regex *regex = new Regex();
+        string m_regex = (*iter).regex;
+
+        if(!regex->assign(m_regex.c_str(), false)) 
+        {
+             delete(regex);
+             return false;
+        }
+
+        // Check if the regex matches the module name or path
+        if ( regex->match(name) || regex->match(path) )
+          {
+              static ASIM_SMP_THREAD_HANDLE temp_handle = NULL;
+              didModuleCreateThread = true;
+            
+              // Creating this temp_handle is not necessary
+              // However, simulation fails if prevHandle is directly 
+              // used.
+
+              if (!temp_handle) {
+                  temp_handle = new ASIM_SMP_THREAD_HANDLE_CLASS;
+                  (*iter).prevHandle = temp_handle;
+                  cout << "Running module " << path << " in a separate thread.\n";
+              } 
+              
+              SetHostThread ( (*iter).prevHandle );
+              
+              if (++(*iter).count == (*iter).limit) {
+                  temp_handle = NULL;
+                  (*iter).prevHandle = temp_handle;
+                  (*iter).count = 0;
+              }
+              return true;
+          }
+    }
+    return false;
+}
+
+// Function to store the multi-threading regexes specified on 
+// the command line.
+void ASIM_MODULE_CLASS::SetModuleRegex(string regex, int limit)
+{
+    module_regex user_regex;
+
+    user_regex.regex = regex;
+    user_regex.limit = limit;
+    user_regex.count = 0;
+    user_regex.prevHandle = NULL;
+
+    regexList.push_front (user_regex);
 }
 
 //

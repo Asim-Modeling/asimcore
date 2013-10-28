@@ -359,10 +359,12 @@ typedef ClockCallBack<ASIM_CLOCKABLE_CLASS> ClockCallBackClockable;
  * WARNING: don't remove the volatile qualifiers, they are important
  * for thread synchronization !!
  **/
+typedef
+class ASIM_CLOCKSERVER_THREAD_CLASS* ASIM_CLOCKSERVER_THREAD;
 class ASIM_CLOCKSERVER_THREAD_CLASS
 {
     
-  private:
+  protected:
     ASIM_SMP_THREAD_HANDLE tHandle;
     
     // Current list of work
@@ -378,15 +380,33 @@ class ASIM_CLOCKSERVER_THREAD_CLASS
     volatile bool threadActive;
     volatile bool threadForceExit;
     
-  public:
+    // for 2-phase barrier.  Local value of phase
+    bool barrierPhase;
+    
+    // for fuzzy barrier.  Last time point we have committed.
+    volatile INT64 localDoneTime;
+    
+    // the actual constructor is private, and should only be called from
+    // a factory routine.  This allows different versions of the clock server
+    // to implement different factory routines, which might for example,
+    // allocate a derived class instead.
+    friend
+    ASIM_CLOCKSERVER_THREAD new_ASIM_CLOCKSERVER_THREAD_CLASS
+                                 (ASIM_SMP_THREAD_HANDLE tHandle);
     ASIM_CLOCKSERVER_THREAD_CLASS(ASIM_SMP_THREAD_HANDLE tHandle) :
         tHandle(tHandle),
         threadActive(false),
         threadForceExit(false),
+        barrierPhase(false),
         tasks_completed(true)
     {};
+
+  public:
+    INT64 GetLocalDoneTime() {
+        return localDoneTime;
+    };
     
-    ~ASIM_CLOCKSERVER_THREAD_CLASS()
+    virtual ~ASIM_CLOCKSERVER_THREAD_CLASS()
     {
         VERIFY(!ThreadActive(), "Thread " << GetThreadId() << " not stopped!");
     }
@@ -420,38 +440,17 @@ class ASIM_CLOCKSERVER_THREAD_CLASS
     }
     
     /** Returns true if all the assigned tasks have been completed */
-    inline bool CheckAllTasksCompleted()
-    {
-        ASSERTX(ThreadActive());
-
-        // Wait for the thread to complete the tasks
-        pthread_mutex_lock(&finish_cond_mutex);
-        while(!tasks_completed)
-        {
-            pthread_cond_wait(&finish_condition, &finish_cond_mutex);
-        }
-        pthread_mutex_unlock(&finish_cond_mutex);
-        
-        return tasks_completed;
-    }
+    bool CheckAllTasksCompleted();
     
     /** Tell the thread he can start to execute the current list of tasks */
+    void PerformTasksThreaded();
+
+    /** Execute the current list of tasks directly */
     void PerformTasksSequential();
     
-    inline void PerformTasksThreaded()
-    {
-        ASSERTX(ThreadActive());
-
-        // Restart the thread waiting for the condition
-        pthread_mutex_lock(&task_list_mutex);
-        tasks_completed = false;
-        pthread_cond_broadcast(&wait_condition);
-        pthread_mutex_unlock(&task_list_mutex);
-    }
-
     // Functions to create and destroy the pthread and synchronization devices
-    void CreatePthread();
-    bool DestroyPthread();
+    virtual void CreatePthread( bool active = true );
+    virtual bool DestroyPthread();
 
   public:
     
@@ -490,7 +489,11 @@ class ASIM_CLOCKSERVER_THREAD_CLASS
     }
 };
 
-typedef ASIM_CLOCKSERVER_THREAD_CLASS* ASIM_CLOCKSERVER_THREAD;
+// clock server implementation supplies this factory method
+ASIM_CLOCKSERVER_THREAD new_ASIM_CLOCKSERVER_THREAD_CLASS(ASIM_SMP_THREAD_HANDLE tHandle);
+
+// used to iterate over lists of worker threads
+typedef list<ASIM_CLOCKSERVER_THREAD>::iterator CLOCKSERVER_THREADS_ITERATOR;
 
 
 /**
@@ -522,6 +525,9 @@ typedef class ClockDomain
         : name(_name),
           defaultThread(_defaultThread)
     { /* Nothing */ }
+    
+    /** unregister any callbacks for all modules and rate matchers **/
+    void UnregisterAll();
     
 } CLOCK_DOMAIN_CLASS, *CLOCK_DOMAIN;
 
@@ -580,6 +586,12 @@ class ClockRegistry
      * callback when the events are turned on
      **/
     vector<ASIM_CLOCKABLE> lEventsTurnOn;
+    
+    /**
+     * The number of active event instances for this clock
+     * in the fuzzy-barrier parallel clockserver event list
+     */
+    UINT32 nEventInstances;
 
     void DralEventsTurnedOn();
 
@@ -594,7 +606,8 @@ class ClockRegistry
           nStep(0),
           nBaseCycle(0),
           nCycle(0),
-          clockDomain(_clockDomain)
+          clockDomain(_clockDomain),
+          nEventInstances(0)
     {
         nFrequency = clockDomain->currentFrequency;
         EVENT(
@@ -632,8 +645,14 @@ class ClockRegistry
             }
         );
     }
-
+    
 };
+
+// used to iterate over clock event lists
+typedef deque<CLOCK_REGISTRY>::iterator CLOCK_REGISTRY_EVENTS_ITERATOR;
+
+// used to iterate over module callback lists for a given event
+typedef vector< pair<ASIM_CLOCKABLE, CLOCK_CALLBACK_INTERFACE> >::iterator CLOCK_REGISTRY_MODULES_ITERATOR;
 
 
 /**
@@ -700,6 +719,7 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
     /** Add an Asim thread to the available threads */
     ASIM_CLOCKSERVER_THREAD MapThread(ASIM_SMP_THREAD_HANDLE tHandle);
 
+    /** Add a recurring clock event to the local event queue */
     void AddTimeEvent(UINT64 time, CLOCK_REGISTRY freq);
 
     /** Internal method to register the write rate matchers
@@ -707,13 +727,22 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
     void RegisterWriterRateMatcherClock(RATE_MATCHER wrm, CLOCK_DOMAIN domain,
                                     ASIM_CLOCKSERVER_THREAD thread, UINT32 skew);
     
+    /** perform initialization specific to threaded clockserver implementation */
+    string threadLookahead;
+    void InitClockServerThreaded();
+
+    /** parse the fuzzy barrier lookahead parameter string and return base cycles */
+    UINT64 LookaheadParam2BaseCycles( const string &lookahead );
+
     /** Method that produces a random clock order within all the modules that
         belongs to a ClockRegistry */
     UINT64 RandomClock();
     
     /** Method that uses pthreads to clock the modules in parallel */
     UINT64 ThreadedClock();
-    
+    void StartAllWorkerThreads();
+    void WaitForAllWorkerThreads();
+
     /** Specialized clock method used when there is only one clock domain */
     UINT64 UniqueDomainClock();
 
@@ -728,22 +757,72 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
     /**
      * @param a First operand
      * @param b Second operand
+     * @return gcd(a, b)
+     **/
+    UINT64 gcd(UINT64 a, UINT64 b)
+    {
+	while (b) {
+	    UINT64 t = b;
+	    b = a % b;
+	    a = t;
+	}
+	return a;
+    };
+
+    /**
+     * @param a First operand
+     * @param b Second operand
      * @return lcm(a, b)
      **/
-    UINT32 lcm(int a,int b)
+    UINT64 lcm(UINT64 a, UINT64 b)
     {
-        UINT32 result = b;
+        UINT64 _gcd = gcd(a, b);
+	UINT64 _a = (a / _gcd);
+	UINT64 _b = (b / _gcd);
+	
+	// will lcm overflow? todo: is there a faster way to do this?	
+	if (_b > (UINT64_MAX / _a)) {
+	    VERIFY(false, "UINT64 overflow detected in lcm!");
+	}
+	return (UINT64) (_a * _b * _gcd);
+    };
+
+    /**
+     * @param a First operand
+     * @param b Second operand
+     * @return slow_lcm(a, b)
+     **/
+    UINT64 slow_lcm(UINT64 a, UINT64 b)
+    {
+        UINT64 result = b;
 
         while(result % a != 0) result += b;
         return result;
-    }
+    };
+
+    /** for fuzzy-barrier threaded clock implementation, return global committed time **/
+    INT64 GetGlobalDoneTime();
    
   public:
   
     ASIM_CLOCK_SERVER_CLASS();
     ~ASIM_CLOCK_SERVER_CLASS();
-    
-    
+
+    /** check lcm overflow without crashing **/
+    inline bool getLcmOverflow(UINT64 a, UINT64 b, UINT64 &result)
+    {
+        UINT64 _gcd = gcd(a, b);
+	UINT64 _a = (a / _gcd);
+	UINT64 _b = (b / _gcd);
+	
+	// will lcm overflow? todo: is there a faster way to do this?	
+	if (_b > (UINT64_MAX / _a)) {
+	    return true;
+	}
+	result = (_a * _b * _gcd);
+	return false;
+    };
+
     /** Accessors (used by the clockserver system) */
     inline UINT64 getBaseFrequency() { return Bf * 10; }  // In MHz
     
@@ -770,7 +849,7 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
     void DumpStats(STATE_OUT state_out, UINT64 total_base_cycles);
 
     void InitClockServer(void);
-
+    void StopClockServer(void);
 
     /** Some methods to configure the clockserver */
     void SetDumpProfile(bool _bDumpProfile)
@@ -783,12 +862,13 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
         random_seed = _random_seed;
     }
 
-    void SetThreadedClocking(bool _threaded)
+    void SetThreadedClocking(bool _threaded, const string &_lookahead, const string &_delay_ignored)
     {
         if (ASIM_SMP_CLASS::GetMaxThreads() > 1)
         {
             threaded = _threaded;
         }
+        threadLookahead = _lookahead;
     }
 
     void SetUniqueDomainOptimization(bool active)
@@ -830,7 +910,9 @@ class ASIM_CLOCK_SERVER_CLASS : public TRACEABLE_CLASS
     /** Invoques all the Clockables in order to dump their status
         just before the first cycle occurs */
     void DralTurnOn(void);
-
+    
+    /** unregister all callbacks for all modules and rate matchers **/
+    void UnregisterAll();
 };
 
 typedef class ASIM_CLOCK_SERVER_CLASS *ASIM_CLOCK_SERVER;

@@ -30,8 +30,6 @@
 #include "asim/atomic.h"
 #include "asim/restricted/perinst_stats.h"
 
-static UID_GEN32 numInst = 0;
-
 #define ENTRIES_PER_PAGE (1 << LOG2_ENTRIES_PER_PAGE)
 
 

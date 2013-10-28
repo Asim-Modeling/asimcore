@@ -105,6 +105,17 @@ WARMUP_MANAGER_CLASS::DoWarmUp(void)
                         hadData = true;
                     }
 
+                    if (wInfo.IsInval())
+                    {
+                        (*whwc)->nInvalInits += 1;
+                        WARMUP_INVAL_CLASS wInval(wInfo.GetIFetchVA(),
+                                                  wInfo.GetIFetchPA());
+                        CallInvalCallbacks(globalInvalCallbacks, hwc, &wInval);
+                        CallInvalCallbacks((*whwc)->invalCallbacks, hwc, &wInval);
+
+                        hadData = true;
+                    }
+
                     // Is it a data reference?
                     for (UINT32 i = 0; i < wInfo.NLoads(); i++)
                     {
@@ -113,6 +124,7 @@ WARMUP_MANAGER_CLASS::DoWarmUp(void)
                                                 wInfo.GetLoadVA(i),
                                                 wInfo.GetLoadPA(i),
                                                 wInfo.GetLoadBytes(i));
+                        if (wInfo.nonCoherent()) wData.SetNonCoherent();
                         if (wInfo.IsAsimInstValid())
                         {
                             wData.SetAsimInst(wInfo.GetAsimInst());
@@ -136,6 +148,7 @@ WARMUP_MANAGER_CLASS::DoWarmUp(void)
                                                 wInfo.GetStoreVA(i),
                                                 wInfo.GetStorePA(i),
                                                 wInfo.GetStoreBytes(i));
+                        if (wInfo.nonCoherent()) wData.SetNonCoherent();
                         if (wInfo.IsAsimInstValid())
                         {
                             wData.SetAsimInst(wInfo.GetAsimInst());

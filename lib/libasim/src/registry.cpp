@@ -192,6 +192,10 @@ ASIM_REGISTRY_CLASS::DumpStats (STATE_OUT stateOut)
     // print statistics as they like, however we provide
     // a default action of just printing all the exposed
     // state values.
+    
+    //YARDI - start
+    //fprintf(stderr,"Dumping stats in registry.cpp\n");
+    //YARDI - end
 
     ASIM_STATELINK sscan = states;
     while (sscan != NULL) 

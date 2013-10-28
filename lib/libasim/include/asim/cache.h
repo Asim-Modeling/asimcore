@@ -28,6 +28,7 @@
 // generic
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <iostream>
 #include <vector>
 
@@ -38,6 +39,7 @@
 #include "asim/ioformat.h"
 #include "asim/trace.h"
 #include "asim/cache_manager.h"
+#include "asim/atoi.h"
 
 namespace iof = IoFormat;
 using namespace iof;

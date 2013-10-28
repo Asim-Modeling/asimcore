@@ -104,21 +104,21 @@ do { \
 #if MAX_PTHREADS > 1
 #define TTRACE(b) \
 do { \
-    get_thread_safe_log().ts() << std::dec << pthread_self() << ": " <<  b << endl; \
+    get_thread_safe_log(&cout).ts() << std::dec << pthread_self() << ": " <<  b << endl; \
 } while(0)
 
 #define TTMSG(a, b) \
 do { \
     if (traceOn && (traceMask & (a))) \
     { \
-	get_thread_safe_log().ts() << std::dec << pthread_self() << ": "  << b << endl; \
+	get_thread_safe_log(&cout).ts() << std::dec << pthread_self() << ": "  << b << endl; \
     } \
 } while(0)
 
 #define TTIME(a)  do { \
     struct timeval tv; \
     gettimeofday(&tv, NULL); \
-    get_thread_safe_log().ts() << "Time: " << std::dec \
+    get_thread_safe_log(&cout).ts() << "Time: " << std::dec \
                                <<  (tv.tv_sec*1000000 + tv.tv_usec) - trace_start_usecs \
                                << "\t" << a << endl; \
 }while(0)

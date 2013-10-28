@@ -72,9 +72,11 @@ ASIM_MULTI_CHIP_SYSTEM_CLASS::ASIM_MULTI_CHIP_SYSTEM_CLASS(
     
     // We obtain the system wide clock server and set the clocking random seed
     clock = ASIM_CLOCKABLE_CLASS::GetClockServer();
-    clock -> SetRandomClockingSeed(RANDOM_CLOCKING_SEED);
-    clock -> SetDumpProfile(DUMP_CLOCKING_PROFILE);
-    clock -> SetThreadedClocking(THREADED_CLOCKING == 1);
+    clock -> SetRandomClockingSeed( RANDOM_CLOCKING_SEED         );
+    clock -> SetDumpProfile       ( DUMP_CLOCKING_PROFILE        );
+    clock -> SetThreadedClocking  ( THREADED_CLOCKING == 1       ,
+                                    CLOCKSERVER_THREAD_LOOKAHEAD ,
+                                    CLOCKSERVER_THREAD_DELAY     );
 }
 
 
@@ -82,11 +84,21 @@ ASIM_MULTI_CHIP_SYSTEM_CLASS::~ASIM_MULTI_CHIP_SYSTEM_CLASS()
 {
     // We dump the profile information before the modules get destroyed
     clock->DumpProfile();
+    
+    // stop the clock server (stop threads, in the case of the threaded clockserver)
+    clock->StopClockServer();
 
     delete config;
 }
 
 
+void ASIM_MULTI_CHIP_SYSTEM_CLASS::SYS_StopPThreads()
+{
+    // stop the clock server (stop threads, in the case of the threaded clockserver)
+    clock->StopClockServer();
+}
+
+    
 bool
 ASIM_MULTI_CHIP_SYSTEM_CLASS::InitModule()
 {
@@ -100,13 +112,13 @@ ASIM_MULTI_CHIP_SYSTEM_CLASS::InitModule()
     {
         ASIMERROR("The board module did not initialize properly\n");
     }
+    
+    // Set the reference clock domain (-rd option)
+    clock->SetReferenceClockDomain(referenceDomain);
 
     // We initialize the clockserver structures
     // IMPORTANT! It must be done after the modules initialization!
     clock->InitClockServer();
-    
-    // Set the reference clock domain (-rd option)
-    clock->SetReferenceClockDomain(referenceDomain);
 
     return true;
 }
@@ -391,7 +403,7 @@ SYS_Init(
         else 
         {
             ASIMWARNING("Unknown flag, " << argv[i] << endl);
-            return(false);
+            return(NULL);
         }
     }
 

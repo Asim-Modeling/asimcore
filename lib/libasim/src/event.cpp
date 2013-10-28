@@ -59,25 +59,14 @@ ASIM_DRAL_EVENT_CLASS::~ASIM_DRAL_EVENT_CLASS()
 void
 ASIM_DRAL_EVENT_CLASS::InitEvent()
 {
-    if (ASIM_SMP_CLASS::GetMaxThreads() > 1)
-    {
-        static ATOMIC_INT32 warned(0);
-        if (0 == warned++)
-        {
-            cerr << "DRAL Events unavailable in multi-threaded runs" << endl;
-        }
-    }
-    else
-    {
-        runWithEventsOn = true;
+    runWithEventsOn = true;
 
-        event = new DRAL_SERVER_CLASS("Events",1024,true);
-        //eventsOn = false;
-        // Send an event creating 
-        // a fake node with number 0. This is necessary because port.h will connect to node 0
-        // those ports whose origin or destination is unknown to "Fake Node".
-        event->NewNode("Fake_Node", 0);
-    }
+    event = new DRAL_SERVER_CLASS("Events",1024,true);
+    //eventsOn = false;
+    // Send an event creating 
+    // a fake node with number 0. This is necessary because port.h will connect to node 0
+    // those ports whose origin or destination is unknown to "Fake Node".
+    event->NewNode("Fake_Node", 0);
 }
 
 /*

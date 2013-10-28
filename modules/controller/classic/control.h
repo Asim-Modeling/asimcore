@@ -15,19 +15,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 /**
  * @file
  * @author David Goodwin, Carl Beckmann
  * @brief  Base class for Asim-classic family of controllers
  */
 
-#ifndef _AWBCMD_
-#define _AWBCMD_
+#ifndef __CONTROL_H__
+#define __CONTROL_H__
 
 
 // ASIM core
 #include "asim/syntax.h"
 #include "asim/stateout.h"
+#include "asim/registry.h"
+#include "asim/trace.h"
 
 // ASIM modules 
 #include "asim/provides/basesystem.h" // non-hierarchical module include - BAD
@@ -119,6 +122,13 @@ extern void CMD_EmitStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
  */
 extern void CMD_ResetStats (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
+/*
+ * Start and stop the Vtune Thread Profiler at a given macro-inst/cycle
+ * 
+ */
+extern void CMD_StartThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+extern void CMD_StopThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
 
 /*
  * Exit performance model.
@@ -184,6 +194,16 @@ extern void CMD_SkipThread (ASIM_THREAD thread, UINT64 insts, INT32 markerID,
  */
 extern void CMD_ScheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 extern void CMD_UnscheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+/*
+ * Save functional state
+ */
+extern void CMD_SaveFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+
+/*
+ * Restore functional state
+ */
+extern void CMD_RestoreFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0, const char *fileName ="dummy_restore");
 
 
 /********************************************************************
@@ -345,7 +365,7 @@ class CMD_WORKITEM_CLASS
          * Name for this item...
          */
         const char *name;
-        
+
         /*
          * Next workitem in a list...
          */
@@ -577,6 +597,38 @@ class CMD_RESETSTATS_CLASS : public CMD_WORKITEM_CLASS
     public:
         CMD_RESETSTATS_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
             CMD_WORKITEM_CLASS("RESETSTATS", t, c) { }
+
+        void CmdAction (void);
+};
+
+
+/*
+ * CMD_STARTTHREADPROFILER
+ *
+ * Start Vtune Thread Profiler
+ */
+typedef class CMD_STARTTHREADPROFILER_CLASS *CMD_STARTTHREADPROFILER;
+class CMD_STARTTHREADPROFILER_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_STARTTHREADPROFILER_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("STARTTHREADPROFILER", t, c) { }
+
+        void CmdAction (void);
+};
+
+
+/*
+ * CMD_STOPTHREADPROFILER
+ *
+ * Stop Vtune Thread Profiler
+ */
+typedef class CMD_STOPTHREADPROFILER_CLASS *CMD_STOPTHREADPROFILER;
+class CMD_STOPTHREADPROFILER_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_STOPTHREADPROFILER_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("STOPTHREADPROFILER", t, c) { }
 
         void CmdAction (void);
 };
@@ -933,6 +985,61 @@ class CMD_THDUNHOOK_CLASS : public CMD_WORKITEM_CLASS
 
 };
 
+/*
+ * CMD_SAVEFUNCSTATE
+ *
+ * Save functional state
+ */
+typedef class CMD_SAVEFUNCSTATE_CLASS *CMD_SAVEFUNCSTATE;
+class CMD_SAVEFUNCSTATE_CLASS : public CMD_WORKITEM_CLASS
+{
+    public:
+        CMD_SAVEFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("SAVEFUNCSTATE", t, c) { }
+
+        void CmdAction (void);
+};
+
+/*
+ * CMD_RESTOREFUNCSTATE
+ *
+ * Restore functional state
+ */
+typedef class CMD_RESTOREFUNCSTATE_CLASS *CMD_RESTOREFUNCSTATE;
+class CMD_RESTOREFUNCSTATE_CLASS : public CMD_WORKITEM_CLASS
+{
+    private:
+        ifstream restoreStateFile;
+        
+    public:
+        CMD_RESTOREFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c) :
+            CMD_WORKITEM_CLASS("RESTOREFUNCSTATE_CLASS", t, c) 
+        { 
+            ASIMWARNING("No file specified from which to restore state..."
+                            << "no state will be restored" << endl);
+        }
+          
+        CMD_RESTOREFUNCSTATE_CLASS (CMD_ACTIONTRIGGER t, UINT64 c, const char *fileName) :
+            CMD_WORKITEM_CLASS("RESTOREFUNCSTATE", t, c)
+        {
+            //open fileName for reading dumped state
+            if(!strcmp(fileName,"dummy_restore"))
+            {
+                ASIMWARNING("No file specified from which to restore state..."
+                            << "no state will be restored" << endl);
+            }
+            else
+            {
+                restoreStateFile.open (fileName, ios::in);
+                if(restoreStateFile.fail())
+                {
+                    ASIMERROR("Invalid file specified for restoring state" << endl);
+                }
+            }
+        } 
+
+        void CmdAction (void);
+};
 
 /*******************************************************************/
 
@@ -1122,6 +1229,12 @@ class CONTROLLER_CLASS {
                         	CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
     void CMD_ScheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
     void CMD_UnscheduleThread (ASIM_THREAD thread, CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    
+    void CMD_SaveFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_RestoreFuncState (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0, const char *fileName ="dummy_restore");
+    
+    void CMD_StartThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
+    void CMD_StopThreadProfiler (CMD_ACTIONTRIGGER trigger =ACTION_NOW, UINT64 n =0);
 
     void PartitionArgs   ( INT32 argc,   char *argv[]           );
     void PartitionOneArg ( INT32 argc,   char *argv[], INT32 &i );
@@ -1131,11 +1244,12 @@ class CONTROLLER_CLASS {
     bool ParseOneEvent   ( INT32 argc,   char *argv[], INT32 &i );
     int  ParseVariables  ( char *argv[], UINT32 argc            );
     int  parseTraceCmd   ( const char *progName, const char *command, string &regex, int &level );
+    int  parseMtCmd      ( const char *progName, const char *command, string &regex, int &limit );
 
   private:
-    deque<char *> cfg_filename_stack;
-    void ResolveConfigFile( ifstream &cfg_file, char *relative_name );
-    bool file_exists (char * filename);
+    deque<std::string> cfg_filename_stack;
+    void ResolveConfigFile( ifstream &cfg_file, const char *relative_name );
+    bool file_exists (const char * filename);
 
   protected:
     // TraceFileName (in debugger mode)

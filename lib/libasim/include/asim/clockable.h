@@ -39,6 +39,9 @@ using namespace std;
  **/
 typedef class ASIM_CLOCKABLE_CLASS *ASIM_CLOCKABLE;
 
+// Static array used to map a phase to a certain skew
+static UINT32 clkEdges2skew[NUM_CLK_EDGES] = {0, 50};
+
 class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
 {
     
@@ -75,9 +78,18 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
     // List of callbacks created by this clockable just to be able to delete them
     list<CLOCK_CALLBACK_INTERFACE> cbL;
 
+  protected:
+    /*
+     * a thread object, if this module wants to run in parallel.
+     * This is left protected, so that derived classes can allocate
+     * threads in non-standard ways if they choose.
+     */
+    ASIM_SMP_THREAD_HANDLE host_thread;
+
   public:
 
-    ASIM_CLOCKABLE_CLASS(ASIM_CLOCKABLE_CLASS* p) :
+    ASIM_CLOCKABLE_CLASS(ASIM_CLOCKABLE_CLASS* p,
+                         bool create_thread = false) :
         registered(false),
         registeredDral(false),
         thread(NULL),
@@ -87,7 +99,8 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         nCyclesMax(0),
         nClocked(0),
         nCyclesWrapAround(0),
-        nWrapAround(0)
+        nWrapAround(0),
+        host_thread(NULL)
     { }
 
     virtual ~ASIM_CLOCKABLE_CLASS()
@@ -95,6 +108,10 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         for(list<CLOCK_CALLBACK_INTERFACE>::iterator it = cbL.begin(); it != cbL.end(); it++)
         {
             delete (*it);
+        }
+        if (host_thread)
+        {
+            delete host_thread;
         }
     }
 
@@ -135,7 +152,15 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         ASSERTX(!registeredDral);
         registeredDral = true;
     }
-        
+
+    /**
+     * GetHostThread() returns the handle to the thread this module wants to run in.
+     * This thread handle is typically passed to clockserver.RegisterClock()
+     * to get clock server callbacks in a parallel thread.
+     */
+    virtual ASIM_SMP_THREAD_HANDLE GetHostThread(void) { return host_thread; }
+    virtual void SetHostThread(ASIM_SMP_THREAD_HANDLE h)  { host_thread = h; }
+       
     /** 
      * Method to access to the global instance of the clock server
      *
@@ -148,9 +173,10 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
      *
      * @param name  Unique name of the clock domain.
      * @param freq/freqs  Working frequencies in GHz
-     * @param tHandle   Handle of the thread that will be used by default for clocking
-     *                  the modules registed to the created domain. A NULL value
-     *                  means the default thread.
+     * @param tHandle   Handle of the thread that will be used for clocking
+     *                  the modules registed to the created domain. If NULL is passed,
+     *                  use the thread that was created in the costructor, if any.
+     *                  Otherwise, just use the global default thread.
      **/
     void NewClockDomain(
         string name,
@@ -161,7 +187,7 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         
         list<float> tmp_list;
         tmp_list.push_back(freq);
-        clockServer.NewClockDomain(name, tmp_list, tHandle);
+        clockServer.NewClockDomain(name, tmp_list, tHandle ? tHandle : GetHostThread());
     }
     
     void NewClockDomain(
@@ -176,7 +202,7 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
             ++it;
         }
         
-        clockServer.NewClockDomain(name, freqs, tHandle);
+        clockServer.NewClockDomain(name, freqs, tHandle ? tHandle : GetHostThread());
     }
     
     /** 
@@ -193,7 +219,8 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
      * @param domainName Name of the domain to which the clockable module belongs to.
      * @param skew Clocking skew within this domain.
      * @param tHandle Handle of the thread that will clock the module
-     *                (a NULL value means the default domain's thread)
+     *                (a NULL value means the one created in the constructor,
+     *                 or failing that, the domain's default thread)
      * @param referenceDomain Set as reference clock domain for this module.
      **/
     void RegisterClock(
@@ -210,7 +237,7 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         
         if(registered) registered = !referenceDomain;
         
-        CLOCK_DOMAIN _domain = clockServer.RegisterClock(this, domainName, skew, tHandle);
+        CLOCK_DOMAIN _domain = clockServer.RegisterClock(this, domainName, skew, tHandle ? tHandle : GetHostThread());
         if(!registered)
         {
             domain = _domain;
@@ -238,7 +265,8 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
      * @param cb Callback to the method that will be called.
      * @param skew Clocking skew within this domain.
      * @param tHandle Handle of the thread that will clock the module
-     *                (a NULL value means the default domain's thread)
+     *                (a NULL value means use the one created in the construor,
+     *                 or if none created in the constructure use the default domain's thread)
      * @param referenceDomain Set as reference clock domain for this module.
      **/
     void RegisterClock(
@@ -257,7 +285,12 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         if(registered) registered = !referenceDomain;
 
         // The current skew is scaled to support phases 
-        CLOCK_DOMAIN _domain = clockServer.RegisterClock(this, domainName, cb , skew + clkEdges2skew[cb->getClkEdge()], tHandle);
+        CLOCK_DOMAIN _domain =
+          clockServer.RegisterClock(
+            this, domainName, cb,
+            skew + clkEdges2skew[cb->getClkEdge()],
+            tHandle ? tHandle : GetHostThread()
+          );
         if(!registered)
         {
             domain = _domain;
@@ -273,7 +306,8 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
      * @param ed Clock edge when the module will be clocked.
      * @param skew Clocking skew within this domain.
      * @param tHandle Handle of the thread that will clock the module
-     *                (a NULL value means the default domain's thread)
+     *                (a NULL value means use the one from the constructor,
+     *                 or failing that, the default domain's thread)
      * @param referenceDomain Set as reference clock domain for this module.
      **/
     void RegisterClock(
@@ -285,7 +319,7 @@ class ASIM_CLOCKABLE_CLASS : public TRACEABLE_CLASS
         bool referenceDomain = false)
     {
         cb->setClkEdge(ed);
-        RegisterClock(domainName, cb, skew, tHandle, referenceDomain);
+        RegisterClock(domainName, cb, skew, tHandle ? tHandle : GetHostThread(), referenceDomain);
     }
    
     /**

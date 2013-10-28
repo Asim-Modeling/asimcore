@@ -1,0 +1,57 @@
+#
+# Copyright (C) 2003-2010 Intel Corporation
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# 
+#
+[Global]
+Version=2.2
+File=port_test_asim
+Name=Port Test
+Description=Asim port test
+SaveParameters=0
+Type=Asim
+Class=Asim::Model
+DefaultBenchmark=
+DefaultRunOpts=
+RootName=Unit Test Model Foundation
+RootProvides=model
+
+[Model]
+DefaultAttributes=
+model=Unit Test Model Foundation
+
+[Unit Test Model Foundation]
+File=modules/model/unit_test_model/unit_test.awb
+Packagehint=asimcore
+
+[Unit Test Model Foundation/Requires]
+unit_test=Asim Port Test
+
+[Asim Port Test]
+File=lib/libasim/t/port_test.awb
+Packagehint=asimcore
+
+[Asim Port Test/Requires]
+libasim=Asim core library
+dral_api=X86 DRAL API
+
+[Asim core library]
+File=modules/simcore/libasim.awb
+Packagehint=asimcore
+
+[X86 DRAL API]
+File=modules/dral_api/x86_dral_api.awb
+Packagehint=asimcore

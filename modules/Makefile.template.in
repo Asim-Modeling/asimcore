@@ -19,8 +19,8 @@ STATIC = $REPLACE$STATIC
 WARN = $REPLACE$WARN
 PAR = $REPLACE$PAR
 COMMON_LFLAGS:=$REPLACE$COMMON_LFLAGS
-LOCAL_LFLAGS:=$REPLACE$LOCAL_LFLAGS
-LOCAL_CFLAGS:=$REPLACE$LOCAL_CFLAGS
+override LOCAL_LFLAGS+=$REPLACE$LOCAL_LFLAGS
+override LOCAL_CFLAGS+=$REPLACE$LOCAL_CFLAGS
 USE_TCL=yes
 #-----------------------------------------------------------------------------
 # top-level make configuration

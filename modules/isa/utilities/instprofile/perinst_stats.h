@@ -52,20 +52,6 @@ typedef enum perinst_counter
     LAST_COUNTER
 } PERINST_COUNTER;
 
-//
-// String associated with enum for printing purposes.  Must be in the
-// same order as the enum. 
-static
-const char* PERINST_COUNTER_STRING[] = 
-{
-    "DYN_INST",
-    "ISSUE", 
-    "CTRL_MP", 
-    "DC_MISS",
-    "MC_MISS",
-    "LAST"
-};
-
 typedef class PERINST_STATS_CLASS* PERINST_STATS;
 
 //

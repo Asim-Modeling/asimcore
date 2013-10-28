@@ -76,14 +76,16 @@ using namespace std;
     cerr << __FILE__ << ":" << __LINE__ << ": " << x << endl; \
 })
 
-/*#define ASIM_XMSG(x) \
+#define XMSG(x) \
 ({ \
        TMSG(Trace_Cmd, __FILE__ << ":" << __LINE__ << ": " <<  x); \
 })
+#ifndef DMSG
 #define DMSG(x) \
 ({\
     cout << __FILE__ << ":" << __LINE__ << ": " << x << endl; \
-})*/
+})
+#endif
 
 ////////////////////////////////////////////////////////////////////////////
 // Prototypes
@@ -141,7 +143,7 @@ extern bool stripsOn;
 /*
  * File holding commands for awb to execute after initializing.
  */
-const char *awbCmdFile = "awbcmds"; // default -- can be overridden by args.cpp
+const char *awbCmdFile = ""; // default -- can be overridden by args.cpp
 
 /*
  * not used. Just for compatibility with args.cpp '-wb' option
@@ -234,7 +236,7 @@ AWB_Progress (AWB_PROGRESSTYPE type,
     //
     // Add progress to the list of pending progress events.
 
-    ASIM_XMSG("AWB_Progress: " << pStrs[type] << " args: " << args);
+    XMSG("AWB_Progress: " << pStrs[type] << " args: " << args);
     pendingProgress.push_back(pStrs[type]);
 
     if (args.length() > 0)
@@ -252,7 +254,7 @@ AWB_InformProgress (void)
  * events.
  */
 {
-    ASIM_XMSG("AWB_InformProgress");
+    XMSG("AWB_InformProgress");
     if ( ! pendingProgress.empty() )
     {
         awbCmdIntrp->BatchProgress( pendingProgress );
@@ -267,7 +269,7 @@ AWB_Exit (void)
  * Exit awb...
  */
 {
-    ASIM_XMSG("AWB_Exit");
+    XMSG("AWB_Exit");
     //
     // Send awb a progress message ordering it to exit, then wait
     // for awb to signal that it has exited.
@@ -287,7 +289,7 @@ AwbStartInterpreter (void)
  * Start point for thread responding to event in awb.
  */
 {
-    ASIM_XMSG("AwbStartInterpreter");
+    XMSG("AwbStartInterpreter");
     awbCmdIntrp = new COMMAND_PARSER_CLASS(awbCmdFile);
 }
 
@@ -320,7 +322,7 @@ PmStateList (void)  // MJC: ok
  * Return the list of exposed performance model state.
  */
 {
-    ASIM_XMSG("PmStateList");
+    XMSG("PmStateList");
 
     class StateListKeeper {
       public:
@@ -881,7 +883,7 @@ PmMarkerClear( string& desc,
 void
 PmScheduleStart()
 {
-    ASIM_XMSG("PmScheduleStart");
+    XMSG("PmScheduleStart");
     prep();
     CMD_Start();
 }
@@ -889,7 +891,7 @@ PmScheduleStart()
 void
 PmScheduleStopNow()
 {
-    ASIM_XMSG("PmScheduleStopNow");
+    XMSG("PmScheduleStopNow");
     CMD_ACTIONTRIGGER action = ACTION_NOW;
     UINT64 stopTime = 0;
     CMD_Stop(action, stopTime);
@@ -998,31 +1000,31 @@ PmScheduleProgress(string& type,
     else if (action == ACTION_CYCLE_PERIOD)
     {
         INT32 p = atoi(period);
-        ASIM_XMSG("PmScheduleProgress cycle period " << p);
+        XMSG("PmScheduleProgress cycle period " << p);
         CMD_Progress(AWBPROG_CYCLE, "", action, p);
     }
     else if (action == ACTION_NANOSECOND_PERIOD)
     {
         INT32 p = atoi(period);
-        ASIM_XMSG("PmScheduleProgress nanosecond period " << p);
+        XMSG("PmScheduleProgress nanosecond period " << p);
         CMD_Progress(AWBPROG_NANOSECOND, "", action, p);
     }
     else if (action == ACTION_MACROINST_PERIOD)
     {
         INT32 p = atoi(period);
-        ASIM_XMSG("PmScheduleProgress macro inst period " << p);
+        XMSG("PmScheduleProgress macro inst period " << p);
         CMD_Progress(AWBPROG_MACROINST, "", action, p);
     }
     else if (action == ACTION_SSCMARK_PERIOD)
     {
         INT32 p = atoi(period);
-        ASIM_XMSG("PmScheduleProgress ssc mark  period " << p);
+        XMSG("PmScheduleProgress ssc mark  period " << p);
         CMD_Progress(AWBPROG_SSCMARK, "", action, p);
     }
     else
     {
         INT32 p = atoi(period);
-        ASIM_XMSG("PmScheduleProgress inst period " << p);
+        XMSG("PmScheduleProgress inst period " << p);
         CMD_Progress(AWBPROG_INST, "", action, p);
     }
 }
@@ -1032,7 +1034,7 @@ void PmScheduleThread(string& desc,
                       UINT64 time)
 {
 
-    ASIM_XMSG("PmScheduleThread desc: " << desc
+    XMSG("PmScheduleThread desc: " << desc
          << " trigger: " << trigger
          << " time: " << time);
 

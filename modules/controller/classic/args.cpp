@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <iostream>
-#include <sstream> 
+#include <string> 
 #include <unistd.h>
 #include <libgen.h>
 #include <alloca.h>
@@ -162,15 +162,16 @@ CONTROLLER_CLASS::PartitionOneArg (INT32 argc, char *argv[], INT32 &i)
         }
         else if (strcmp(argv[i], "--system") == 0) 
         {
-            feederArgs = false;
+            feederArgs = false;	
             systemArgs = true;
         }
         // a real argument, we handle -h and -t here since we want
         // them to have an immediate effect.
         else 
         {
-            // if the command is -cfg <filename> then
-	    // parse the file, which will recursively call this to handle each arg in the file...
+          // if the command is -cfg <filename> then
+          // parse the file, which will recursively call this to handle each arg
+          // in the file...
 	    if (strcmp(argv[i], "-cfg") == 0)
 	    {
 	    	theController.ParseConfigFile( argv[++i] );
@@ -336,45 +337,52 @@ CONTROLLER_CLASS::file_exists ( const char *filename )
 void
 CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_name )
 {
-    char *absolute_name = NULL;
-    if ( file_exists( relative_name ) )
+    std::string absolute_str("");
+
+    if (file_exists(relative_name))
     {
 	// filename is already an absolute path
-	absolute_name = const_cast<char*>(relative_name);
+	absolute_str = std::string(relative_name);
     }
     else
     {
-	stringstream abs1, abs2;
-
 	// relative to current working directory?
 	char   curr_dir[1024];
-	ASSERT(getcwd(curr_dir,1024), "getcwd returned NULL");
-	abs1 << curr_dir << "/" << relative_name << '\0';
-        bool abs1exists = file_exists( abs1.str().c_str() );
+	getcwd(curr_dir,1024);
 
-	// relative to enclosing .cfg file?
+	// relative to current working directory?
+        std::string abs1 = std::string(curr_dir) + std::string("/") + std::string(relative_name);
+        bool abs1exists = file_exists(abs1.c_str());
+
+	// relative to enclosing .cfg file?        
+        std::string abs2;
         bool abs2exists = false;
-        if ( cfg_filename_stack.size() > 0 )
+
+        if (!cfg_filename_stack.empty())
         {
-            //            char *cfg_dir = (char *)alloca( 1 + strlen( cfg_filename_stack.front() ) );
-            char *cfg_dir = strdupa(cfg_filename_stack.front().c_str());
-            strcpy( cfg_dir, cfg_filename_stack.front().c_str() );
-	    abs2 << dirname( cfg_dir ) << "/" << relative_name << '\0';
-            abs2exists = file_exists( abs2.str().c_str());
+            const char* cfg_front = cfg_filename_stack.front().c_str();
+            char *cfg_dir = (char *)strdupa(cfg_front);
+
+            abs2 = std::string(dirname(cfg_dir)) + std::string("/") + 
+              std::string(relative_name);
+            
+            abs2exists = file_exists(abs2.c_str());
+        }
+        
+        if (abs1exists && abs2exists)
+        {
+            cerr << "WARNING: config file " << relative_name 
+                 << " found in two locations, " << abs1.c_str() << " and " 
+                 << abs2.c_str() << " , using " << absolute_str << " !\n";
         }
 
-        if ( abs2exists )
+        if (abs2exists)
         {
-	    absolute_name = const_cast<char*>(abs2.str().c_str());
-	    if ( abs1exists )
-            {
-	        cerr << "WARNING: config file " << relative_name << " found in two locations, "
-                     << abs1.str() << " and " << abs2.str() << " , using " << absolute_name << " !\n";
-	    }
+	    absolute_str = abs2;
         }
-        else if ( abs1exists )
+        else if (abs1exists)
         {
-	    absolute_name = const_cast<char*>(abs1.str().c_str());
+	    absolute_str = abs1;
 	}
         else
         {
@@ -382,8 +390,8 @@ CONTROLLER_CLASS::ResolveConfigFile( ifstream &cfg_file, const char *relative_na
 	}
     }
 
-    cfg_filename_stack.push_front( absolute_name );
-    cfg_file.open( absolute_name );
+    cfg_filename_stack.push_front(absolute_str);
+    cfg_file.open(absolute_str.c_str());
 }
 
 
@@ -404,7 +412,7 @@ CONTROLLER_CLASS::parseTraceCmd(const char *progName, const char *command, strin
     // the last char should be '0', '1', or '2'
     if(regex[pos] != '0' && regex[pos] != '1' && regex[pos] != '2') 
     {
-        // If a level was not given, defaul to 1.
+        // If a level was not given, default to 1.
         level = 1;
     } 
     else 
@@ -430,6 +438,58 @@ CONTROLLER_CLASS::parseTraceCmd(const char *progName, const char *command, strin
     regex.erase(pos);
     regex.erase(0,1);
     
+    return(1);
+}
+
+// Function to parse the multi-threading command line parameters.
+int
+CONTROLLER_CLASS::parseMtCmd(const char *progName, const char *command, string &regex, int &limit) 
+{
+    if(*command != '/') 
+    {
+        // no regex given, match every name
+        cout << "No regex has been given! Matching every name." << endl;
+        regex = ".*";
+        limit = 1;
+        return(0);
+    }
+
+    regex = command;
+    int pos = regex.size() - 1;
+
+    // If the number of modules per pthread was not given, default to 1.
+    if(regex[pos] == '/')
+    {
+        limit = 1;
+    } 
+    else 
+    {
+        limit = regex[pos] - '0';
+        pos--;
+        pos--;
+
+        if(regex[pos] != '=') {
+            Usage((char *)progName, stdout);
+            cout << "\nExpected -mt [/regex/[=<num>]]" << endl;
+            exit(-1);
+        }
+        pos--;
+    }
+    
+    // remove the '/' at front and back
+    if(regex[pos] != '/' || regex[0] != '/') 
+    {
+        Usage((char *)progName, stdout);
+        cout << "\nExpected -mt [/regex/[=<num>]]" << endl;
+        exit(-1);
+    }
+
+    regex.erase(pos);
+    regex.erase(0,1);
+
+    cout << "Regex is: " << regex << endl;
+    cout << "Number of modules per pthread is: "<< limit << endl;
+
     return(1);
 }
 
@@ -470,6 +530,31 @@ CONTROLLER_CLASS::ParseVariables(char **argv, UINT32 argc)
             incr += parseTraceCmd(argv[0], " ", regex, level);
         
         TRACEABLE_CLASS::EnableTraceByRegex(regex, level);
+    }
+
+    else if (strcmp(argv[0], "-trf") == 0)
+    {
+        ASSERT(BUILT_WITH_TRACE_FLAGS,"You are trying to generate trace in a "
+              "model not compiled with tracing enabled. Build the model with TRACE=1");
+
+        TRACEABLE_CLASS::SetTraceStream(argv[++incr]);
+    }
+
+    // -mt </regex/=[number_of_modules_per_pthread]>	set multi-threading regular expression
+    // Example usage: -mt /CORE/ = 10, will run 10 cores per pthread.
+    else if (strcmp(argv[0], "-mt") == 0)
+    {
+        string regex;
+        int limit;
+        
+        if(argc > 1)
+          incr += parseMtCmd(argv[0], argv[1], regex, limit);
+        else
+          incr += parseMtCmd(argv[0], " ", regex, limit);
+
+        // Store the list of regexes, so they can be matched against
+        // module names/paths.
+        ASIM_MODULE_CLASS::SetModuleRegex(regex, limit);
     }
     else if (strcmp(argv[0], "-p") == 0)
     {
@@ -579,8 +664,57 @@ CONTROLLER_CLASS::ParseVariables(char **argv, UINT32 argc)
         ListParams();
         exit(0);
     }
-    else
+    // NOTE: THIS SHOULD BE THE LAST CASE IN THIS LIST...
+    // we are going to assume that this is a param arguement since it matches
+    // nothing else in the list of accepted arguements.  --slechta
+
+    else if (*argv[0] == '-')
     {	
+        char *name = argv[0]+1;
+        char *eq = index(argv[0], '=');
+            
+        if (eq)
+        {
+            // there is an '=' character.  eg.  -l2_prefetcher_enable=2
+            char *value = eq + 1;
+                
+            *eq = '\0';
+            if ( ! SetParam(name, value))
+            {
+                *eq = '=';
+                return -1;
+            }
+            else
+            {
+                *eq = '=';
+                return 0;
+            }
+        }
+        else
+        {
+            if (argc <= 1)
+            {
+                return -1;
+            }
+            else
+            {
+
+                // there is no '=' character.  eg.  -l2_prefetcher_enable 2
+                char *value = argv[1];
+    
+                if ( ! SetParam(name, value))
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        }
+    }
+    else 
+    {        
         return -1; 
     }
     
@@ -658,6 +792,14 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
 
             TRACEABLE_CLASS::EnableTraceByRegex(regex, level);
         }
+        else if (strcmp(argv[0], "-trf") == 0 && (argc > (i+1)))
+        {
+            ASSERT(BUILT_WITH_TRACE_FLAGS,"You are trying to generate trace in a "
+              "model not compiled with tracing enabled. Build the model with TRACE=1");
+
+            TRACEABLE_CLASS::SetTraceStream(argv[++i]);
+        }
+
         //--------------------------------------------------------------------
         // turning things on 'by instruction'
         //--------------------------------------------------------------------
@@ -829,6 +971,7 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         else if ((strcmp(argv[i], "-tc") == 0) && (argc > (i+1))) {
             string regex;
             int level;
+
             i += theController.parseTraceCmd(argv[0], argv[i + 1], regex, level);
             theController.CMD_Trace(new TRACEABLE_DELAYED_ACTION_CLASS(regex, level), 
                       ACTION_CYCLE_ONCE, atoi_general(argv[++i]));
@@ -1171,7 +1314,83 @@ CONTROLLER_CLASS::ParseOneEvent (INT32 argc, char *argv[], INT32 &i)
         else if ((strcmp(argv[i], "-rsSp") == 0) && (argc > (i+1))) 
         {
             theController.CMD_ResetStats(ACTION_SSCMARK_PERIOD, ssc_mark_action_time(argv[++i]));
+        }
+        //--------------------------------------------------------------------
+        // dump functional state
+        //--------------------------------------------------------------------
+        // -saveatc <n>     dump functional state every <n> cycles
+        //
+        else if ((strcmp(argv[i], "-saveatc") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_SaveFuncState(ACTION_CYCLE_PERIOD, atoi_general(argv[++i]));
+        }
+        //
+        // -saveati <n>     dump functional state every <n> instructions
+        //
+        else if ((strcmp(argv[i], "-saveati") == 0) && (argc > (i+1)))
+        {
+            theController.CMD_SaveFuncState(ACTION_INST_PERIOD, atoi_general(argv[++i]));
+        }
+        //
+        // -restorei <n> <filename>  
+        //        restore functional state once after <n> instructions
+        //        just used for debug (see 'restore' below)
+        //
+        else if ((strcmp(argv[i], "-restorei") == 0) && (argc > (i+1))) 
+        {
+            int n = atoi_general(argv[++i]);
+            char* filename = argv[++i];
+            theController.CMD_RestoreFuncState(  ACTION_INST_ONCE, 
+                                                 n,
+                                                 filename);
+        }
+        //
+        // -restore <filename>  restore functional state from 'filename'
+        //                      this is done before the performance model starts
+        //
+        else if ((strcmp(argv[i], "-restore") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_RestoreFuncState(  ACTION_NOW, 
+                                                 0,
+                                                 argv[++i]);
+        }
+        // -vsm <n>       start Vtune Thread Profiler after <n> macro instructions
+        //
+        else if ((strcmp(argv[i], "-vsm") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StartThreadProfiler(ACTION_MACROINST_ONCE, atoi_general(argv[++i]));
+        }        
+        // -vem <n>       end Vtune Thread Profiler after <n> macro instructions
+        //
+        else if ((strcmp(argv[i], "-vem") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StopThreadProfiler(ACTION_MACROINST_ONCE, atoi_general(argv[++i]));
+        }        
+        // -vsS <m>:<n>   start Vtune Thread Profiler after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-vsS") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StartThreadProfiler(ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
+        }        
+        // -veS <m>:<n>   end Vtune Thread Profiler after <n>th occurrence of SSC mark <m>.
+        //
+        else if ((strcmp(argv[i], "-veS") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StopThreadProfiler(ACTION_SSCMARK_ONCE, ssc_mark_action_time(argv[++i]));
         }       
+        // -vsc <n>       start Vtune Thread Profiler after <n> cycles
+        //
+        else if ((strcmp(argv[i], "-vsc") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StartThreadProfiler(ACTION_CYCLE_ONCE, atoi_general(argv[++i]));
+        }        
+        // -vec <n>       end Vtune Thread Profiler after <n> cycles
+        //
+        else if ((strcmp(argv[i], "-vec") == 0) && (argc > (i+1))) 
+        {
+            theController.CMD_StopThreadProfiler(ACTION_CYCLE_ONCE, atoi_general(argv[++i]));
+        }       
+
         else 
         {
             ASIMWARNING("Unknown flag, " << argv[i] << endl);
@@ -1213,6 +1432,9 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t-tms\t\t\tSet Trace Mask using a comma-separated String\n"
        << "\t-tr [</regex/[=012]]>\tSet trace level by regular expression. Can be given multiple times.\n"
        << "\t\t\t\tIf not specified, the trace level will default to 1 and the regex to .*\n"
+       << "\t-mt [</regex/[=<num>]]>\tIn multi-threaded mode, specify which modules to run in parallel. \n"
+       << "\t\t\t\tOptionally, specify the number of modules to run on a pthread (defaults to 1). Can be \n"
+       << "\t\t\t\tgiven multiple times. Example usage: -mt /CORE/=02\n."
        << "\t-rbs\t\t\tDump Buffer Stats in Stats file\n"
        << "\t-rps\t\t\tDump Port Stats in Stats file\n"
        << "\tTurning various things on and off:\n"
@@ -1263,13 +1485,28 @@ CONTROLLER_CLASS::Usage (char *exec, FILE *file)
        << "\t-rsS <m>:<n>\t\t\tReset stats file on the <n>th occurrence of SSC mark <m>\n"
        << "\tAdding a p after the previous flags (for instance -rscp) will reset stats periodically after <n> events.\n"
        << "\n"
+       << "\t-saveatc <n>\t\t\tDump functional state every <n> cycles\n"
+       << "\t-saveati <n>\t\t\tDump functional state every <n> instructions\n"
+       << "\n"
+       << "\t-restore <filename>\t\t\tRestore functional state from <filename>\n"
+       << "\n"
        << "\t-param <name>=<value>\tdefine dynamic parameter <name> = <value>\n"
        << "\t-listparams\t\tlist all registered dynamic parameters\n"
        << "\t-listmasks\t\tlist the possible mask strings\n"
        << "\t-listnames\t\tlist the possible traceable object names\n"
        << "\n"
        << "\t-xcheck <file>\t\tGenerate output for cross-checking to file <file>\n"
+       << "\n"
+       << "\t-<paramname> <n>\t\t\tSet param or knob <paramname> equal to <n>\n"      
+       << "\t-<paramname>=<n>\t\t\tSet param or knob <paramname> equal to <n>\n"      
        << "\n\n\tWARNING! The nanosecond options are meaningless if running a model without a clockserver system!\n"
+       << "\n"      
+       << "\t-vsm <n>\t\t\tStart Vtune Thread Profiler after <n> macro instructions\n"
+       << "\t-vem <n>\t\t\tEnd Vtune Thread Profiler after <n> macro instructions\n"
+       << "\t-vsc <n>\t\t\tStart Vtune Thread Profiler after <n> cycles\n"
+       << "\t-vec <n>\t\t\tEnd Vtune Thread Profiler after <n> cycles\n"
+       << "\t-vsS <m>:<n>\t\t\tStart Vtune Thread Profiler after <n>th occurrence of SSC mark <m>\n"
+       << "\t-veS <m>:<n>\t\t\tEnd Vtune Thread Profiler after <n>th occurrence of SSC mark <m>\n"
        << endl;
 
     fputs (os.str().c_str(), file);

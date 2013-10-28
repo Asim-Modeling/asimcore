@@ -19,7 +19,7 @@
 #include <asim/trace.h>
 
 // Include support for the old trace format.
-#include <src/trace_legacy.cpp>
+//#include <src/trace_legacy.cpp>
 
 #define LOCK_MUTEX(mtx) if(TRACEABLE_CLASS::enableThreadProtection) { pthread_mutex_lock(&mtx); }
 #define UNLOCK_MUTEX(mtx) if(TRACEABLE_CLASS::enableThreadProtection) { pthread_mutex_unlock(&mtx); }
@@ -38,6 +38,9 @@ TRACEABLE_REGEX_LIST *TRACEABLE_CLASS::regexes = 0;
 pthread_mutex_t TRACEABLE_CLASS::regexesMutex = PTHREAD_MUTEX_INITIALIZER;
 
 bool TRACEABLE_CLASS::enableThreadProtection = true;
+
+std::ostream *TRACEABLE_CLASS::traceStream = &std::cout;
+filebuf TRACEABLE_CLASS::fb;
 
 TRACEABLE_CLASS::TRACEABLE_CLASS() 
 {
