@@ -99,6 +99,6 @@ nobase_include_HEADERS = asim/address.h\
 		asim/vector.h\
 		asim/xcheck.h\
 		asim/xmlout-gdome.h\
-		asim/xmlout.h\
 		asim/xmlout-nolib-gz.h\
-		asim/xmlout-nolib.h
+		asim/xmlout-nolib.h\
+		asim/xmlout.h

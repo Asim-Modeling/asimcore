@@ -8157,3 +8157,15 @@ Directory lib/libdral/src
 - libdral sync with Intel repository. Mostly changes to remove warnings when
 build with newer gcc
 - Fixed xmlout.h that was added twice in libasim/include/Makefile
+
+----------
+mgambhir    Date: Mon Oct 28 18:07:52 EDT 2013  CSN: CSN-asimcore-388
+                  Mon Oct 28 22:07:52 UTC 2013
+
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          387 
+ Makefile.am               Locally Modified          387 
+
+- Reordered xmlout.h and xmlout-nolib.h in the Makefile since xmlout is a
+soft link to xmlout-nolib.h
