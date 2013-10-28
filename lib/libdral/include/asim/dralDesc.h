@@ -1,18 +1,20 @@
 /**************************************************************************
- * INTEL CONFIDENTIAL Copyright (c) 2007 Intel Corp.
+ *Copyright (C) 2003-2006 Intel Corporation
  *
- * Recipient is granted a non-sublicensable copyright license under
- * Intel copyrights to copy and distribute this code internally only.
- * This code is provided "AS IS" with no support and with no
- * warranties of any kind, including warranties of MERCHANTABILITY,
- * FITNESS FOR ANY PARTICULAR PURPOSE or INTELLECTUAL PROPERTY
- * INFRINGEMENT. By making any use of this code, Recipient agrees that
- * no other licenses to any Intel patents, trade secrets, copyrights
- * or other intellectual property rights are granted herein, and no
- * other licenses shall arise by estoppel, implication or by operation
- * of law. Recipient accepts all risks of use.
- **************************************************************************/
-
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 /**
  * @file dralDesc.h
  * @author Brian Slechta
@@ -30,10 +32,6 @@
 #include <stdarg.h>
 
 #include "asim/dral_syntax.h"
-
-// there are "uniqueness" issues when you link in with coho libraries.  we can 
-// around that by appending all name strings with this string.
-static const char * HACK_PTV_NAME_POSTFIX_STR = "_";
 
 #if COMPILE_DRAL_WITH_PTV
 // ----------------------------------------------------------------------------
@@ -174,32 +172,6 @@ enum DRAL_COLOR_ENUM
 typedef enum DRAL_COLOR_ENUM DRAL_COLOR_T;
 
 // ----------------------------------------------------------------------------
-// these are the print strings for the colors above.  it is much safer to use
-// the function DRAL_EVENT_DESC_CLASS::GetDralColorStr() because it has array
-// bounds checking.
-static const char * DRAL_COLOR_STR[DRAL_COLOR_END-DRAL_COLOR_NONE+1] =
-{
-    "NONE",
-    "DARK_BLUE",
-    "BLUE",
-    "CYAN",
-    "DARK_GREEN",
-    "GREEN",
-    "YELLOW",
-    "ORANGE",
-    "RED",
-    "PINK",
-    "MAGENTA",
-    "PURPLE",
-    "BROWN",
-    "GRAY",
-    "LIGHT_GRAY",
-    "WHITE",
-    "BLACK",
-    "END"
-};
-
-// ----------------------------------------------------------------------------
 // these are display data types for the viewer.  they are originally derived from
 // PTV data types, but we plan to support them in DRAL as well.  they are also
 // used for the var-args call to SetEvent() for indicating size of the value
@@ -220,32 +192,14 @@ enum DRAL_BASE_DATA_ENUM
 typedef enum DRAL_BASE_DATA_ENUM DRAL_BASE_DATA_T;
 
 // ----------------------------------------------------------------------------
-// this are the print strings for the base data types above  it is much safer 
-// to use the function DRAL_DATA_DESC_CLASS::GetDralBaseDataStr() because 
-// it has array bounds checking.
-static const char * DRAL_BASE_DATA_STR[DRAL_BASE_DATA_END-DRAL_BASE_DATA_INVALID+1] =
-{
-    "INVALID",
-    "BOOL",
-    "INT32",
-    "INT32H",
-    "ASSOCIATION",
-    "ENUM",
-    "STRING",
-    "INT8_ARRAY",
-    "INT64H",
-    "END"
-};
-
-// ----------------------------------------------------------------------------
 // we currently need the ability to compile with and without PTV dependance.
 // these declarations help resolve that.
 #if COMPILE_DRAL_WITH_PTV
 typedef class Pipe_Recordtype PTV_REC_TYPE_CLASS;
 typedef class Pipe_Datatype PTV_DATA_TYPE_CLASS;
 typedef class Pipe_Eventtype PTV_EVENT_TYPE_CLASS;
-typedef enum Pipe_Color PTV_COLOR_T;
-typedef enum Base_Data_Type PTV_BASE_DATA_T;
+typedef Pipe_Color PTV_COLOR_T;
+typedef Base_Data_Type PTV_BASE_DATA_T;
 #else
 typedef void PTV_REC_TYPE_CLASS;
 typedef void PTV_DATA_TYPE_CLASS;
@@ -373,7 +327,7 @@ class DRAL_EVENT_DESC_CLASS
     // @param strs - ?
     void Construct(const char *name, UINT32 letter, DRAL_COLOR_T color, 
                    const char *desc, UINT32 pdl = 0xff, 
-                   UINT32 options = 0, char knob[64] = "");
+                   UINT32 options = 0, const char knob[64] = "");
 
     // direct queries
     std::string      GetName()    const { return name;  };
@@ -438,7 +392,7 @@ class DRAL_DATA_DESC_CLASS
     // from the PTV library.  this is the main contructor.  See Construct() for
     // more details
     DRAL_DATA_DESC_CLASS(const char *name, DRAL_BASE_DATA_T bdt,
-                           const char *desc, UINT32 len = 0, char **strs = NULL);
+                           const char *desc, UINT32 len = 0, const char **strs = NULL);
 
     ~DRAL_DATA_DESC_CLASS();
 
@@ -450,14 +404,14 @@ class DRAL_DATA_DESC_CLASS
     // @param len - option length of bdt in the case of an array
     // @param strs - ?
     void Construct(const char *name, DRAL_BASE_DATA_T bdt,
-                   const char *desc, UINT32 len = 0, char **strs = NULL);
+                   const char *desc, UINT32 len = 0, const char **strs = NULL);
 
     // direct queries
     std::string      GetName()     const { return name; };
     std::string      GetDesc()     const { return desc; };
     DRAL_BASE_DATA_T GetBaseData() const { return bdt;  };
     UINT32           GetLen()      const { return len;  };
-    char**           GetStrs()     const { return strs; };
+    const char**           GetStrs()     const { return strs; };
 
     // we may change this class to contain "Pipe_Eventtype" rather than derive
     // from it.  Use this function for returning the PTV event object contained
@@ -494,7 +448,7 @@ class DRAL_DATA_DESC_CLASS
     // attributes of the data
     DRAL_BASE_DATA_T bdt;
     UINT32 len;
-    char **strs;
+    const char **strs;
 
     // encapsulated PTV data type
     PTV_DATA_TYPE_CLASS *ptvDataType;

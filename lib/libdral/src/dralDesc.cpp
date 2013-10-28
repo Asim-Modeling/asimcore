@@ -1,17 +1,20 @@
 /**************************************************************************
- * INTEL CONFIDENTIAL Copyright (c) 2007 Intel Corp.
+ *Copyright (C) 2005-2006 Intel Corporation
  *
- * Recipient is granted a non-sublicensable copyright license under
- * Intel copyrights to copy and distribute this code internally only.
- * This code is provided "AS IS" with no support and with no
- * warranties of any kind, including warranties of MERCHANTABILITY,
- * FITNESS FOR ANY PARTICULAR PURPOSE or INTELLECTUAL PROPERTY
- * INFRINGEMENT. By making any use of this code, Recipient agrees that
- * no other licenses to any Intel patents, trade secrets, copyrights
- * or other intellectual property rights are granted herein, and no
- * other licenses shall arise by estoppel, implication or by operation
- * of law. Recipient accepts all risks of use.
- **************************************************************************/
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 
 /**
  * @file dralDesc.cpp
@@ -21,10 +24,61 @@
 
 using namespace std;
 
-#include "asim/dralDesc.h"
 #include <string.h>
 
+#include "asim/dralDesc.h"
+#include <string.h>
+#include <stdio.h>
+
 #define ENABLE_VALIST_CODE COMPILE_DRAL_WITH_PTV
+
+// there are "uniqueness" issues when you link in with coho libraries.  we can 
+// around that by appending all name strings with this string.
+static const char * HACK_PTV_NAME_POSTFIX_STR = "_";
+
+// ----------------------------------------------------------------------------
+// these are the print strings for the colors above.  it is much safer to use
+// the function DRAL_EVENT_DESC_CLASS::GetDralColorStr() because it has array
+// bounds checking.
+static const char * DRAL_COLOR_STR[DRAL_COLOR_END-DRAL_COLOR_NONE+1] =
+{
+    "NONE",
+    "DARK_BLUE",
+    "BLUE",
+    "CYAN",
+    "DARK_GREEN",
+    "GREEN",
+    "YELLOW",
+    "ORANGE",
+    "RED",
+    "PINK",
+    "MAGENTA",
+    "PURPLE",
+    "BROWN",
+    "GRAY",
+    "LIGHT_GRAY",
+    "WHITE",
+    "BLACK",
+    "END"
+};
+
+// ----------------------------------------------------------------------------
+// this are the print strings for the base data types above  it is much safer 
+// to use the function DRAL_DATA_DESC_CLASS::GetDralBaseDataStr() because 
+// it has array bounds checking.
+static const char * DRAL_BASE_DATA_STR[DRAL_BASE_DATA_END-DRAL_BASE_DATA_INVALID+1] =
+{
+    "INVALID",
+    "BOOL",
+    "INT32",
+    "INT32H",
+    "ASSOCIATION",
+    "ENUM",
+    "STRING",
+    "INT8_ARRAY",
+    "INT64H",
+    "END"
+};
 
 // ----------------------------------------------------------------------------
 char *
@@ -187,7 +241,7 @@ DRAL_EVENT_DESC_CLASS::Construct(
     const char *d, 
     UINT32 p, 
     UINT32 o, 
-    char k[64])
+    const char k[64])
 {
 #if COMPILE_DRAL_WITH_PTV
     ptvEventType = pipe_new_eventtype(hack_ptv_s(n), l, CvtColorDralToPtv(c), d, p, o, k);
@@ -317,7 +371,7 @@ DRAL_DATA_DESC_CLASS::DRAL_DATA_DESC_CLASS(
     DRAL_BASE_DATA_T b,
     const char *d, 
     UINT32 l, 
-    char **s)
+    const char **s)
   : name(n),
     desc(d),
     bdt(b),
@@ -326,7 +380,7 @@ DRAL_DATA_DESC_CLASS::DRAL_DATA_DESC_CLASS(
     ptvDataType(NULL)
 {
 #if COMPILE_DRAL_WITH_PTV
-    ptvDataType = pipe_new_datatype(hack_ptv_s(n), CvtBaseDataDralToPtv(b), d, l, s);
+    ptvDataType = pipe_new_datatype(hack_ptv_s(n), CvtBaseDataDralToPtv(b), d, l, (const char **)s);
 #endif
 
     return;
@@ -345,10 +399,10 @@ DRAL_DATA_DESC_CLASS::Construct(
     DRAL_BASE_DATA_T b,
     const char *d, 
     UINT32 l, 
-    char **s)
+    const char **s)
 {
 #if COMPILE_DRAL_WITH_PTV
-    ptvDataType = pipe_new_datatype(hack_ptv_s(n), CvtBaseDataDralToPtv(b), d, l, s);
+    ptvDataType = pipe_new_datatype(hack_ptv_s(n), CvtBaseDataDralToPtv(b), d, l, (const char **)s);
 #endif
 
     name = n;
@@ -437,7 +491,7 @@ DRAL_DATA_DESC_CLASS::GetDralDataStr(
       {
           val.u64 = va_arg(tmpap, UINT64);
           char s[30];
-          sprintf(s, "%llX", val.u64);
+          sprintf(s, FMT64X, val.u64);
           data_str +=s;
       }
       break;

@@ -8134,3 +8134,26 @@ Directory modules
  Makefile.template.in      Locally Modified          385 
 
 - manual sync with Intel simcore repository
+
+----------
+mgambhir    Date: Mon Oct 28 18:04:50 EDT 2013  CSN: CSN-asimcore-387
+                  Mon Oct 28 22:04:50 UTC 2013
+
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          386 
+ Makefile.am               Locally Modified          386 
+
+Directory lib/libdral/include/asim
+ dralStorage.h             Locally Modified          386 
+ dralDesc.h                Locally Modified          386 
+
+Directory lib/libdral/src
+ dralServer.cpp            Locally Modified          386 
+ dralListenerConverter.cpp Locally Modified          386 
+ dralDesc.cpp              Locally Modified          386 
+ dralStringMapping.cpp     Locally Modified          386 
+
+- libdral sync with Intel repository. Mostly changes to remove warnings when
+build with newer gcc
+- Fixed xmlout.h that was added twice in libasim/include/Makefile

@@ -22,10 +22,11 @@
  * @brief A mapping of strings.
  */
 
-#include "asim/dralStringMapping.h"
 #include <stdlib.h>
 #include <iostream>
 #include <assert.h>
+
+#include "asim/dralStringMapping.h"
 
 DRAL_STRING_MAPPING_CLASS::DRAL_STRING_MAPPING_CLASS(UINT32 size)
 {

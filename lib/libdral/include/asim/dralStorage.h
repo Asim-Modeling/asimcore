@@ -20,6 +20,7 @@
 #define __dralStorage_h
 
 
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>

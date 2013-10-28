@@ -488,7 +488,7 @@ DRAL_SERVER_CLASS::EnterNode (
 	// compute the final position of the item in the node contents array
 	final_position = ComputeNodePosition(nodeId, dim, position);
 	ed.position = new UINT32[dim];
-	memcpy(ed.position, position, sizeof(position));
+	memcpy(ed.position, position, sizeof(UINT32) * dim);
 	ed.persistent = persistent;
 
 	// now look at the contents array and decide what to do
@@ -782,7 +782,7 @@ DRAL_SERVER_CLASS::SetNodeLayout (
 	    total_size *= capacity[i];
         }
         auto_flush_data[nodeId].contents = new UINT32[total_size];
-	memset(auto_flush_data[nodeId].contents, 0, sizeof(auto_flush_data[nodeId].contents));
+	memset(auto_flush_data[nodeId].contents, 0, sizeof(UINT32) * total_size);
     }
 }
 
@@ -1340,7 +1340,7 @@ DRAL_SERVER_CLASS::CvtVaListDralToStlListDral(
     // iterate until the data descriptor (dd) is NULL
     // each iteration we should actually pop the next desc
     DRAL_DATA_PAIR_T p;
-    for (dd; dd; dd = ChompNextDd(ap))
+    for (; dd; dd = ChompNextDd(ap))
     {
         // pop the next base data value (bdv)
         p.dd = dd;
