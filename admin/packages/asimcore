@@ -18,7 +18,7 @@
 #
 [Global]
 Description=Asim Base Library
-CSN=CSN-asimcore-388
+CSN=CSN-asimcore-389
 Name=asimcore
 Tag=v13.06
 Prerelease=1

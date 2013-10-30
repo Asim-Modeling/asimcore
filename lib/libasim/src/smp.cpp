@@ -148,3 +148,21 @@ ASIM_SMP_CLASS::GetThreadHandle(void)
     VERIFYX(threadHandle != NULL);
     return threadHandle;
 }
+
+
+//
+// in dynamic scheduling schemes, we may have pthreads switching between
+// different ASIM_SMP_THREAD tasks.  Thus you might allocate more ASIM_SMP_THREAD's
+// than there are pthreads running.  When a pthread starts running an ASIM_SMP_THREAD,
+// it should call this routine to swithc the thread-local variable to point to
+// the currently running ASIM_SMP_THREAD.
+//
+void
+ASIM_SMP_CLASS::SetThreadHandle(ASIM_SMP_THREAD_HANDLE threadHandle)
+{
+#ifdef TLS_AVAILABLE
+    ASIM_SMP_RunningThreadNumber = threadHandle->threadNumber;
+#endif
+
+    VERIFYX(0 == pthread_setspecific(threadLocalKey, threadHandle));
+}

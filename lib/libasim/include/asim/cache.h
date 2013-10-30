@@ -393,7 +393,11 @@ template<UINT32 NumObjectsPerLine, class T> class line_state
     void	ClearDirtyBit(UINT32 i)   
     { 
         ASSERTX(i < NumObjectsPerLine); 
-        valid[i] = false; 
+        //YARDI: why is the valid bit being cleared here instead of the
+        //       dirty bit?
+        //       Temporarily commenting and clearing the dirty bit instead
+        //valid[i] = false; 
+        dirty[i] = false;
     };
 
     void SetInfo(const T& new_info) { info = new_info; };
@@ -439,7 +443,35 @@ template<UINT32 NumObjectsPerLine, class T> class line_state
         }
         out << ", ownerId=" << GetOwnerId();
     }
-  
+    
+    //
+    // dump the cache contents
+    //
+    int SaveTagArrayState(UINT64 index, UINT32 way, ostream &out)
+    {
+        if(GetStatus() != S_INVALID) 
+        {
+            out << "S: " << index;
+            out << " W: " << way;
+            out << " ";
+            out << "\ttag=0x" << fmt_x(GetTag())
+                  //<< ", way=" << (UINT32)GetWay() 
+                  << ", status=" << LINE_STATUS_STRINGS[status];
+            out << ", valid=0b";
+            for (UINT32 i = 0; i < NumObjectsPerLine; i++ ) 
+            {
+                out << (valid[i] ? 1 : 0); 
+            }
+            out << ", dirty=0b";
+            for (UINT32 i = 0; i < NumObjectsPerLine; i++ ) 
+            {
+                out << (dirty[i] ? 1 : 0); 
+            }
+            out << ", ownerId=" << GetOwnerId();
+            return true;
+         }
+         return false;
+    }
 };
 
 
@@ -505,6 +537,31 @@ template<UINT8 NumWays> class lru_info
     
     // Debugging
     void	Dump();
+    
+    // Save LRU state
+    //  This replaces the Dump() function
+    //  The Dump() was dumping LRU information for a particular
+    //  replacement policy
+    //  By making this function a member of this class, each policy
+    //  will dump its own LRU state
+    void SaveState(ostream &out)
+    {
+        INT8 p,i;
+    
+        out << "MRU ->";
+        //out << "LRU : ";
+        for (i = 0, p = mru; i < NumWays; i++, p = linklist[p].next ) 
+        //for (i = 0, p = lru; i < NumWays; i++, p = linklist[p].prev ) 
+        {
+            ASSERTX(p != -1);
+            out << " " << p << " ->";
+        }
+        out << endl;  
+    }
+    
+    //
+    // TODO Restore LRU state (currently implemented only for EV7)
+    //
 };
 
 template<UINT8 NumWays>
@@ -553,6 +610,9 @@ class pseudo_lru_info : public lru_info<NumWays>
         pseudoLRU = pseudoLRU | mask1s[way];
         pseudoLRU = pseudoLRU & mask0s[way];
     }
+    
+    //TODO: 
+    //  Save and restore LRU state functions for this policy
 };
 
 /* 3,2,2,2 configuration */
@@ -640,7 +700,18 @@ class ev7_replacement_info : public lru_info<NumWays>
 	}
         
     }
+  
+    // Save LRU state
+    void  SaveState(ostream& out)
+    {
+        out << "0x" << fmt_x(mask) << endl;
+    }
     
+    // Restore LRU state
+    void  RestoreState(UINT64 currMask)
+    {
+        mask = currMask;
+    }
 };
 
 
@@ -697,6 +768,9 @@ protected:
   void Dump(UINT64 index) {
     LruArray[index].Dump();
   }
+  void SaveState(UINT64 index,ostream &out) {
+      LruArray[index].SaveState(out);
+  }
 private:
   lruInfo LruArray[NumLinesPerWay];
 };
@@ -710,8 +784,7 @@ class PseudoLRUReplacement
   //
   typedef pseudo_lru_info<NumWays>		lruInfo;
 
-  UINT32 GetVictim(UINT64 index, UINT64 reserved_mask = 0)
-  {
+  UINT32 GetVictim(UINT64 index, UINT64 reserved_mask = 0)  {
     ASSERT(reserved_mask == 0, "PseudoLRUReplacement doesn't support reserved status.");
       
     UINT32 way;
@@ -738,6 +811,9 @@ class PseudoLRUReplacement
   void Dump(UINT64 index) {
     LruArray[index].Dump();
   }
+  void SaveState(UINT64 index,ostream &out) {
+      LruArray[index].SaveState(out);
+  }
 private:
 
   lruInfo LruArray[NumLinesPerWay];
@@ -750,7 +826,7 @@ private:
  *
  */
 #include "plru_masks.h"
-template<UINT8 NumWays, UINT32 rand_at_bottom> 
+template<UINT8 NumWays, int rand_at_bottom> 
 class PLRUTree {
 private:
   UINT64 state;
@@ -767,7 +843,7 @@ public:
       UINT64 temp_mask = (UINT64) (-1);
       for (int i = 0 ; i < rand_at_bottom; i++) {
 	temp_mask = reserved_mask & temp_mask;
-	reserved_mask  >> NumLeafs;
+	reserved_mask >>= NumLeafs;
       }
       reserved_mask = temp_mask;
       int temp;
@@ -852,7 +928,7 @@ public:
 	ASSERT(treeNum != firstNum, "All ways are reserved!");
       }
       /* get the part of the reserved bits which corresponds to this tree*/
-      tempMask = (reserved_mask & masks[treeNum])   >> (treeSize * treeNum);
+      tempMask = (reserved_mask & masks[treeNum])   >> (UINT32)(treeSize * treeNum);
 
       way = trees[index][treeNum].getPLRUWay(tempMask);
      
@@ -867,14 +943,14 @@ public:
     {    
       int treeNum = 0 ;
       if (rand_at_top > 1) {
-       random() % rand_at_top;
+       treeNum = random() % rand_at_top;
       }
       return trees[index][treeNum].getPLRUWay(0) + (treeNum * treeSize) ;
     }
     UINT32 getMRU(UINT64 index) {
       int treeNum = 0 ;
       if (rand_at_top > 1) {
-       random() % rand_at_top;
+       treeNum = random() % rand_at_top;
       }
       return trees[index][treeNum].getMRUWay() + (treeNum *treeSize);
     }
@@ -902,6 +978,28 @@ public:
 
 };
 
+
+// let's name at least one version of this replacement policy.  this is supposed
+// to be the PLRU policy used in Nehalem.  if not, let's change this typedef
+// when we confirm the appropriate policy.
+//
+// NOTE: there is a limitation in C++ where you *cannot* template typdefs.  I
+// would like to write:
+//
+//    template <UINT8 NumWays, UINT32 NumLinesPerWay> 
+//    typedef GeneralizedPseudoLRUReplacement< 1,1 >::T<NumWays, NumLinesPerWay>
+//            NehalemPlruReplacement;
+//
+// that will not complie.  grr grumble !@#$%.  so instead, we have the lovely:
+//
+#define NehalemPlruReplacement GeneralizedPseudoLRUReplacement<1,1>::T
+// 
+// the funny thing is that we got into this whole mess because i wanted to avoid
+// the confusing  GeneralizedPseudoLRUReplacement<1,1>::T expression... that
+// expression exists because the author of that class ran into the same problem.
+//   --slechta
+
+
 template <UINT8 NumWays, UINT32 NumLinesPerWay>
 class RandomReplacement
 {
@@ -922,6 +1020,12 @@ class RandomReplacement
 
     return way;
   }
+  
+  //YARDI: this is still a NOP
+  //void RestoreLRU(istream& in);
+  
+  //TODO: restoreLRUstate
+  //void RestoreLRU(istream& in);
 
   protected:
   UINT32 getLRU(int index) {
@@ -938,6 +1042,9 @@ class RandomReplacement
   }
   void Dump(UINT64 index) {
     LruArray[index].Dump();
+  }
+  void SaveState(UINT64 index,ostream &out) {
+      LruArray[index].SaveState(out);
   }
 private:
   lruInfo LruArray[NumLinesPerWay];
@@ -967,6 +1074,9 @@ class RandomNotMRUReplacement
 
     return way;
   }
+  
+  //TODO: restoreLRUstate
+  //void RestoreLRU(istream& in);
 
   protected:
   UINT32 getLRU(int index) {
@@ -982,8 +1092,12 @@ class RandomNotMRUReplacement
     return LruArray[index].makeLRU(way);
   }
   void Dump(UINT64 index) {
-    LruArray[index].Dump();
+      LruArray[index].Dump();
   }
+  void SaveState(UINT64 index,ostream &out) {
+      LruArray[index].SaveState(out);
+  }
+
 private:
 
   lruInfo LruArray[NumLinesPerWay];
@@ -1008,7 +1122,10 @@ class EV7_scheme_replacement
     return way;
     
   }
-
+  
+  //restore functional LRU state
+  void RestoreLRU(istream& in);
+  
   protected:  
   UINT32 getLRU(int index) {
     return LruArray[index].getLRU();
@@ -1024,6 +1141,9 @@ class EV7_scheme_replacement
   }
   void Dump(UINT64 index) {
     LruArray[index].Dump();
+  }
+  void SaveState(UINT64 index,ostream &out) {
+      LruArray[index].SaveState(out);
   }
 private:
 
@@ -1220,6 +1340,15 @@ class gen_cache_class : public VictimPolicy<NumWays,NumLinesPerWay>
   void				Dump(UINT64 index, UINT32 way);
   void				DumpLRU(UINT64 index);
   void				tester();
+  
+  //
+  // functional save/restore support
+  //
+  void        SaveLRUState(UINT64 index, ostream &out);
+  void        SaveCacheState(UINT64 index, UINT32 way, ostream& out);
+  void        RestoreLRUState(istream &in);
+  void        RestoreCacheState(istream &in);
+
 };
 
 template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
@@ -1600,14 +1729,14 @@ line_state<NumObjectsPerLine,INFO> *
     for (UINT16 i = 0; i < NumWays; ++i)
     {
         if(invalidFirst)
-	{
+	      {
             if (TagArray[index][i].GetStatus()==S_INVALID)
             {
                 return &(TagArray[index][i]);
             }
-	}
+	      }
         
-	if (TagArray[index][i].GetStatus()==S_RESERVED)
+	      if (TagArray[index][i].GetStatus()==S_RESERVED)
         {
             reserved_mask = reserved_mask | (shiftable_1_64bit << i);
         }
@@ -1883,11 +2012,17 @@ template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
 void
 gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::Dump(UINT64 index, UINT32 way)
 {
+    //NOTE: DO NOT USE THIS FUNCTION. THIS SHOULD BE REPLACED BY
+    //      A CALL TO SaveState(). 
+    //      FOR NOW, WE ASSERT SO NOONE USES IT
+    ASSERT(false,"This function has been replaced by a SaveState in cache.h");
+    
+    //rest of the original function follows
     ASSERTX(index < NumLinesPerWay);
     ASSERTX(way < NumWays);
-    
+
     //cout << "\tDump for cache line at <" << fmt_x(index)
-    //     << "x,--> way " << way << ":";
+      //   << "x,--> way " << way << ":";
     TagArray[index][way].Dump();
 }
 
@@ -1896,10 +2031,26 @@ template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
 void
 gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::DumpLRU(UINT64 index)
 {
-    
-    ASSERTX(index < NumLinesPerWay);
-    cout << "Dump for index 0x" << fmt_x(index) << " :";
-    Dump(index);
+     //NOTE: DO NOT USE THIS FUNCTION. THIS SHOULD BE REPLACED BY
+     //      A CALL TO SaveLRUState(). 
+     //      FOR NOW, WE ASSERT SO NOONE USES IT
+     ASSERT(false,"This function has been replaced by SaveLRUState in cache.h");
+ 
+     //rest of the original function follows    
+     ASSERTX(index < NumLinesPerWay);
+     //cout << "Dump for index 0x" << fmt_x(index) << " :";
+     //
+     
+     // NOTE: 
+     //    this should really call the Dump routine for each replacment policy
+     //  instead if calling a generic Dump()
+     //    Some replacement policies do not use the default linked-list to 
+     //  model LruArray. In this case, Dump() will dump bogus information
+     //    Can fix this by having each replacement policy implement its own
+     //  dump routine and replace this call by something like this->DumpLRUState(index)   
+     //
+     //this->LruArray[index].Dump();
+     this->Dump(index);
 }
 //////////////////////////////////////////////////////////////////////////
 //
@@ -2074,14 +2225,310 @@ void
 lru_info<NumWays>::Dump()
 {
     INT8 p,i;
+
+    //NOTE: This function is now implemented to be part of the 
+    //      active replacement policy
+    //See the class definitions of each policy for the new function
     
-    cout << "MRU ->";
     for (i = 0, p = mru; i < NumWays; i++, p = linklist[p].next ) 
     {
         ASSERTX(p != -1);
         cout << " " << p << " ->";
     }
-    cout << endl;
+}
+
+//////////////////////////////////////////////////////////////
+//// 
+//// Save/restore cache contents
+////
+//////////////////////////////////////////////////////////////
+
+//
+// save contents
+//
+template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
+         class T, bool WithData, template <UINT8,UINT32> class VictimPolicy, class INFO>
+void
+gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::SaveCacheState(UINT64 index, UINT32 way, ostream& out)
+{
+    UINT64 pa;
+    
+    ASSERTX(index < NumLinesPerWay);
+    ASSERTX(way < NumWays);
+
+    //we have to add an 'if' here becuase this function returns a false
+    //if the line we are dumping is invalid    
+    if(TagArray[index][way].SaveTagArrayState(index,way,out)) 
+    {
+        pa = Original(index,TagArray[index][way].GetTag());
+        out << ", PA=0x" << fmt_x(pa) << endl;
+    }
+}
+
+//
+// restore contents
+//
+template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
+         class T, bool WithData, template <UINT8,UINT32> class VictimPolicy, class INFO>
+void
+gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::RestoreCacheState(istream& in)
+{
+    //YARDI:
+    // right now this is a hacked parser for the BMP LLC.
+    //
+    
+    int MAX_CHARS_PER_LINE=256;
+    char *line, *token, *prevToken;
+    UINT64 index;
+    UINT32 way;
+    UINT64 tag;
+    LINE_STATUS currStatus;
+    UINT32 OwnerID;
+    UINT8 validLineInfo,done;
+    
+    //init all lines to invalid
+    //the ones that are not will be assigned the correct status below
+    for(UINT32 i=0; i<NumLinesPerWay; i++)
+    {
+        for(UINT8 j=0; j<NumWays; j++)
+        {
+            TagArray[i][j].Clear();            
+            TagArray[i][j].SetWay(j);
+        }
+    }
+    
+    //init parser
+    line = new char[MAX_CHARS_PER_LINE];
+    prevToken = new char[MAX_CHARS_PER_LINE];
+    token = new char[MAX_CHARS_PER_LINE];    
+    validLineInfo = false;
+    done=false;
+    while(!done)
+    {
+        //read a line
+        in.getline(line,256);
+        //cout << "Original line : " << endl;
+        //cout << line << endl;
+        validLineInfo = false;    //filter out everything else other than contents
+        if(in.gcount() > 1)
+        {
+            //tokenize
+            token = strtok(line, " ,:=\t");
+            while(token != NULL)
+            {
+                //cout << "Curr token: " << token << endl;
+                if(!strcmp(prevToken,"DONE"))
+                {
+                    //done parsing cache contents
+                    done = true;
+                    validLineInfo = false;
+                    break;
+                }
+                if(!strcmp(prevToken,"S"))
+                {
+                    //rest of this line contains valid info
+                    validLineInfo = true;
+                    index = atoi_general_unsigned(token);
+                    //cout << "S: " << index << endl;
+                    ASSERTX(index < NumLinesPerWay);
+                }
+                if(!strcmp(prevToken,"W"))
+                {
+                    way = atoi_general_unsigned(token);
+                    //cout << "W: " << way << endl;
+                    ASSERTX(way < NumWays);
+                    TagArray[index][way].SetWay(way);
+                    //cout << "Set way = " << TagArray[index][way].GetWay();
+                }
+                if(!strcmp(prevToken,"tag"))
+                {
+                    tag = atoi_general_unsigned(token);
+                    //cout << "tag=0x" << hex << tag << endl;
+                    TagArray[index][way].SetTag(tag);
+                    //cout << "Set tag = " << TagArray[index][way].GetTag();   
+                }
+                if(!strcmp(prevToken,"status"))
+                {
+                    for(UINT8 i=0; i < S_MAX_LINE_STATUS; i++)
+                    {
+                        if(!strcmp(LINE_STATUS_STRINGS[i],token))
+                        {
+                            currStatus = (LINE_STATUS)i;
+                            //cout << "status=" << LINE_STATUS_STRINGS[i] << " - " << token << endl;
+                        }
+                    }
+                    //when restoring, we make a reserved line invalid
+                    if(currStatus == S_RESERVED)
+                    {
+                        TagArray[index][way].Clear();
+                        TagArray[index][way].SetWay(way);
+                    }
+                    else
+                        TagArray[index][way].SetStatus(currStatus);
+                    //cout << "Set status = " << TagArray[index][way].GetStatus();   
+                }
+                if(!strcmp(prevToken,"valid"))
+                {
+                    //valid bit info is of the form 0b11111111
+                    //so ignore the first two characters when assigning valid bits
+                    ASSERTX(strlen(token) == (NumObjectsPerLine+2));
+                    //cout << "valid=";
+                    for(UINT8 i=0,j=2; i < NumObjectsPerLine; i++)
+                    {
+                        //i is used to index the objects on a line
+                        //j is used to index the "token"
+                        //this avoid any assertions in Set/Clear ValidBit
+                        //cout << token[j];
+                        if(token[j]=='1')
+                            TagArray[index][way].SetValidBit(i);
+                        else
+                            TagArray[index][way].ClearValidBit(i);
+                    }
+                }
+                if(!strcmp(prevToken,"dirty"))
+                {
+                    //dirty bit info is of the form 0b11111111
+                    //so ignore the first two characters when assigning valid bits
+                    ASSERTX(strlen(token) == (NumObjectsPerLine+2));
+                    //cout << "dirty=";
+                    for(UINT8 i=0,j=2; i < NumObjectsPerLine; i++)
+                    {
+                        //i is used to index the objects on a line
+                        //j is used to index the "token"
+                        //this avoid any assertions in Set/Clear DirtyBit
+                        //cout << token[j];
+                        if(token[j]=='1')
+                            TagArray[index][way].SetDirtyBit(i);
+                        else
+                            TagArray[index][way].ClearDirtyBit(i);
+                    }
+                }
+                if(!strcmp(prevToken,"ownerId"))
+                {
+                    //cout << "owenerId token = " << token << endl;
+                    OwnerID = atoi_general_unsigned(token);
+                    //cout << "ownerID=" << OwnerID << endl;
+                    TagArray[index][way].SetOwnerId(OwnerID);
+                }
+                //remember prev token
+                strcpy(prevToken,token);
+                //get next token
+                token = strtok(NULL, " ,:=\t");
+            }//end while(token!=NULL)
+            
+            //debug: check if we filled in everything correctly
+            /*
+            if(validLineInfo)
+            {
+                //cout << "Line at S=" << index << " W=" << way << "   done" << endl;
+                if(TagArray[index][way].SaveTagArrayState(index, way, out)) 
+                {
+                    pa = Original(index,TagArray[index][way].GetTag());
+                    out << " PA=0x" << fmt_x(pa) << endl;
+                }
+            }
+            */
+        }//end (gcount>1)
+    }//end while
+}
+
+//////////////////////////////////////////////////////////////
+//// 
+//// Save/restore LRU state
+////
+//////////////////////////////////////////////////////////////
+//
+// Save LRU state
+//
+template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
+         class T, bool WithData, template <UINT8,UINT32> class VictimPolicy, class INFO>
+void
+gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::SaveLRUState(UINT64 index, ostream &out)
+{
+    ASSERTX(index < NumLinesPerWay);
+    //cout << "Dump for index 0x" << fmt_x(index) << " :";
+    out << "S: " << index << " ";
+    //each replacement algorithm now has its own SaveState function
+    this->SaveState(index,out);
+    //the old Dump() function is no longer required
+    //this->Dump(index,out);
+}
+
+//
+// Restore LRU state
+//
+template<UINT8 NumWays, UINT32 NumLinesPerWay, UINT32 NumObjectsPerLine,
+         class T, bool WithData, template <UINT8,UINT32> class VictimPolicy, class INFO>
+void
+gen_cache_class<NumWays,NumLinesPerWay,NumObjectsPerLine,T,WithData,VictimPolicy,INFO>::RestoreLRUState(istream &in)
+{
+    //parse the istream to get an index into LruArray
+    //parsing should be VictimPolicy-specific, so call the
+    //restoreLRU function of the current victim policy
+    this->RestoreLRU(in);
+}
+
+//there will be one such function for each replacement policy
+template<UINT8 NumWays, UINT32 NumLinesPerWay>
+void
+EV7_scheme_replacement<NumWays,NumLinesPerWay>::RestoreLRU(istream& in)
+{
+    //YARDI:
+    // right now this is a hacked parser for the BMP LLC.
+    //
+
+    //parse and restore LRU state from input
+    int MAX_CHARS_PER_LINE=256;
+    char *line, *token, *prevToken;
+    UINT32 numIndex = 0;
+    UINT64 currMask;
+    UINT32 currIndex;
+    UINT8 foundIndex;
+    
+    line = new char[MAX_CHARS_PER_LINE];
+    prevToken = new char[MAX_CHARS_PER_LINE];
+    token = new char[MAX_CHARS_PER_LINE];    
+    
+    //there are at most NumLinesPerWay indices for the LruArray
+    //so we have to read these many lines from the dump file
+    foundIndex = false;
+    currIndex = 0;
+    currMask = 0;
+    while(numIndex < NumLinesPerWay)
+    {
+        ++numIndex;
+        //read a line
+        in.getline(line,256);
+        //cout << line << "   ";
+        //tokenize
+        token = strtok(line, " ,:\t");
+        while(token != NULL) 
+        {
+            if(foundIndex)
+            {
+                //the prev token gave the index
+                //so this token must be the mask value
+                currMask = atoi_general_unsigned(token);
+                //out << "S: " << currIndex << " ";
+                //out << "0x" << currMask << endl;
+                
+                //call the restore function of the specific structure
+                //  used by this policy
+                this->LruArray[currIndex].RestoreState(currMask);
+                foundIndex = false;
+            }
+            if(!strcmp(prevToken,"S"))
+            {
+                //then current token must be the index
+                currIndex = atoi_general_unsigned(token);
+                ASSERTX(currIndex < NumLinesPerWay);
+                foundIndex = true;
+            }
+            strcpy(prevToken,token);
+            //next token                  
+            token = strtok(NULL, " ,:\t");
+        }
+    }
 }
 
 #endif // CACHE_H

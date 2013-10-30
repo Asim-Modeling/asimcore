@@ -138,7 +138,7 @@ class ARCH_REGISTER_CLASS
         INT32 regNum,
         UINT64 iValue0,
         UINT64 iValue1) : regNum(regNum), rType(rType),
-                          physicalNumber(0), rawSize(sizeof(UINT64)),
+                          physicalNumber(0), rawSize(2*sizeof(UINT64)),
                           knownValue(true)
     {
         u.value[0] = iValue0;
@@ -193,7 +193,7 @@ class ARCH_REGISTER_CLASS
 
     UINT64 GetHighIValue(void) const
     {
-        ASSERTX(HasKnownValue() && (rType == REG_TYPE_FP82));
+        ASSERTX((HasKnownValue() && (rType == REG_TYPE_FP82)) || rawSize >= (2*sizeof(UINT64)));
         return u.value[1];
     };
 

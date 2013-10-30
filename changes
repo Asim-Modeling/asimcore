@@ -8169,3 +8169,19 @@ Directory lib/libasim/include
 
 - Reordered xmlout.h and xmlout-nolib.h in the Makefile since xmlout is a
 soft link to xmlout-nolib.h
+
+----------
+mgambhir    Date: Wed Oct 30 11:13:37 EDT 2013  CSN: CSN-asimcore-389
+                  Wed Oct 30 15:13:37 UTC 2013
+
+
+Directory lib/libasim/include/asim
+ trace.h                   Locally Modified          388 
+ arch_register.h           Locally Modified          388 
+ cache.h                   Locally Modified          388 
+
+Directory lib/libasim/src
+ smp.cpp                   Locally Modified          388 
+
+- Another sync from Intel simcore incorporating a commit that was missed
+before

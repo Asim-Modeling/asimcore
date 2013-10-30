@@ -22,6 +22,7 @@
 #include <list>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <pthread.h>
 #include <asim/regexobj.h>
