@@ -8185,3 +8185,14 @@ Directory lib/libasim/src
 
 - Another sync from Intel simcore incorporating a commit that was missed
 before
+
+----------
+mgambhir    Date: Mon Nov 11 15:31:06 EST 2013  CSN: CSN-asimcore-390
+                  Mon Nov 11 20:31:06 UTC 2013
+
+
+Directory .
+ configure.in              Locally Modified          389 
+ configure                 Locally Modified          389 
+
+- Added -fPIC flag to library builds

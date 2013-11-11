@@ -364,13 +364,13 @@ AC_CACHE_CHECK([if optimizations should be used] ,
       asim_cv_enable_optimize=yes)
 
 if test $asim_cv_enable_optimize = no; then
-    OPTFLAGS="-g -O0 -fno-inline -DQT_DEBUG -DQT_FATAL_ASSERT"
+    OPTFLAGS="-g -O0 -fPIC -fno-inline -DQT_DEBUG -DQT_FATAL_ASSERT"
 fi
 if test $asim_cv_enable_optimize = yes; then
-    OPTFLAGS="-g -O2 -DQT_DEBUG -DQT_FATAL_ASSERT"
+    OPTFLAGS="-g -O2 -fPIC -DQT_DEBUG -DQT_FATAL_ASSERT"
 fi
 if test $asim_cv_enable_optimize = high; then
-    OPTFLAGS="-g -O3 -finline-limit=1200 -funroll-loops -fexpensive-optimizations -frerun-loop-opt -DQT_NO_DEBUG -DQT_NO_CHECK"
+    OPTFLAGS="-g -O3 -fPIC -finline-limit=1200 -funroll-loops -fexpensive-optimizations -frerun-loop-opt -DQT_NO_DEBUG -DQT_NO_CHECK"
 fi
 AC_SUBST(OPTFLAGS)
 
