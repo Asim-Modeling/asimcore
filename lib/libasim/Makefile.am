@@ -34,12 +34,15 @@ libasim_a_SOURCES =	src/mesg.cpp \
 			src/except.cpp \
 			src/stackdump.cpp \
 			src/trace.cpp \
+			src/trace_legacy.cpp \
 			src/ioformat.cpp \
 			src/port.cpp \
 			src/stateout.cpp \
 			src/trackmem.cpp \
 			src/arch_register.cpp \
 			src/clockserver.cpp \
+			src/clockserver_lookahead_param.cpp \
+			src/clockserver_threaded_lockfree.cpp \
 			src/clockable.cpp \
 			src/atomic.cpp \
 			src/smp.cpp \
@@ -54,7 +57,7 @@ WARNFLAGS = -Wall -W -Wpointer-arith -Wredundant-decls -Wcast-align \
             -Wno-long-long -Wno-unused -Wno-unknown-pragmas
 
 AM_CXXFLAGS += ${STLPORTINC} -I./include -I../libdral/include ${XML_CFLAGS} \
-               -DASIM_ENABLE_EVENTS -DASIM_ENABLE_TRACE @asim_pthreads@
+               -DASIM_ENABLE_EVENTS -DASIM_ENABLE_TRACE -DCLOCKSERVER_IN_LIBASIM @asim_pthreads@
 
 AM_LDFLAGS += ${XML_LFLAGS}
 

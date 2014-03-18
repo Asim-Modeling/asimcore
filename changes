@@ -8196,3 +8196,27 @@ Directory .
  configure                 Locally Modified          389 
 
 - Added -fPIC flag to library builds
+
+----------
+mgambhir    Date: Mon Mar 17 20:14:16 EDT 2014  CSN: CSN-asimcore-391
+                  Tue Mar 18 00:14:16 UTC 2014
+
+
+Directory lib/libasim
+ Makefile.in               Locally Modified          390 
+
+Directory lib/libasim/include
+ Makefile.in               Locally Modified          390 
+
+Directory lib/libasim/doc
+ Makefile.in               Locally Modified          390 
+
+Directory lib/libasim
+ Makefile.am               Locally Modified          390 
+
+Directory .
+ configure                 Locally Modified          390 
+ configure.in              Locally Modified          390 
+
+- Added some additional source files to be built in libasim/Makefile.am. Those got added to the sources in the previous sync but not to the Makefile
+- Fixed a bug in configure.in where lib/libasim/Makefile was being generated multiple times

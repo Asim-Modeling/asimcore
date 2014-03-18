@@ -752,7 +752,7 @@ AC_CONFIG_FILES(lib/Makefile)
 
 # lib/libasim
 AC_CONFIG_FILES(lib/libasim/Makefile lib/libasim/include/Makefile)
-AC_CONFIG_FILES(lib/libasim/Makefile lib/libasim/doc/Makefile)
+AC_CONFIG_FILES(lib/libasim/doc/Makefile)
 AC_CONFIG_FILES(lib/libasim/pkgconfig/libasim.pc)
 AC_CONFIG_FILES(lib/libasim/pkgconfig/libasim-uninstalled.pc)
 libasimDir="lib/libasim"

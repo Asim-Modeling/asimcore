@@ -6462,7 +6462,7 @@ ac_config_files="$ac_config_files lib/Makefile"
 # lib/libasim
 ac_config_files="$ac_config_files lib/libasim/Makefile lib/libasim/include/Makefile"
 
-ac_config_files="$ac_config_files lib/libasim/Makefile lib/libasim/doc/Makefile"
+ac_config_files="$ac_config_files lib/libasim/doc/Makefile"
 
 ac_config_files="$ac_config_files lib/libasim/pkgconfig/libasim.pc"
 
@@ -7283,6 +7283,7 @@ do
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
     "lib/libasim/Makefile") CONFIG_FILES="$CONFIG_FILES lib/libasim/Makefile" ;;
     "lib/libasim/include/Makefile") CONFIG_FILES="$CONFIG_FILES lib/libasim/include/Makefile" ;;
+    "lib/libasim/doc/Makefile") CONFIG_FILES="$CONFIG_FILES lib/libasim/doc/Makefile" ;;
     "lib/libasim/pkgconfig/libasim.pc") CONFIG_FILES="$CONFIG_FILES lib/libasim/pkgconfig/libasim.pc" ;;
     "lib/libasim/pkgconfig/libasim-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES lib/libasim/pkgconfig/libasim-uninstalled.pc" ;;
     "$libasimIncDir/xmlout.h") CONFIG_LINKS="$CONFIG_LINKS $libasimIncDir/xmlout.h:$libasimIncDir/$xmlout.h" ;;

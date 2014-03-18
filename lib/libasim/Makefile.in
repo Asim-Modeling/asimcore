@@ -102,9 +102,12 @@ am_libasim_a_OBJECTS = src/mesg.$(OBJEXT) src/profile.$(OBJEXT) \
 	src/atoi.$(OBJEXT) src/xmlout.$(OBJEXT) src/registry.$(OBJEXT) \
 	src/thread.$(OBJEXT) src/xcheck.$(OBJEXT) src/except.$(OBJEXT) \
 	src/stackdump.$(OBJEXT) src/trace.$(OBJEXT) \
-	src/ioformat.$(OBJEXT) src/port.$(OBJEXT) \
-	src/stateout.$(OBJEXT) src/trackmem.$(OBJEXT) \
-	src/arch_register.$(OBJEXT) src/clockserver.$(OBJEXT) \
+	src/trace_legacy.$(OBJEXT) src/ioformat.$(OBJEXT) \
+	src/port.$(OBJEXT) src/stateout.$(OBJEXT) \
+	src/trackmem.$(OBJEXT) src/arch_register.$(OBJEXT) \
+	src/clockserver.$(OBJEXT) \
+	src/clockserver_lookahead_param.$(OBJEXT) \
+	src/clockserver_threaded_lockfree.$(OBJEXT) \
 	src/clockable.$(OBJEXT) src/atomic.$(OBJEXT) src/smp.$(OBJEXT) \
 	src/regexobj.$(OBJEXT) src/cache_dyn.$(OBJEXT) \
 	src/cache_manager.$(OBJEXT) src/cache_manager_smp.$(OBJEXT) \
@@ -166,7 +169,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_CXXFLAGS = @AM_CXXFLAGS@ ${STLPORTINC} -I./include \
 	-I../libdral/include ${XML_CFLAGS} -DASIM_ENABLE_EVENTS \
-	-DASIM_ENABLE_TRACE @asim_pthreads@
+	-DASIM_ENABLE_TRACE -DCLOCKSERVER_IN_LIBASIM @asim_pthreads@
 AM_LDFLAGS = @AM_LDFLAGS@ ${XML_LFLAGS}
 ARCHFLAGS = @ARCHFLAGS@
 ASIMCOREFLAGS = @ASIMCOREFLAGS@
@@ -310,12 +313,15 @@ libasim_a_SOURCES = src/mesg.cpp \
 			src/except.cpp \
 			src/stackdump.cpp \
 			src/trace.cpp \
+			src/trace_legacy.cpp \
 			src/ioformat.cpp \
 			src/port.cpp \
 			src/stateout.cpp \
 			src/trackmem.cpp \
 			src/arch_register.cpp \
 			src/clockserver.cpp \
+			src/clockserver_lookahead_param.cpp \
+			src/clockserver_threaded_lockfree.cpp \
 			src/clockable.cpp \
 			src/atomic.cpp \
 			src/smp.cpp \
@@ -432,6 +438,8 @@ src/except.$(OBJEXT): src/$(am__dirstamp) \
 src/stackdump.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/trace.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/trace_legacy.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 src/ioformat.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/port.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
@@ -442,6 +450,10 @@ src/trackmem.$(OBJEXT): src/$(am__dirstamp) \
 src/arch_register.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/clockserver.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/clockserver_lookahead_param.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/clockserver_threaded_lockfree.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/clockable.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
@@ -473,6 +485,8 @@ mostlyclean-compile:
 	-rm -f src/cache_manager_smp.$(OBJEXT)
 	-rm -f src/clockable.$(OBJEXT)
 	-rm -f src/clockserver.$(OBJEXT)
+	-rm -f src/clockserver_lookahead_param.$(OBJEXT)
+	-rm -f src/clockserver_threaded_lockfree.$(OBJEXT)
 	-rm -f src/disasm.$(OBJEXT)
 	-rm -f src/event.$(OBJEXT)
 	-rm -f src/except.$(OBJEXT)
@@ -490,6 +504,7 @@ mostlyclean-compile:
 	-rm -f src/stripchart.$(OBJEXT)
 	-rm -f src/thread.$(OBJEXT)
 	-rm -f src/trace.$(OBJEXT)
+	-rm -f src/trace_legacy.$(OBJEXT)
 	-rm -f src/trackmem.$(OBJEXT)
 	-rm -f src/utils.$(OBJEXT)
 	-rm -f src/xcheck.$(OBJEXT)
@@ -506,6 +521,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/cache_manager_smp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/clockable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/clockserver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/clockserver_lookahead_param.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/clockserver_threaded_lockfree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/disasm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/except.Po@am__quote@
@@ -523,6 +540,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/stripchart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/trace.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/trace_legacy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/trackmem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/xcheck.Po@am__quote@
