@@ -8220,3 +8220,14 @@ Directory .
 
 - Added some additional source files to be built in libasim/Makefile.am. Those got added to the sources in the previous sync but not to the Makefile
 - Fixed a bug in configure.in where lib/libasim/Makefile was being generated multiple times
+
+----------
+pipersville  Date: Tue Mar 25 18:24:31 EDT 2014  CSN: CSN-asimcore-392
+                  Tue Mar 25 22:24:31 UTC 2014
+
+
+Directory .
+ Makefile.in               Locally Modified          391 
+ Makefile.am               Locally Modified          391 
+
+- Removed "make clean" from being called inside source install dir under install-src target

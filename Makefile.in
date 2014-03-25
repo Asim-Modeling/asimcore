@@ -824,7 +824,6 @@ install-src:
 	cp -r . $(DESTDIR)$(codedir)
 	chgrp --recursive --reference $(datadir) $(DESTDIR)$(codedir)
 	if [ `ls -ld $(datadir) | cut -b 6` = w ]; then chmod -R g+w $(DESTDIR)$(codedir); fi
-	make -C $(DESTDIR)$(codedir) clean
 	find    $(DESTDIR)$(codedir) -name .svn -depth -exec rm -rf {} \;
 
 #
