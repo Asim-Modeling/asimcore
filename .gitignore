@@ -1,0 +1,143 @@
+
+# /
+/Makefile
+/config.h
+/config.log
+/config.cache
+/config.status
+/autom4te.cache
+/stamp-h1
+/libtool
+/pkgconfig
+/build-stamp
+/config.guess
+/config.sub
+
+# /debian/
+/debian/asim-core
+/debian/asim-core-bin
+/debian/asim-core-dev
+/debian/asim-core-??.??
+/debian/files
+/debian/*.substvars
+/debian/*.log
+
+# /include/
+/include/stamp-h1
+/include/config.h
+
+# /lib/
+/lib/Makefile
+
+# /lib/libagt/
+/lib/libagt/libagt.a
+/lib/libagt/Makefile
+
+# /lib/libagt/include/
+/lib/libagt/include/Makefile
+
+# /lib/libagt/src/
+/lib/libagt/src/snapDialogImpl_moc.cpp
+/lib/libagt/src/AnnotationText_moc.cpp
+/lib/libagt/src/Main_moc.cpp
+/lib/libagt/src/bookmarkImpl_moc.cpp
+/lib/libagt/src/AnnotationRect_moc.cpp
+/lib/libagt/src/.deps
+/lib/libagt/src/AnnotationCircle_moc.cpp
+/lib/libagt/src/AnnotationCtrl_moc.cpp
+/lib/libagt/src/AnnotationLine_moc.cpp
+/lib/libagt/src/AnnotationItem_moc.cpp
+/lib/libagt/src/AColorDialog_moc.cpp
+/lib/libagt/src/BookmarkMgr_moc.cpp
+/lib/libagt/src/AnnotationContainer_moc.cpp
+/lib/libagt/src/HelpWindow_moc.cpp
+/lib/libagt/src/snapDialog_moc.cpp
+/lib/libagt/src/AScrollView_moc.cpp
+/lib/libagt/src/Q2DMAction_moc.cpp
+/lib/libagt/src/MDIWindow_moc.cpp
+/lib/libagt/src/bookmark_moc.cpp
+/lib/libagt/src/AnnotationAutoBezierArrow_moc.cpp
+/lib/libagt/src/.dirstamp
+
+# /lib/libasim/
+/lib/libasim/libasim.a
+/lib/libasim/Makefile
+
+# /lib/libasim/include/
+/lib/libasim/include/Makefile
+
+# /lib/libasim/include/asim/
+/lib/libasim/include/asim/xmlout.h
+
+# /lib/libasim/pkgconfig/
+/lib/libasim/pkgconfig/libasim.pc
+/lib/libasim/pkgconfig/libasim-uninstalled.pc
+
+# /lib/libasim/src/
+/lib/libasim/src/.deps
+/lib/libasim/src/.dirstamp
+/lib/libasim/src/xmlout.cpp
+
+# /lib/libdral/
+/lib/libdral/libdral.a
+/lib/libdral/Makefile
+
+# /lib/libdral/include/
+/lib/libdral/include/Makefile
+
+# /lib/libdral/pkgconfig/
+/lib/libdral/pkgconfig/libdral.pc
+/lib/libdral/pkgconfig/libdral-uninstalled.pc
+
+# /lib/libdral/src/
+/lib/libdral/src/.deps
+/lib/libdral/src/dralTar.cpp
+/lib/libdral/src/.dirstamp
+
+# /lib/libdraldb/
+/lib/libdraldb/Makefile
+/lib/libdraldb/libdraldb.a
+
+# /lib/libdraldb/include/
+/lib/libdraldb/include/Makefile
+
+# /lib/libdraldb/src/
+/lib/libdraldb/src/.deps
+/lib/libdraldb/src/.dirstamp
+
+# /lib/libnullptlib/
+/lib/libnullptlib/Makefile
+/lib/libnullptlib/libnullptlib.a
+
+# /lib/libnullptlib/include/
+/lib/libnullptlib/include/Makefile
+
+# /lib/libnullptlib/pkgconfig/
+/lib/libnullptlib/pkgconfig/libnullptlib.pc
+/lib/libnullptlib/pkgconfig/libnullptlib-uninstalled.pc
+
+# /lib/libnullptlib/src/
+/lib/libnullptlib/src/.deps
+/lib/libnullptlib/src/.dirstamp
+
+# /modules/
+/modules/Makefile.config
+/modules/Makefile.template
+
+# /tools/
+/tools/Makefile
+
+# /tools/dreams/
+/tools/dreams/Makefile
+
+# /tools/dreams/dbtest/
+/tools/dreams/dbtest/Makefile
+
+# /tools/dreams/dbtest/src/
+/tools/dreams/dbtest/src/.deps
+/tools/dreams/dbtest/src/Makefile
+
+# /tools/scripts/
+/tools/scripts/asimstarter
+/tools/scripts/asim-pkg-config
+/tools/scripts/Makefile
