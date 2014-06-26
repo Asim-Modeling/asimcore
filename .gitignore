@@ -141,3 +141,7 @@
 /tools/scripts/asimstarter
 /tools/scripts/asim-pkg-config
 /tools/scripts/Makefile
+
+# ignore object files
+*.o
+*.a
