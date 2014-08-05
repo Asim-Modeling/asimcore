@@ -1,7 +1,7 @@
-asim-core (13.06~git1403758203r572162035b1d20663fc9a98adf2154d9a6015fb2+lucid) lucid; urgency=low
+asim-core (14.08~git1406922439r8a3f9b646b72f6bdfa121a5ffd680c4944f762fd+precise) precise; urgency=low
 
   [ Joel Emer ]
 
-  *   For release v13.06. There was no release for v12.04 - v12.02
+  *   For release v14.08
 
- -- Joel Emer <emer@csail.mit.edu>  Thu, 12 Apr 2012 12:20:01 -0400
+ -- Joel Emer <emer@csail.mit.edu>  Tue, 5 Aug 2014 14:36:01 -0400
