@@ -21,6 +21,6 @@ Description=Asim Base Library
 CSN=CSN-asimcore-392
 Name=asimcore
 Tag=v14.08
-Prerelease=1
+Prerelease=0
 Lock=asim-asimcore
 Buildorder=1
