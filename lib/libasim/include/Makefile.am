@@ -101,7 +101,7 @@ nobase_include_HEADERS = asim/address.h\
 		asim/threaded_log.h\
 		asim/thread.h\
         asim/threadsafe.h\
-        asim/time_events_ring.h
+        asim/time_events_ring.h\
 		asim/trace.h\
 		asim/trace_legacy.h\
 		asim/trackmem.h\

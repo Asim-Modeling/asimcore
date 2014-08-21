@@ -145,3 +145,6 @@
 # ignore object files
 *.o
 *.a
+
+#ignore Makefiles
+Makefile

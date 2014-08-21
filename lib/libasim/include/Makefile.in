@@ -306,7 +306,18 @@ nobase_include_HEADERS = asim/address.h\
 		asim/threaded_log.h\
 		asim/thread.h\
         asim/threadsafe.h\
-        asim/time_events_ring.h
+        asim/time_events_ring.h\
+		asim/trace.h\
+		asim/trace_legacy.h\
+		asim/trackmem.h\
+		asim/traps.h\
+		asim/utils.h\
+		asim/vector.h\
+		asim/xcheck.h\
+		asim/xmlout-gdome.h\
+		asim/xmlout-nolib-gz.h\
+		asim/xmlout-nolib.h\
+		asim/xmlout.h
 
 all: all-am
 
@@ -563,17 +574,6 @@ uninstall-am: uninstall-nobase_includeHEADERS
 	pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-nobase_includeHEADERS
 
-		asim/trace.h\
-		asim/trace_legacy.h\
-		asim/trackmem.h\
-		asim/traps.h\
-		asim/utils.h\
-		asim/vector.h\
-		asim/xcheck.h\
-		asim/xmlout-gdome.h\
-		asim/xmlout-nolib-gz.h\
-		asim/xmlout-nolib.h\
-		asim/xmlout.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
