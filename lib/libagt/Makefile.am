@@ -79,7 +79,7 @@ libagt_a_DIALOGS= src/bookmark.ui \
 		src/snapDialog.ui 
 
 src/%_moc.cpp: include/asim/%.h src/%.cpp
-	$(QTMOCDIR)/moc $< -o $@ 
+	$(QTMOCDIR)/$(QTMOCBIN) $< -o $@ 
 
 # Note: QT .h files produce tons of warning if -Wall is present
 # so we redefine the warning flags to an intermediate level:

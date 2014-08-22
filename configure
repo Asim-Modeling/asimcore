@@ -615,7 +615,9 @@ ASIMCORELIBS
 ASIMCOREFLAGS
 LINK
 NO_GUI
+QTMOCBIN
 QTMOCDIR
+QTUICBIN
 QTUICDIR
 QTLIBOBJ
 QTLIBDIR
@@ -5512,15 +5514,26 @@ $as_echo_n "checking \"for Qt moc\"... " >&6; }
 
     for dir in $with_qt_moc $with_qt_dir $QTDIR ${prefix}/lib /usr/local/lib /usr/local /usr/lib /usr / /usr/X11R6
     do
-        for try in $dir/qt3/bin $dir/qt/bin $dir/bin $dir/qt3 $dir/qt $dir
+        for try in $dir/bin $dir/qt/bin $dir/qt $dir $dir/qt3/bin $dir/qt3
 	do
           if test -f $try/moc
           then
               QTMOCDIR=$try
+              QTMOCBIN=moc-qt4
+              { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTMOCDIR\"" >&5
+$as_echo "\"found in $QTMOCDIR\"" >&6; }
+              break 2
+          elif test "$asim_cv_enable_qt4" = "yes"
+          then
+              if test -f $try/moc-qt4
+              then
+                  QTMOCDIR=$try
+                  QTMOCBIN=moc-qt4
               { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTMOCDIR\"" >&5
 $as_echo "\"found in $QTMOCDIR\"" >&6; }
               break 2
 	  fi
+          fi
 	done
 
     done
@@ -5532,15 +5545,26 @@ $as_echo_n "checking \"for Qt moc\"... " >&6; }
 
     for dir in $with_qt_moc $with_qt_dir $QTDIR ${prefix}/lib/qt3 /usr/local/lib /usr/local /usr/lib /usr / /usr/X11R6
     do
-        for try in $dir/qt3/bin $dir/qt/bin $dir/bin $dir/qt3 $dir/qt $dir
+        for try in $dir/bin $dir/qt/bin $dir/qt $dir $dir/qt3/bin $dir/qt3
 	do
           if test -f $try/moc
           then
               QTMOCDIR=$try
+              QTMOCBIN=moc-qt4
+              { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTMOCDIR\"" >&5
+$as_echo "\"found in $QTMOCDIR\"" >&6; }
+              break 2
+          elif test "$asim_cv_enable_qt4" = "yes"
+          then
+              if test -f $try/moc-qt4
+              then
+                  QTMOCDIR=$try
+                  QTMOCBIN=moc-qt4
               { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTMOCDIR\"" >&5
 $as_echo "\"found in $QTMOCDIR\"" >&6; }
               break 2
 	  fi
+          fi
 	done
 
     done
@@ -5571,14 +5595,25 @@ $as_echo_n "checking \"for Qt uic\"... " >&6; }
 
     for dir in $with_qt_uic $with_qt_dir $QTDIR ${prefix}/lib /usr/local/lib /usr/local /usr/lib /usr / /usr/X11R6
     do
-        for try in $dir/qt3/bin $dir/qt/bin $dir/bin $dir/qt3 $dir/qt $dir
+        for try in $dir/qt/bin $dir/bin $dir/qt $dir $dir/qt3/bin $dir/qt3
 	do
           if test -f $try/uic
           then
               QTUICDIR=$try
+              QTUICBIN=uic
               { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTUICDIR\"" >&5
 $as_echo "\"found in $QTUICDIR\"" >&6; }
               break 2
+          elif test "$asim_cv_enable_qt4" = "yes"
+          then
+              if test -f $try/uic-qt4
+              then
+                  QTUICDIR=$try
+                  QTUICBIN=uic-qt4
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTUICDIR\"" >&5
+$as_echo "\"found in $QTUICDIR\"" >&6; }
+                  break 2
+              fi
 	  fi
 	done
 
@@ -5592,14 +5627,25 @@ $as_echo_n "checking \"for Qt uic\"... " >&6; }
 
     for dir in $with_qt_uic $with_qt_dir $QTDIR ${prefix}/lib/qt3 /usr/local/lib /usr/local /usr/lib /usr / /usr/X11R6
     do
-        for try in $dir/qt3/bin $dir/qt/bin $dir/bin $dir/qt3 $dir/qt $dir
+        for try in $dir/qt/bin $dir/bin $dir/qt $dir $dir/qt3/bin $dir/qt3
 	do
           if test -f $try/uic
           then
               QTUICDIR=$try
+              QTUICBIN=uic
               { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTUICDIR\"" >&5
 $as_echo "\"found in $QTUICDIR\"" >&6; }
               break 2
+          elif test "$asim_cv_enable_qt4" = "yes"
+          then
+              if test -f $try/uic-qt4
+              then
+                  QTUICDIR=$try
+                  QTUICBIN=uic-qt4
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"found in $QTUICDIR\"" >&5
+$as_echo "\"found in $QTUICDIR\"" >&6; }
+                  break 2
+              fi
 	  fi
 	done
 
@@ -5641,7 +5687,7 @@ $as_echo_n "checking \"for Qt 3.x.x libraries\"... " >&6; }
 
     for dir in $with_qt_libs $with_qt_dir $QTDIR ${prefix} /usr/local /usr /usr/X11R6 /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu/
     do
-        for try in $dir/qt/lib $dir/lib/qt $dir/lib $dir/qt $dir $dir/qt3/lib $dir/lib/qt3 $dir/qt3
+        for try in $dir/qt/lib $dir/lib/qt $dir/lib $dir/qt $dir/qt4/lib $dir/lib/qt4 $dir/qt4 $dir/lib64/qt $dir/lib64 $dir/lib64/qt4 $dir/lib64 $dir/qt4 $dir $dir/qt3/lib $dir/lib/qt3 $dir/qt3
 	do
 
           for i in $QTLIBS
@@ -5679,7 +5725,7 @@ $as_echo_n "checking \"for Qt 3.x.x libraries\"... " >&6; }
 
     for dir in $with_qt_libs $with_qt_dir $QTDIR ${prefix} /usr/local /usr /usr/X11R6 /usr/lib/qt3/lib64 /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu/
     do
-        for try in $dir/qt/lib $dir/lib/qt $dir/lib $dir/qt $dir $dir/qt3/lib $dir/lib/qt3 $dir/qt3
+        for try in $dir/qt/lib $dir/lib/qt $dir/lib $dir/qt $dir/qt4/lib $dir/lib/qt4 $dir/qt4 $dir/lib64/qt $dir/lib64 $dir/lib64/qt4 $dir/lib64 $dir/qt4 $dir $dir/qt3/lib $dir/lib/qt3 $dir/qt3
 	do
 
           for i in $QTLIBS
@@ -5823,6 +5869,8 @@ $as_echo "\"found in $QTINCDIR\"" >&6; }
 
     if test $qt_available = 1
     then
+
+
 
 
 
