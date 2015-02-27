@@ -1,3 +1,9 @@
+asim-core (15.02~git37bf67ec4e2e30093ae500633127705711b3736b+trusty) trusty; urgency=medium
+
+  *  Added AWB metadata
+
+ -- Kermin E Fleming <kfleming@leap.csail.mit.edu>  Fri, 27 Feb 2015 14:02:59 -0500
+
 asim-core (15.02~git0cc7f2483ea9b85686a7ad929fa1a3abbdf00b62+trusty) trusty; urgency=low
 
   *   For release v15.02
