@@ -1,7 +1,5 @@
-asim-core (14.08~git1406922439r8a3f9b646b72f6bdfa121a5ffd680c4944f762fd+precise) precise; urgency=low
+asim-core (15.02~git0cc7f2483ea9b85686a7ad929fa1a3abbdf00b62+trusty) trusty; urgency=low
 
-  [ Joel Emer ]
+  *   For release v15.02
 
-  *   For release v14.08
-
- -- Joel Emer <emer@csail.mit.edu>  Tue, 5 Aug 2014 14:36:01 -0400
+ -- Kermin E Fleming <kfleming@leap.csail.mit.edu>  Mon, 23 Feb 2015 18:50:30 -0500
