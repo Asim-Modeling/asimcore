@@ -298,12 +298,12 @@ DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::SetNodeLayout (
 
 void
 DRAL_SERVER_ASCII_IMPLEMENTATION_CLASS::Comment(
-    UINT32 magic_num, const char * comment, UINT32 strlen )
+    UINT32 magic_num, const char * comment, UINT32)
 {
     ostringstream sout;
     sout << "comment " << magic_num << " " << comment << endl;
     const char * buffer=sout.str().c_str();
-    dralWrite->Write(buffer, strlen);
+    dralWrite->Write(buffer, sout.str().length());
 }
 
 void
